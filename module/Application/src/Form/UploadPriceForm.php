@@ -78,14 +78,14 @@ class UploadPriceForm extends Form
         
         $inputFilter = new InputFilter();  
         
-        $fileInput = new FileInput('file');
+        $fileInput = new FileInput('name');
         $fileInput->setRequired(true);
         $fileInput->getFilterChain()->attachByName(
             'filerenameupload',
             [
                 'use_upload_name' => true,
                 'use_upload_extension' => true,
-                'target'    => $this->target.'/new_price',
+                'target'    => $this->target,
                 'randomize' => true,
             ]
         );

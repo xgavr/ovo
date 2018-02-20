@@ -256,7 +256,7 @@ class SupplierController extends AbstractActionController
             return;                        
         }        
         
-        $uploadPriceForm = new UploadPriceForm($this->supplierManager->getPriceFolder($supplier));
+        $form = new UploadPriceForm($this->supplierManager->getPriceFolder($supplier));
 
         if($this->getRequest()->isPost()) {
             
@@ -265,17 +265,19 @@ class SupplierController extends AbstractActionController
                 $this->params()->fromFiles()
             );            
             
-            var_dump($data);
             // Заполняем форму данными.
-            $uploadPriceForm->setData($data);
-            if($uploadPriceForm->isValid()) {
+            $form->setData($data);
+            if($form->isValid()) {
                                 
                 // Получаем валадированные данные формы.
-                $data = $uploadPriceForm->getData();
+                $data = $form->getData();
               
                 // Снова перенаправляем пользователя на страницу "view".
                 return $this->redirect()->toRoute('raw', ['action'=>'index']);
+            } else {
+                var_dump($form->getMessages());
             }
+            
         }
         
         return new ViewModel([
