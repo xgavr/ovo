@@ -20,7 +20,7 @@ class DoctrineCacheFactory
         if (extension_loaded('memcached')){ //если отладка не на локальной машине
            $memcached = new \Memcached();
            $memcached->addServer('127.0.0.1', 11211);
-           $memcached->setOption(\Memcached::OPT_PREFIX_KEY, 'ovo');
+           $memcached->setOption(\Memcached::OPT_PREFIX_KEY, '_ovo_');
            
            $cache = new MemcachedCache();
            $cache->setMemcached($memcached);
