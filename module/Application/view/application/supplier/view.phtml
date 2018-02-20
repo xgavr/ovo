@@ -1,12 +1,12 @@
 <?php
-$this->headTitle('Просмотр данных поставщика '.$supplier->getName());
+$this->headTitle($supplier->getName());
 
 $this->mainMenu()->setActiveItemId('supplier');
 
 $this->pageBreadcrumbs()->setItems([
             'Главная'=>$this->url('home'),
-            'Управление поставщиками'=>$this->url('supplier'),
-            'Просмотр данных поставщика'=>$this->url('supplier', ['action'=>'view', 'id' => $supplier->getId()])
+            'Посатвщики'=>$this->url('supplier'),
+            $supplier->getName()=>$this->url('supplier', ['action'=>'view', 'id' => $supplier->getId()])
             ]);  
 
 $form = $this->form;
@@ -52,49 +52,50 @@ $form->prepare();
     <?= $this->escapeHtml($supplier->getStatusAsString()); ?>
 </p>
 
-
-<h3 class="contact-header">Контакты</h3>
-<table class="table table-striped">
-
-   <tr>
-        <th>ID</th>
-        <th>Имя</th>
-        <th>Телефон</th>
-        <th>Описание</th>
-        <th>Действие</th>
-    </tr>
-    
-    <?php foreach ($supplier->getContacts() as $row): ?>
-    
-    <tr>
-        <td><?= $this->escapeHtml($row->getId()); ?></td>
-        <td>
-                <?= $this->escapeHtml($row->getName()); ?>
-        </td>
-        <td><?= $this->escapeHtml($row->getPhonesAsString()); ?></td>
-        <td>
-                <?= $this->escapeHtml($row->getDescription()); ?>
-        </td>
-        <td>
-            <a class="btn btn-info" href="<?= $this->url('contact', 
-                    ['action'=>'edit', 'id'=>$row->getId()],['query' => ['supplier' => $supplier->getId()]]); ?>">
-                <span class="glyphicon glyphicon-pencil" ></span> Изменить
-            </a>
-            <a class="btn btn-danger" href="<?= $this->url('supplier',
-                    ['action'=>'delete-contact', 'id'=>$row->getId()]); ?>">
-                <span class="glyphicon glyphicon-remove"></span> Удалить
-            </a>
-        </td>    
-    </tr>
-        
-    <?php endforeach; ?>   
-    
-</table>
-
-<h3 class="contact-header">Добавить контакт</h3>
-
 <div class="row">
     <div class="col-md-8">
+        <h3 class="contact-header">Контакты</h3>
+        <table class="table table-striped">
+
+           <tr>
+                <th>ID</th>
+                <th>Имя</th>
+                <th>Телефон</th>
+                <th>Описание</th>
+                <th>Действие</th>
+            </tr>
+
+            <?php foreach ($supplier->getContacts() as $row): ?>
+
+            <tr>
+                <td><?= $this->escapeHtml($row->getId()); ?></td>
+                <td>
+                        <?= $this->escapeHtml($row->getName()); ?>
+                </td>
+                <td><?= $this->escapeHtml($row->getPhonesAsString()); ?></td>
+                <td>
+                        <?= $this->escapeHtml($row->getDescription()); ?>
+                </td>
+                <td>
+                    <a class="btn btn-info" href="<?= $this->url('contact', 
+                            ['action'=>'edit', 'id'=>$row->getId()],['query' => ['supplier' => $supplier->getId()]]); ?>">
+                        <span class="glyphicon glyphicon-pencil" ></span> Изменить
+                    </a>
+                    <a class="btn btn-danger" href="<?= $this->url('supplier',
+                            ['action'=>'delete-contact', 'id'=>$row->getId()]); ?>">
+                        <span class="glyphicon glyphicon-remove"></span> Удалить
+                    </a>
+                </td>    
+            </tr>
+
+            <?php endforeach; ?>   
+
+        </table>
+    </div>    
+
+    <div class="col-md-4">
+        <h3 class="contact-header">Добавить контакт</h3>
+
         <?= $this->form()->openTag($form); ?>
         
         <div class="form-group">

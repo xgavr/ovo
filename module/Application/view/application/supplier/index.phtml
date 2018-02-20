@@ -36,6 +36,10 @@ $this->pageBreadcrumbs()->setItems([
         </td>
         <td>
             <a class="btn btn-info" href="<?= $this->url('supplier', 
+                    ['action'=>'upload-price', 'id'=>$row->getId()]); ?>">
+                <span class="glyphicon glyphicon-pencil" ></span> Загрузить прайс
+            </a>
+            <a class="btn btn-info" href="<?= $this->url('supplier', 
                     ['action'=>'edit', 'id'=>$row->getId()]); ?>">
                 <span class="glyphicon glyphicon-pencil" ></span> Изменить
             </a>

@@ -156,9 +156,15 @@ class ContactController extends AbstractActionController
                'name' => $contact->getName(),
                'description' => $contact->getDescription(),
                'status' => $contact->getStatus(),
-                'email' => $contact->getEmail()->getName(),
-                'phone' => $contact->getPhone()->getName(),
             ];
+            
+            if ($contact->getEmail()){
+                $data['email'] = $contact->getEmail()->getName();
+            }
+            
+            if ($contact->getPhone()){
+                $data['phone'] = $contact->getPhone()->getName();
+            }
             
             $form->setData($data);
         }

@@ -13,6 +13,7 @@ use Application\Entity\Supplier;
 use Application\Entity\Contact;
 use Application\Form\SupplierForm;
 use Application\Form\ContactForm;
+use Application\Form\UploadPriceForm;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -234,5 +235,52 @@ class SupplierController extends AbstractActionController
             'form' => $form,
             'supplierManager' => $this->supplierManager,
         ]);
-    }      
+    }    
+    
+    public function uploadPriceAction()
+    {
+        $supplierId = (int)$this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($supplierId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        // Find the tax supplier ID
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);
+        
+        if ($supplier == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $uploadPriceForm = new UploadPriceForm($this->supplierManager->getPriceFolder($supplier));
+
+        if($this->getRequest()->isPost()) {
+            
+            $data = array_merge_recursive(
+                $this->params()->fromPost(),
+                $this->params()->fromFiles()
+            );            
+            
+            var_dump($data);
+            // Заполняем форму данными.
+            $uploadPriceForm->setData($data);
+            if($uploadPriceForm->isValid()) {
+                                
+                // Получаем валадированные данные формы.
+                $data = $uploadPriceForm->getData();
+              
+                // Снова перенаправляем пользователя на страницу "view".
+                return $this->redirect()->toRoute('raw', ['action'=>'index']);
+            }
+        }
+        
+        return new ViewModel([
+            'supplier' => $supplier,
+            'form' => $uploadPriceForm,
+        ]);
+    }
 }

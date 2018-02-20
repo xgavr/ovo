@@ -1,0 +1,45 @@
+<?php
+$this->headTitle('Загрузить прайс');
+
+$this->mainMenu()->setActiveItemId('supplier');
+
+$this->pageBreadcrumbs()->setItems([
+            'Главная'=>$this->url('home'),
+            'Поставщики'=>$this->url('supplier'),
+            $supplier->getName()=>$this->url('supplier', ['action'=>'view', 'id' => $supplier->getId()]),
+            'Загрузить прайс' => $this->url('supplier', ['action'=>'upload-price', 'id' => $supplier->getId()]),
+            ]);
+
+$form = $this->form;
+
+$form->get('name')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Файл прайса'
+    ]);
+
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
+$form->prepare();
+
+?>
+
+<h1>Загрузить прайс поставщика</h1>
+
+<p>
+    Выберете файл и нажмите <i>Загрузить</i>.
+</p>
+
+<div class="row">
+    <div class="col-md-6">
+        <?= $this->form()->openTag($form); ?>
+        
+        <div class="form-group">
+            <?= $this->formLabel($form->get('name')); ?>
+            <?= $this->formElement($form->get('name')); ?>
+            <?= $this->formElementErrors($form->get('name')); ?>                  
+        </div>
+                                        
+        <?= $this->formElement($form->get('submit')); ?>
+        
+        <?= $this->form()->closeTag(); ?>
+    </div>    
+</div>   

@@ -77,7 +77,14 @@ class SupplierManager
         if (!is_dir($arx_price_supplier_folder_name)){
             mkdir($arx_price_supplier_folder_name);
         }
-    }        
+    } 
+    
+    public function getPriceFolder($supplier)
+    {
+        $this->addPriceFolder($supplier);
+        $price_data_folder_name = $this->priceManager->getPriceFolder();
+        return $price_data_folder_name.'/'.$supplier->getId();
+    }
     
     public function addNewSupplier($data) 
     {
