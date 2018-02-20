@@ -282,7 +282,7 @@ class SupplierController extends AbstractActionController
         
         return new ViewModel([
             'supplier' => $supplier,
-            'form' => $uploadPriceForm,
+            'form' => $form,
         ]);
     }
 }
