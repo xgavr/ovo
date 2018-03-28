@@ -1,0 +1,97 @@
+<?php
+
+$form = $this->form;
+
+$form->get('name')->setAttributes([
+    'class'=>'form-control', 
+    ]);
+
+$form->get('act')->setAttributes([
+    'class'=>'form-control', 
+    ]);
+
+$form->get('dateStart')->setAttributes([
+    'class'=>'form-control', 
+    ]);
+
+$form->get('status')->setAttributes([
+    'class'=>'form-control', 
+    ]);
+
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary', 'value' => 'Сохранить', 'id' => 'contract-submit']);
+
+$form->prepare();
+
+?>
+
+
+            
+            <?= $this->form()->openTag($form); ?>
+            
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Договор</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('name')); ?>
+                            <?= $this->formElement($form->get('name')); ?>
+                            <?= $this->formElementErrors($form->get('name')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('act')); ?>
+                            <?= $this->formElement($form->get('act')); ?>
+                            <?= $this->formElementErrors($form->get('act')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('dateStart')); ?>
+                            <?= $this->formElement($form->get('dateStart')); ?>
+                            <?= $this->formElementErrors($form->get('dateStart')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('status')); ?>
+                            <?= $this->formElement($form->get('status')); ?>
+                            <?= $this->formElementErrors($form->get('status')); ?>                  
+                        </div>
+
+                        <?= $this->formElement($form->get('csrf')); ?>
+                    </div>
+                </div>
+            </div>    
+                
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="contract-submit">Сохранить</button>
+            </div>
+            
+            <?= $this->form()->closeTag(); ?>
+            
+<script>
+    $('#contract-submit').on('click', function() {
+        $.ajax({
+            type: 'POST',
+            url: '/legals/contract-form/<?= $legal->getId() ?>?contract=<?= ($contract ? $contract->getId():'') ?>',
+            data: $('#contract-form').serialize()
+        })
+            .done(function (data) {
+                if (data == 'ok'){
+                    $('#contract-modal').modal('hide');
+                    window.location.reload();
+                } else {
+                    $('#contract-modal-content').html(data);
+                }    
+            })
+            .fail(function () {
+                alert("Ошибка при открытии формы.");
+
+            });
+    })        
+</script>
