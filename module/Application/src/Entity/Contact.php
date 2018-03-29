@@ -41,10 +41,35 @@ class Contact {
     protected $description;
     
     /**
+     * @ORM\Column(name="signature")   
+     */
+    protected $signature;
+    
+    /**
+     * @ORM\Column(name="address")   
+     */
+    protected $address;
+    
+    /**
+     * @ORM\Column(name="address_sms")   
+     */
+    protected $addressSms;
+    
+    /**
      * @ORM\Column(name="status")   
      */
     protected $status;   
     
+    /**
+     * @ORM\Column(name="icq")   
+     */
+    protected $icq;   
+
+    /**
+     * @ORM\Column(name="telegramm")   
+     */
+    protected $telegramm;   
+
     /** 
      * @ORM\Column(name="date_created")  
      */
@@ -68,6 +93,12 @@ class Contact {
      */
     protected $user;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="\Company\Entity\Office", inversedBy="contacts") 
+     * @ORM\JoinColumn(name="office_id", referencedColumnName="id")
+     */
+    protected $office;
+
    /**
     * @ORM\OneToMany(targetEntity="Application\Entity\Phone", mappedBy="contact")
     * @ORM\JoinColumn(name="id", referencedColumnName="contact_id")
@@ -80,9 +111,19 @@ class Contact {
    */
    private $emails;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="\Company\Entity\Legal", inversedBy="contacts")
+     * @ORM\JoinTable(name="contact_legal",
+     *      joinColumns={@ORM\JoinColumn(name="contact_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="legal_id", referencedColumnName="id")}
+     *      )
+     */
+   private $legals;
+
    public function __construct() {
       $this->phones = new ArrayCollection();
       $this->emails = new ArrayCollection();
+      $this->legals = new ArrayCollection();
    }
    
     public function getId() 
@@ -115,9 +156,59 @@ class Contact {
         $this->description = $description;
     }     
 
+    public function getSignature() 
+    {
+        return $this->signature;
+    }
+
+    public function setSignature($signature) 
+    {
+        $this->signature = $signature;
+    }     
+
     public function getStatus() 
     {
         return $this->status;
+    }
+    
+    public function getIcq()
+    {
+        return $this->icq;
+    }
+    
+    public function setIcq($icq)
+    {
+        $this->icq = $icq;
+    }
+    
+    public function getAddress()
+    {
+        return $this->address;
+    }
+    
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+    
+    public function getAddressSms()
+    {
+        return $this->addressSms;
+    }
+    
+    public function setAddressSms($addressSms)
+    {
+        $this->addressSms = $addressSms;
+    }
+    
+    public function getTelegramm()
+    {
+        return $this->telegramm;
+    }
+    
+    public function setTelegramm($telegramm)
+    {
+        $this->telegramm = $telegramm;
     }
     
     /**
@@ -127,8 +218,8 @@ class Contact {
     public static function getStatusList() 
     {
         return [
-            self::STATUS_ACTIVE => 'Active',
-            self::STATUS_RETIRED => 'Retired'
+            self::STATUS_ACTIVE => 'Доступен',
+            self::STATUS_RETIRED => 'В отставке'
         ];
     }    
     
@@ -226,6 +317,25 @@ class Contact {
         $user->addContact($this);
     }     
     
+    /*
+     * Возвращает связанный office.
+     * @return \Company\Entity\Office
+     */    
+    public function getOffice() 
+    {
+        return $this->office;
+    }
+
+    /**
+     * Задает связанный office.
+     * @param \Company\Entity\Office $office
+     */    
+    public function setOffice($office) 
+    {
+        $this->office = $office;
+        $office->addContact($this);
+    }     
+    
     /**
      * Возвращает 1 phone для этого contact.
      * @return array
@@ -294,4 +404,27 @@ class Contact {
     {
         $this->emails[] = $email;
     }       
+    /**
+     * Возвращает email для этого contact.
+     * @return array
+     */   
+
+    public function getLegals() {
+      return $this->legals;
+   }    
+   
+    /**
+     * Добавляет новый email к этому contact.
+     * @param $email
+     */   
+    public function addLegal($legal) 
+    {
+        $this->legals[] = $legal;
+    }       
+    
+    // Удаляет связь между этим контактом и заданным юрлицом.
+    public function removeLegalAssociation($legal) 
+    {
+        $this->legals->removeElement($legal);
+    }    
 }

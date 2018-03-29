@@ -105,6 +105,31 @@ class NavManager
                 ];
             }
             
+            //Предприятие
+            if ($this->rbacManager->isGranted(null, 'company.manage')) {
+                $companyDropdownItems = [];
+    
+                $companyDropdownItems[] = [
+                            'id' => 'offices',
+                            'label' => 'Офисы',
+                            'link' => $url('offices')
+                        ];
+                
+                $companyDropdownItems[] = [
+                            'id' => 'regions',
+                            'label' => 'Регионы',
+                            'link' => $url('regions')
+                        ];
+                
+                if (count($companyDropdownItems)!=0) {
+                    $items[] = [
+                        'id' => 'users',
+                        'label' => 'Предприятие',
+                        'dropdown' => $companyDropdownItems
+                    ];
+                }
+            }
+            
             //Справочники
             $rbDropdownItems = [];
             if ($this->rbacManager->isGranted(null, 'rb.manage')) {

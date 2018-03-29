@@ -265,6 +265,7 @@ class SupplierController extends AbstractActionController
                 $this->params()->fromFiles()
             );            
             
+//            var_dump($data); exit;
             // Заполняем форму данными.
             $form->setData($data);
             if($form->isValid()) {
