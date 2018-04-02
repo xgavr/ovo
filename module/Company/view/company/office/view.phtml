@@ -9,8 +9,11 @@ $this->pageBreadcrumbs()->setItems([
             $office->getName()=>$this->url('offices', ['action'=>'view', 'id'=>$office->getId()])
             ]);
 
-?>
+$this->headScript()
+            ->appendFile($this->basePath('js/jquery.mask.min.js'))
+        ;
 
+?>
 
 <?= $this->flashMessenger()->render('error', ['alert', 'alert-warning']); ?>
 <?= $this->flashMessenger()->render('success', ['alert', 'alert-success']); ?>
@@ -55,15 +58,26 @@ $this->pageBreadcrumbs()->setItems([
             <h2>Контактные телефоны</h2>
             <?php foreach ($office->getContacts() as $contact):?>
                 <p>
-                    <a class="btn btn-default" href="<?= $this->url('contact', 
-                                        ['action'=>'phone', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-pencil" ></span> <?= (count($contact->getPhones())) ? 'Изменить':'Добавить'; ?>
-                    </a>
+                    <button value="/contact/phone-form/<?= $contact->getId() ?>" class="btn btn-default"
+                            data-toggle="modal" data-target="#modal-dialog" title="Добавить телефон">
+                        <span class="glyphicon glyphicon-phone" ></span>
+                        Добавить телефон
+                    </button>                    
                 </p>
                 <table class="table table-striped table-bordered">
                     <?php foreach ($contact->getPhones() as $phone): ?>
                         <tr>
-                           <th class="phone_name"><?= $phone->getName() ?></th>
+                           <th class="phone_name">
+                                <div class="pull-left">
+                                    <?= $phone->getName()?>
+                                </div>
+                                <div class="pull-right">
+                                    <button value="<?= $phone->getId() ?>" class="btn btn-default btn-xs phone-delete"
+                                            title="Удалить">
+                                        <span class="glyphicon glyphicon-remove" ></span>
+                                    </button>                                                            
+                                </div>                                        
+                           </th>
                        </tr>
                     <?php endforeach; ?>
                 </table>
@@ -168,18 +182,51 @@ $this->pageBreadcrumbs()->setItems([
     </div>
 </div>
 
-<style>
-.nav-list {
-    width: 228px;
-    margin: 30px 0 0;
-    padding: 0;
-    background-color: #fff;
-    -webkit-border-radius: 6px;
-    -moz-border-radius: 6px;
-    border-radius: 6px;
-    -webkit-box-shadow: 0 1px 4px rgba(0,0,0,.065);
-    -moz-box-shadow: 0 1px 4px rgba(0,0,0,.065);
-    box-shadow: 0 1px 4px rgba(0,0,0,.065);
-}    
-</style>
+<div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#modal-dialog').on('show.bs.modal', function (e) {        
+        var url = e.relatedTarget.value;
+        if (url){
+            $.ajax({
+                type: 'GET',
+                url: url
+            })
+                .done(function (data) {
+                   $('#modal-content').html(data);
+                })
+                .fail(function () {
+                    alert("Ошибка открытия формы.");
+                }); 
+        }
+    })    
     
+    $('.phone-delete').on('click', function(e) {
+        var phone = e.currentTarget.value;
+        if (phone){
+            if (confirm('Удалить телефон?')){
+                $.ajax({
+                    type: 'GET',
+                    url: '/contact/delete-phone-form/'+phone,
+                })
+                    .done(function (data) {
+                        if (data == 'ok'){
+                            window.location.reload();
+                        } else {
+                            alert("Не удалось удалить телефон.");
+                        }    
+                    })
+                    .fail(function (e) {
+                        alert("Не удалось удалить.");
+
+                    });
+            }        
+        }        
+    })    
+    
+</script>    

@@ -9,6 +9,8 @@ namespace Application\Form;
 
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
+use User\Filter\PhoneFilter;
+use User\Validator\PhoneExistsValidator;
 /**
  * Description of Phone
  *
@@ -16,11 +18,20 @@ use Zend\InputFilter\InputFilter;
  */
 class PhoneForm extends Form
 {
+    
+    private $entityManager;
+    
+    private $phone;
+    
     /**
      * Конструктор.     
      */
-    public function __construct()
+    public function __construct($entityManager = null, $phone = null)
     {
+        
+        $this->entityManager = $entityManager;
+        $this->phone = $phone;
+        
         // Определяем имя формы.
         parent::__construct('phone-form');
      
@@ -49,6 +60,18 @@ class PhoneForm extends Form
             ],
         ]);
         
+        // Добавляем поле "comment"
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'comment',
+            'attributes' => [
+                'id' => 'phone_comment'
+            ],
+            'options' => [
+                'label' => 'Комментарий',
+            ],
+        ]);
+        
         // Добавляем кнопку отправки формы
         $this->add([
             'type'  => 'submit',
@@ -73,9 +96,12 @@ class PhoneForm extends Form
                 'name'     => 'name',
                 'required' => true,
                 'filters'  => [
-                    ['name' => 'StringTrim'],
-                    ['name' => 'StripTags'],
-                    ['name' => 'StripNewlines'],
+                    [
+                        'name' => PhoneFilter::class,
+                        'options' => [
+                            'format' => PhoneFilter::PHONE_FORMAT_DB,
+                        ]
+                    ],
                 ],                
                 'validators' => [
                     [
@@ -83,7 +109,35 @@ class PhoneForm extends Form
                         'options' => [
                         ],
                     ],
+                    [
+                        'name' => PhoneExistsValidator::class,
+                        'options' => [
+                            'entityManager' => $this->entityManager,
+                            'phone' => $this->phone
+                        ],
+                    ],
                 ],
             ]);        
+        
+        $inputFilter->add([
+                'name'     => 'comment',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 128
+                        ],
+                    ],
+                ],
+            ]);
+        
+        
     }    
 }

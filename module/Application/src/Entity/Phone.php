@@ -9,6 +9,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use User\Filter\PhoneFilter;
 
 /**
  * Description of Phone
@@ -29,6 +30,10 @@ class Phone {
      */
     protected $name;
 
+    /**
+     * @ORM\Column(name="comment")   
+     */
+    protected $comment;
     
     /** 
      * @ORM\Column(name="date_created")  
@@ -52,14 +57,32 @@ class Phone {
         $this->id = $id;
     }     
 
-    public function getName() 
+    public function getName($format = PhoneFilter::PHONE_FORMAT_RU) 
     {
-        return $this->name;
+        $filter = new PhoneFilter();
+        
+        if ($format){
+            $filter->setFormat($format);
+        }
+        
+        return $filter->filter($this->name);
     }
 
     public function setName($name) 
     {
-        $this->name = $name;
+        $filter = new PhoneFilter();
+        $filter->setFormat(PhoneFilter::PHONE_FORMAT_DB);
+        $this->name = $filter->filter($name);
+    }     
+
+    public function getComment() 
+    {
+        return $this->comment;
+    }
+
+    public function setComment($comment) 
+    {
+        $this->comment = $comment;
     }     
 
     /**

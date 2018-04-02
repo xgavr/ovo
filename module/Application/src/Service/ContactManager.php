@@ -14,6 +14,7 @@ use Application\Entity\Email;
 use Application\Entity\Supplier;
 use Application\Entity\Client;
 use User\Entity\User;
+use User\Filter\PhoneFilter;
 
 /**
  * Description of ContactService
@@ -114,6 +115,13 @@ class ContactManager
                 }    
             }
         }    
+    }
+    
+    public function removePhone($phone)
+    {
+        $this->entityManager->remove($phone);
+        $this->entityManager->flush();
+        
     }
     
     public function addEmail($contact, $emailstr, $flushnow = false)

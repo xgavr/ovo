@@ -14,6 +14,8 @@ use Application\Entity\Client;
 use Application\Entity\Supplier;
 use User\Entity\User;
 use Application\Form\ContactForm;
+use Application\Form\PhoneForm;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -220,4 +222,69 @@ class ContactController extends AbstractActionController
             'contact' => $contact,
         ]);
     }      
+    
+    public function phoneFormAction()
+    {
+        $contactId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $form = new PhoneForm($this->entityManager);
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                $this->contactManager->addPhone($contact, ['phone' => $data['name'], 'comment' => $data['comment']], true);
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        }        
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'contact' => $contact,
+        ]);                
+        
+    }
+    
+    public function deletePhoneFormAction()
+    {
+        $phoneId = $this->params()->fromRoute('id', -1);
+        
+        $phone = $this->entityManager->getRepository(Phone::class)
+                ->findOneById($phoneId);
+        
+        if ($phone == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->removePhone($phone);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+    
 }
