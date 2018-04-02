@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Application\Entity\Contact;
 use Application\Entity\Client;
 use Application\Entity\Supplier;
+use Application\Entity\Phone;
 use User\Entity\User;
 use Application\Form\ContactForm;
 use Application\Form\PhoneForm;
@@ -240,7 +241,16 @@ class ContactController extends AbstractActionController
             return;                        
         }        
 
-        $form = new PhoneForm($this->entityManager);
+        $phoneId = (int)$this->params()->fromQuery('phone', -1);
+        
+        // Validate input parameter
+        if ($phoneId>0) {
+            $phone = $this->entityManager->getRepository(Phone::class)
+                    ->findOneById($phoneId);
+        } else {
+            $phone = null;
+        }        
+        $form = new PhoneForm($this->entityManager, $phone);
 
         if ($this->getRequest()->isPost()) {
             
@@ -249,19 +259,31 @@ class ContactController extends AbstractActionController
 
             if ($form->isValid()) {
 
-                $this->contactManager->addPhone($contact, ['phone' => $data['name'], 'comment' => $data['comment']], true);
+                if ($phone){
+                    $this->contactManager->updatePhone($phone, ['phone' => $data['name'], 'comment' => $data['comment']]);                    
+                } else {
+                    $this->contactManager->addPhone($contact, ['phone' => $data['name'], 'comment' => $data['comment']], true);
+                }    
                 
                 return new JsonModel(
                    ['ok']
                 );           
             }
-        }        
-        
+        } else {
+            if ($phone){
+                $data = [
+                    'name' => $phone->getName(),  
+                    'comment' => $phone->getComment(),  
+                ];
+                $form->setData($data);
+            }  
+        }    
         $this->layout()->setTemplate('layout/terminal');
         // Render the view template.
         return new ViewModel([
             'form' => $form,
             'contact' => $contact,
+            'phone' => $phone,
         ]);                
         
     }

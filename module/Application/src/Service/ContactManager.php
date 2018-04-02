@@ -117,6 +117,15 @@ class ContactManager
         }    
     }
     
+    public function updatePhone($phone, $data)
+    {                
+        $phone->setName($data['phone']);
+        $phone->setComment($data['comment']);
+
+        $this->entityManager->persist($phone);
+        $this->entityManager->flush();                
+    }
+    
     public function removePhone($phone)
     {
         $this->entityManager->remove($phone);

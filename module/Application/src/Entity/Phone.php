@@ -114,7 +114,7 @@ class Phone {
 
     /**
      * Задает связанный contact.
-     * @param \Application\Entity\Supplier $contact
+     * @param \Application\Entity\Contact $contact
      */    
     public function setContact($contact) 
     {

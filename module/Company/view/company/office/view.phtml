@@ -70,9 +70,14 @@ $this->headScript()
                            <th class="phone_name">
                                 <div class="pull-left">
                                     <?= $phone->getName()?>
+                                    <span><?= $phone->getComment()?></span>
                                 </div>
                                 <div class="pull-right">
-                                    <button value="<?= $phone->getId() ?>" class="btn btn-default btn-xs phone-delete"
+                                    <button value="/contact/phone-form/<?= $contact->getId() ?>?phone=<?= ($phone ? $phone->getId():'') ?>" class="btn btn-default btn-xs phone-edit"
+                                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                        <span class="glyphicon glyphicon-edit" ></span>
+                                    </button>                                                            
+                                    <button value="/contact/delete-phone-form/<?= $phone->getId() ?>" class="btn btn-default btn-xs this-delete"
                                             title="Удалить">
                                         <span class="glyphicon glyphicon-remove" ></span>
                                     </button>                                                            
@@ -205,20 +210,20 @@ $this->headScript()
                 }); 
         }
     })    
-    
-    $('.phone-delete').on('click', function(e) {
-        var phone = e.currentTarget.value;
-        if (phone){
-            if (confirm('Удалить телефон?')){
+        
+    $('.this-delete').on('click', function(e) {
+        var url = e.currentTarget.value;
+        if (url){
+            if (confirm('Удалить запись?')){
                 $.ajax({
                     type: 'GET',
-                    url: '/contact/delete-phone-form/'+phone,
+                    url: url //'/contact/delete-phone-form/'+phone,
                 })
                     .done(function (data) {
                         if (data == 'ok'){
                             window.location.reload();
                         } else {
-                            alert("Не удалось удалить телефон.");
+                            alert("Не удалось удалить!");
                         }    
                     })
                     .fail(function (e) {
