@@ -13,9 +13,11 @@ use Application\Entity\Contact;
 use Application\Entity\Client;
 use Application\Entity\Supplier;
 use Application\Entity\Phone;
+use Application\Entity\Email;
 use User\Entity\User;
 use Application\Form\ContactForm;
 use Application\Form\PhoneForm;
+use Application\Form\EmailForm;
 use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
@@ -309,4 +311,242 @@ class ContactController extends AbstractActionController
         exit;
     }
     
+    public function emailFormAction()
+    {
+        $contactId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $emailId = (int)$this->params()->fromQuery('email', -1);
+        
+        // Validate input parameter
+        if ($emailId>0) {
+            $email = $this->entityManager->getRepository(Email::class)
+                    ->findOneById($emailId);
+        } else {
+            $email = null;
+        }        
+        $form = new EmailForm($this->entityManager, $email);
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($email){
+                    $this->contactManager->updateEmail($email, ['email' => $data['name']]);                    
+                } else {
+                    $this->contactManager->addEmail($contact, $data['name'], true);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($email){
+                $data = [
+                    'name' => $email->getName(),  
+                ];
+                $form->setData($data);
+            }  
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'contact' => $contact,
+            'email' => $email,
+        ]);                
+        
+    }
+
+    public function deleteEmailFormAction()
+    {
+        $emailId = $this->params()->fromRoute('id', -1);
+        
+        $email = $this->entityManager->getRepository(Email::class)
+                ->findOneById($emailId);
+        
+        if ($email == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->removeEmail($email);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+    
+    public function telegrammFormAction()
+    {
+        $contactId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $form = new ContactForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $data['name'] = $contact->getName();
+            $data['status'] = $contact->getStatus();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                $this->contactManager->updateMessengers($contact, $data);                    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            $form->setData(['telegramm' => $contact->getTelegramm()]);
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'contact' => $contact,
+        ]);                
+        
+    }
+
+    public function deleteTelegrammFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->updateMessengers($contact, ['telegramm' => '']);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+
+    public function addressFormAction()
+    {
+        $contactId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $form = new ContactForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $data['name'] = $contact->getName();
+            $data['status'] = $contact->getStatus();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                $this->contactManager->updateAddress($contact, $data);                    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            $form->setData(['address' => $contact->getAddress(), 'addressSms' => $contact->getAddressSms()]);
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'contact' => $contact,
+        ]);                
+        
+    }
+
+    public function deleteAddressFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->updateAddress($contact, ['address' => '', 'addressSms' => $contact->getAddressSms()]);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+
+    public function deleteAddressSmsFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->updateAddress($contact, ['addressSms' => '', 'address' => $contact->getAddress()]);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
 }

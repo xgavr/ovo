@@ -11,6 +11,7 @@ use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Application\Entity\Contact;
 use User\Validator\UserExistsValidator;
+use User\Filter\PhoneFilter;
 
 /**
  * Description of contact
@@ -104,6 +105,50 @@ class ContactForm extends Form
             ],
         ]);
 
+        // Add "icq" field
+        $this->add([            
+            'type'  => 'text',
+            'name' => 'icq',
+            'disabled' => 'disabled',
+            'options' => [
+                'label' => 'Icq номер',
+            ],
+        ]);
+
+        // Add "telegramm" field
+        $this->add([            
+            'type'  => 'text',
+            'name' => 'telegramm',
+            'disabled' => 'disabled',
+            'options' => [
+                'label' => 'Telegramm номер',
+            ],
+        ]);
+
+        // Add "address" field
+        $this->add([            
+            'type'  => 'textarea',
+            'name' => 'address',
+            'attributes' => [
+                'id' => 'address'
+            ],
+            'options' => [
+                'label' => 'Адрес для документов',
+            ],
+        ]);
+        
+        // Add "addressSMS" field
+        $this->add([            
+            'type'  => 'textarea',
+            'name' => 'addressSms',
+            'attributes' => [
+                'id' => 'addressSms'
+            ],
+            'options' => [
+                'label' => 'Адрес для СМС',
+            ],
+        ]);
+        
         // Add "password" field
         $this->add([            
             'type'  => 'text',
@@ -120,8 +165,8 @@ class ContactForm extends Form
             'options' => [
                 'label' => 'Статус',
                 'value_options' => [
-                    1 => 'Active',
-                    2 => 'Retired',                    
+                    1 => 'Доступен',
+                    2 => 'Не доступен',                    
                 ]
             ],
         ]);
@@ -189,9 +234,12 @@ class ContactForm extends Form
                 'name'     => 'phone',
                 'required' => false,
                 'filters'  => [
-                    ['name' => 'StringTrim'],
-                    ['name' => 'StripTags'],
-                    ['name' => 'StripNewlines'],
+                    [
+                        'name' => PhoneFilter::class,
+                        'options' => [
+                            'format' => PhoneFilter::PHONE_FORMAT_RU,
+                        ]
+                    ],
                 ],                
                 'validators' => [
                     [
@@ -278,6 +326,64 @@ class ContactForm extends Form
                     ['name'=>'InArray', 'options'=>['haystack'=>[1, 2]]]
                 ],
             ]); 
+        
+        // Add input for "icq" field
+        $inputFilter->add([
+                'name'     => 'icq',
+                'required' => false,
+//                'filters'  => [                    
+//                    ['name' => 'ToInt'],
+//                ],                
+//                'validators' => [
+//                    ['name'=>'Digits'],
+//                ],
+            ]); 
+        
+        // Add input for "icq" field
+        $inputFilter->add([
+                'name'     => 'telegramm',
+                'required' => false,
+//                'filters'  => [                    
+//                    ['name' => 'ToInt'],
+//                ],                
+//                'validators' => [
+//                    ['name'=>'IsFloat'],
+//                ],
+            ]);         
+        
+        $inputFilter->add([
+                'name'     => 'address',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],                    
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 0,
+                            'max' => 1024
+                        ],
+                    ],
+                ],
+            ]);                  
+        
+        $inputFilter->add([
+                'name'     => 'addressSms',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],                    
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 0,
+                            'max' => 256
+                        ],
+                    ],
+                ],
+            ]);                  
         
         
     }    

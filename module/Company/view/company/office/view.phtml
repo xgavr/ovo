@@ -92,59 +92,100 @@ $this->headScript()
             <h2>Электронная почта</h2>
             <?php foreach ($office->getContacts() as $contact):?>
                 <p>
-                    <a class="btn btn-default" href="<?= $this->url('contact', 
-                                        ['action'=>'email', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-pencil" ></span> <?= (count($contact->getEmails())) ? 'Изменить':'Добавить'; ?>
-                    </a>
+                    <button value="/contact/email-form/<?= $contact->getId() ?>" class="btn btn-default"
+                            data-toggle="modal" data-target="#modal-dialog" title="Добавить электронную почту">
+                        <span class="glyphicon glyphicon-envelope" ></span>
+                        Добавить электронную почту
+                    </button>                    
                 </p>
                 <table class="table table-striped table-bordered">
                     <?php foreach ($contact->getEmails() as $email): ?>
                         <tr>
-                           <th class="email_name"><?= $email->getName() ?></th>
+                           <th class="email_name">
+                                <div class="pull-left">
+                                    <?= $email->getName()?>
+                                </div>
+                                <div class="pull-right">
+                                    <button value="/contact/email-form/<?= $contact->getId() ?>?email=<?= ($email ? $email->getId():'') ?>" class="btn btn-default btn-xs email-edit"
+                                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                        <span class="glyphicon glyphicon-edit" ></span>
+                                    </button>                                                            
+                                    <button value="/contact/delete-email-form/<?= $email->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                            title="Удалить">
+                                        <span class="glyphicon glyphicon-remove" ></span>
+                                    </button>                                                            
+                                </div>                                        
+                           </th>
                        </tr>
                     <?php endforeach; ?>
                 </table>
             <?php endforeach; ?>
         </div>
-        <hr>
+
         <div id="section4">
             <h2>Мессенджеры</h2>
             <?php foreach ($office->getContacts() as $contact):?>
-                <p>
-                    <a class="btn btn-default" href="<?= $this->url('contact', 
-                                        ['action'=>'messengers', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-pencil" ></span> Изменить
-                    </a>
-                </p>
                 <table class="table table-striped table-bordered">
                     <tr>
-                       <td class="">ICQ</td>
-                       <th class=""><?= $contact->getIcq() ?></th>
-                   </tr>
-                    <tr>
-                       <td class="">Telegramm</td>
-                       <th class=""><?= $contact->getTelegramm() ?></th>
-                   </tr>
+                       <td width="5%">Telegramm</td>
+                       <th> 
+                            <div class="pull-left">
+                               <?= $contact->getTelegramm() ?>
+                            </div>                                        
+                            <div class="pull-right">
+                                <button value="/contact/telegramm-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
+                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                    <span class="glyphicon glyphicon-edit" ></span>
+                                </button>                                                            
+                                <button value="/contact/delete-telegramm-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                        title="Удалить">
+                                    <span class="glyphicon glyphicon-remove" ></span>
+                                </button>                                                            
+                            </div>                                        
+                       </th>
+                    </tr>
                 </table>
             <?php endforeach; ?>
         </div>
         <div id="section5">
             <h2>Адреса</h2>
             <?php foreach ($office->getContacts() as $contact):?>
-                <p>
-                    <a class="btn btn-default" href="<?= $this->url('contact', 
-                                        ['action'=>'address', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-pencil" ></span> Изменить
-                    </a>
-                </p>
                 <table class="table table-striped table-bordered">
                     <tr>
-                       <td class="">Адрес для документов</td>
-                       <th class=""><?= $contact->getAddress() ?></th>
+                       <td width="20%">Адрес для документов</td>
+                       <th>
+                            <div class="pull-left">
+                                <?= $contact->getAddress() ?>
+                            </div>                                        
+                            <div class="pull-right">
+                                <button value="/contact/address-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
+                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                    <span class="glyphicon glyphicon-edit" ></span>
+                                </button>                                                            
+                                <button value="/contact/delete-address-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                        title="Удалить">
+                                    <span class="glyphicon glyphicon-remove" ></span>
+                                </button>                                                            
+                            </div>                                        
+                       </th>
                    </tr>
                     <tr>
-                       <td class="">Адрес для SMS</td>
-                       <th class=""><?= $contact->getAddressSms() ?></th>
+                       <td>Адрес для SMS</td>
+                       <th>
+                            <div class="pull-left">
+                                <?= $contact->getAddressSms() ?>
+                            </div>    
+                            <div class="pull-right">
+                                <button value="/contact/address-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
+                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                    <span class="glyphicon glyphicon-edit" ></span>
+                                </button>                                                            
+                                <button value="/contact/delete-address-sms-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                        title="Удалить">
+                                    <span class="glyphicon glyphicon-remove" ></span>
+                                </button>                                                            
+                            </div>                                        
+                       </th>
                    </tr>
                 </table>
             <?php endforeach; ?>
@@ -217,7 +258,7 @@ $this->headScript()
             if (confirm('Удалить запись?')){
                 $.ajax({
                     type: 'GET',
-                    url: url //'/contact/delete-phone-form/'+phone,
+                    url: url,
                 })
                     .done(function (data) {
                         if (data == 'ok'){

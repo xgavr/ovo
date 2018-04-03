@@ -159,6 +159,21 @@ class ContactManager
         } 
     }
 
+    public function updateEmail($email, $data)
+    {                
+        $email->setName($data['email']);
+
+        $this->entityManager->persist($email);
+        $this->entityManager->flush();                
+    }
+    
+    public function removeEmail($email)
+    {
+        $this->entityManager->remove($email);
+        $this->entityManager->flush();
+        
+    }
+    
     public function addNewContact($parent, $data) 
     {
         // Создаем новую сущность.
@@ -256,4 +271,33 @@ class ContactManager
         $this->entityManager->flush();
     }    
     
+    public function updateMessengers($contact, $data) 
+    {
+        $contact->setIcq($data['icq']);
+        $contact->setTelegramm($data['telegramm']);
+                
+        $this->entityManager->persist($contact);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }    
+    
+    
+    public function updateSignature($contact, $data) 
+    {
+        $contact->setSignature($data['signature']);
+                
+        $this->entityManager->persist($contact);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }    
+    
+    public function updateAddress($contact, $data) 
+    {
+        $contact->setAddress($data['address']);
+        $contact->setAddressSms($data['addressSms']);
+                
+        $this->entityManager->persist($contact);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }        
 }
