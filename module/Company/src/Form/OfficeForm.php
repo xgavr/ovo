@@ -156,7 +156,7 @@ class OfficeForm extends Form implements ObjectManagerAwareInterface
         
         $inputFilter->add([
                 'name'     => 'aplId',
-                'required' => true,
+                'required' => false,
                 'filters'  => [                    
                     ['name' => 'ToInt'],
                 ],                

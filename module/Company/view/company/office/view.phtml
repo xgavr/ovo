@@ -24,10 +24,12 @@ $this->headScript()
         <div id="section1">
             <h2>Офис</h2>
             <p>
-                <a class="btn btn-default" href="<?= $this->url('offices', 
-                                    ['action'=>'edit', 'id'=>$office->getId()]); ?>">
-                                <span class="glyphicon glyphicon-pencil" ></span> Изменить
-                </a>
+                <button value="/offices/edit-form/<?= $office->getId() ?>" class="btn btn-default"
+                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                    Изменить
+                    <span class="glyphicon glyphicon-edit" ></span>
+                </button>                                                            
+                
             </p>
 
             <table class="table table-striped table-bordered">
@@ -53,7 +55,7 @@ $this->headScript()
                 </tr>
             </table>
         </div>
-        <hr>
+
         <div id="section2">
             <h2>Контактные телефоны</h2>
             <?php foreach ($office->getContacts() as $contact):?>

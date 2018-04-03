@@ -85,148 +85,164 @@ $form->prepare();
 <?php if (count($contact->getLegals())): ?>
     <?php foreach ($contact->getLegals() as $legal): ?>
         <div class="row">
-            <div class="col-md-6">
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <td colspan="2" align="right">
-                            <button type="button" id="legal-dialog-edit" value="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#legal-modal">
-                              Изменить
-                            </button>                            
-                            <a class="btn btn-danger" href="<?= $this->url('legals',
-                                    ['action'=>'delete-association', 'id' => $contact->getId()], ['query' => ['legal' => $legal->getId()]]); ?>">
-                                <span class="glyphicon glyphicon-remove"></span> Удалить
-                            </a>                           
-                        </td>
-                    </tr>
-                    <tr>     
-                        <td>Наименование</td>
-                        <th class=""><?= $legal->getName() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>ИНН</td>
-                        <th class=""><?= $legal->getInn() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>КПП</td>
-                        <th class=""><?= $legal->getKpp() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>ОГРН</td>
-                        <th class=""><?= $legal->getOgrn() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>ОКПО</td>
-                        <th class=""><?= $legal->getOkpo() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Местонахождение</td>
-                        <th class=""><?= $legal->getAddress() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Руководитель</td>
-                        <th class=""><?= $legal->getHead() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Главный бухгалтер</td>
-                        <th class=""><?= $legal->getChiefAccount() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Дата начала деятельности</td>
-                        <th class=""><?= date('d.m.Y', strtotime($legal->getDateStart())); ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Статус</td>
-                        <th class=""><?= $legal->getStatusAsString() ?></th>
-                   </tr>
-                    <tr>     
-                        <td>Дополнительная информация</td>
-                        <th class=""><?= $legal->getInfo() ?></th>
-                   </tr>
-                </table>
-            </div>
-        
-            <div class="col-md-4">
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <th>Банковские счета</th>
-                        <td align="right">
-                            <button type="button" legal-id="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#bank-account-modal">
-                                Добавить
-                            </button>                                
-                        </td>
-                    </tr>    
-                    
-                    <?php foreach ($legal->getBankAccounts() as $bankAccount): ?>
+            <div class="col-sm-9">
+                <div id="section1-<?= $legal->getId()?>">
+
+                    <table class="table table-striped table-bordered">
                         <tr>
                             <td colspan="2" align="right">
-                                <button type="button" legal-id="<?= $legal->getId() ?>" value="<?= $bankAccount->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#bank-account-modal">
-                                    Изменить
+                                <button type="button" id="legal-dialog-edit" value="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#legal-modal">
+                                  Изменить
                                 </button>                            
                                 <a class="btn btn-danger" href="<?= $this->url('legals',
-                                        ['action'=>'delete-bank-account', 'id' => $bankAccount->getId()]); ?>">
+                                        ['action'=>'delete-association', 'id' => $contact->getId()], ['query' => ['legal' => $legal->getId()]]); ?>">
                                     <span class="glyphicon glyphicon-remove"></span> Удалить
                                 </a>                           
                             </td>
                         </tr>
                         <tr>     
                             <td>Наименование</td>
-                            <th class=""><?= $bankAccount->getName().' '.$bankAccount->getCity() ?></th>
+                            <th class=""><?= $legal->getName() ?></th>
                        </tr>
                         <tr>     
-                            <td>БИК</td>
-                            <th class=""><?= $bankAccount->getBik() ?></th>
+                            <td>ИНН</td>
+                            <th class=""><?= $legal->getInn() ?></th>
                        </tr>
                         <tr>     
-                            <td>Расчетный счет</td>
-                            <th class=""><?= $bankAccount->getRs() ?></th>
+                            <td>КПП</td>
+                            <th class=""><?= $legal->getKpp() ?></th>
                        </tr>
                         <tr>     
-                            <td>Корр. счет</td>
-                            <th class=""><?= $bankAccount->getKs() ?></th>
+                            <td>ОГРН</td>
+                            <th class=""><?= $legal->getOgrn() ?></th>
+                       </tr>
+                        <tr>     
+                            <td>ОКПО</td>
+                            <th class=""><?= $legal->getOkpo() ?></th>
+                       </tr>
+                        <tr>     
+                            <td>Местонахождение</td>
+                            <th class=""><?= $legal->getAddress() ?></th>
+                       </tr>
+                        <tr>     
+                            <td>Руководитель</td>
+                            <th class=""><?= $legal->getHead() ?></th>
+                       </tr>
+                        <tr>     
+                            <td>Главный бухгалтер</td>
+                            <th class=""><?= $legal->getChiefAccount() ?></th>
+                       </tr>
+                        <tr>     
+                            <td>Дата начала деятельности</td>
+                            <th class=""><?= date('d.m.Y', strtotime($legal->getDateStart())); ?></th>
                        </tr>
                         <tr>     
                             <td>Статус</td>
-                            <th class=""><?= $bankAccount->getStatusAsString() ?></th>
+                            <th class=""><?= $legal->getStatusAsString() ?></th>
                        </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>    
-            <div class="col-md-2">
-                <table class="table table-striped table-bordered">
-                    <tr>
-                        <th>Договоры</th>
-                        <td align="right">
-                            <button type="button" legal-id="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#contract-modal">
-                                Добавить
-                            </button>                                
-                        </td>
-                    </tr>    
-                    
-                    <?php foreach ($legal->getContracts() as $contract): ?>
+                        <tr>     
+                            <td>Дополнительная информация</td>
+                            <th class=""><?= $legal->getInfo() ?></th>
+                       </tr>
+                    </table>
+                </div>
+        
+                <div id="section2-<?= $legal->getId()?>">
+                    <table class="table table-striped table-bordered">
                         <tr>
-                            <td colspan="2" align="right">
-                                <button type="button" legal-id="<?= $legal->getId() ?>" value="<?= $contract->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#contract-modal">
-                                    Изменить
-                                </button>                            
-                                <a class="btn btn-danger" href="<?= $this->url('legals',
-                                        ['action'=>'delete-contract', 'id' => $contract->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                                </a>                           
+                            <th>Банковские счета</th>
+                            <td align="right">
+                                <button type="button" legal-id="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#bank-account-modal">
+                                    Добавить
+                                </button>                                
                             </td>
-                        </tr>
-                        <tr>     
-                            <td class="" colspan="2"><?= $contract->getName() ?></td>
-                       </tr>
-                        <tr>     
-                            <th class="" colspan="2">№ <?= $contract->getAct() ?> от <?= date('d.m.Y', strtotime($contract->getDateStart())) ?></th>
-                       </tr>
-                        <tr>     
-                            <td>Статус</td>
-                            <th class=""><?= $contract->getStatusAsString() ?></th>
-                       </tr>
-                    <?php endforeach; ?>
-                </table>
-            </div>    
+                        </tr>    
+
+                        <?php foreach ($legal->getBankAccounts() as $bankAccount): ?>
+                            <tr>
+                                <td colspan="2" align="right">
+                                    <button type="button" legal-id="<?= $legal->getId() ?>" value="<?= $bankAccount->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#bank-account-modal">
+                                        Изменить
+                                    </button>                            
+                                    <a class="btn btn-danger" href="<?= $this->url('legals',
+                                            ['action'=>'delete-bank-account', 'id' => $bankAccount->getId()]); ?>">
+                                        <span class="glyphicon glyphicon-remove"></span> Удалить
+                                    </a>                           
+                                </td>
+                            </tr>
+                            <tr>     
+                                <td>Наименование</td>
+                                <th class=""><?= $bankAccount->getName().' '.$bankAccount->getCity() ?></th>
+                           </tr>
+                            <tr>     
+                                <td>БИК</td>
+                                <th class=""><?= $bankAccount->getBik() ?></th>
+                           </tr>
+                            <tr>     
+                                <td>Расчетный счет</td>
+                                <th class=""><?= $bankAccount->getRs() ?></th>
+                           </tr>
+                            <tr>     
+                                <td>Корр. счет</td>
+                                <th class=""><?= $bankAccount->getKs() ?></th>
+                           </tr>
+                            <tr>     
+                                <td>Статус</td>
+                                <th class=""><?= $bankAccount->getStatusAsString() ?></th>
+                           </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div> 
+
+                <div id="section3-<?= $legal->getId()?>">
+                    <table class="table table-striped table-bordered">
+                        <tr>
+                            <th>Договоры</th>
+                            <td align="right">
+                                <button type="button" legal-id="<?= $legal->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#contract-modal">
+                                    Добавить
+                                </button>                                
+                            </td>
+                        </tr>    
+
+                        <?php foreach ($legal->getContracts() as $contract): ?>
+                            <tr>
+                                <td colspan="2" align="right">
+                                    <button type="button" legal-id="<?= $legal->getId() ?>" value="<?= $contract->getId() ?>" class="btn btn-primary" data-toggle="modal" data-target="#contract-modal">
+                                        Изменить
+                                    </button>                            
+                                    <a class="btn btn-danger" href="<?= $this->url('legals',
+                                            ['action'=>'delete-contract', 'id' => $contract->getId()]); ?>">
+                                        <span class="glyphicon glyphicon-remove"></span> Удалить
+                                    </a>                           
+                                </td>
+                            </tr>
+                            <tr>     
+                                <td class="" colspan="2"><?= $contract->getName() ?></td>
+                           </tr>
+                            <tr>     
+                                <th class="" colspan="2">№ <?= $contract->getAct() ?> от <?= date('d.m.Y', strtotime($contract->getDateStart())) ?></th>
+                           </tr>
+                            <tr>     
+                                <td>Статус</td>
+                                <th class=""><?= $contract->getStatusAsString() ?></th>
+                           </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>    
+            </div>
+        <?php endforeach; ?>
+        <?php foreach ($contact->getLegals() as $legal): ?>
+            <div class="col-sm-3" id="side-nav" >
+                <ul class="nav nav-stacked nav-list affix">
+                    <li class="active"><a href="#section1-<?= $legal->getId()?>"><?= $legal->getName()?></a>
+                        <ul>
+                            <li><a href="#section2-<?= $legal->getId()?>">Банковские счета</a></li>
+                            <li><a href="#section3-<?= $legal->getId()?>">Договоры</a></li>                            
+                        </ul>
+                    </li>
+                </ul>
+            </div>            
         <?php endforeach; ?>
     <?php endif;?>        
 </div>
