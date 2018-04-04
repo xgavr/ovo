@@ -11,6 +11,8 @@ use Zend\Form\Form;
 use Zend\InputFilter\InputFilter;
 use Application\Entity\Contact;
 use User\Validator\UserExistsValidator;
+use User\Validator\PhoneExistsValidator;
+use User\Validator\EmailExistsValidator;
 use User\Filter\PhoneFilter;
 
 /**
@@ -36,9 +38,21 @@ class ContactForm extends Form
     private $user = null;
     
     /**
+     * Current user.
+     * @var Application\Entity\Phone 
+     */
+    private $phone = null;
+    
+    /**
+     * Current user.
+     * @var Application\Entity\Email 
+     */
+    private $email = null;
+    
+    /**
      * Конструктор.     
      */
-    public function __construct($entityManager = null, $user = null)
+    public function __construct($entityManager = null, $user = null, $phone = null, $email = null)
     {
         // Определяем имя формы.
         parent::__construct('contact-form');
@@ -48,6 +62,8 @@ class ContactForm extends Form
         
         $this->entityManager = $entityManager;    
         $this->user = $user;
+        $this->phone = $phone;
+        $this->email = $email;
                 
         $this->addElements();
         $this->addInputFilter();         
@@ -237,7 +253,7 @@ class ContactForm extends Form
                     [
                         'name' => PhoneFilter::class,
                         'options' => [
-                            'format' => PhoneFilter::PHONE_FORMAT_RU,
+                            'format' => PhoneFilter::PHONE_FORMAT_DB,
                         ]
                     ],
                 ],                
@@ -245,6 +261,13 @@ class ContactForm extends Form
                     [
                         'name'    => 'PhoneNumber',
                         'options' => [
+                        ],
+                    ],
+                    [
+                        'name' => PhoneExistsValidator::class,
+                        'options' => [
+                            'entityManager' => $this->entityManager,
+                            'phone' => $this->phone
                         ],
                     ],
                 ],
@@ -272,6 +295,13 @@ class ContactForm extends Form
                             'useMxCheck'    => false,                            
                         ],
                     ],
+                    [
+                        'name' => EmailExistsValidator::class,
+                        'options' => [
+                            'entityManager' => $this->entityManager,
+                            'email' => $this->email
+                        ],
+                    ],                                        
                     [
                         'name' => UserExistsValidator::class,
                         'options' => [

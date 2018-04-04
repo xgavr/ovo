@@ -63,10 +63,10 @@ class ContactManager
             $result['pageTitle'] = $user->getName();
             $result['route'] = 'users';
             $result['id'] = $user->getId();
-        } elseIf($client = $contact->getUser()){
+        } elseIf($client = $contact->getClient()){
             $result['headTitle'] = 'Покупатели'; 
             $result['pageTitle'] = $client->getName();
-            $result['route'] = 'clients';
+            $result['route'] = 'client';
             $result['id'] = $client->getId();            
         } elseif($supplier = $contact->getSupplier()){
             $result['headTitle'] = 'Поставщики'; 

@@ -201,6 +201,26 @@ class ContactController extends AbstractActionController
         return $this->redirect()->toRoute('contact', []);
     }    
 
+    public function deleteFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->removeContact($contact);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }    
+
     public function viewAction() 
     {       
         $contactId = (int)$this->params()->fromRoute('id', -1);

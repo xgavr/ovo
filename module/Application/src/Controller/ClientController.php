@@ -14,6 +14,7 @@ use Application\Entity\Contact;
 use User\Entity\User;
 use Application\Form\ClientForm;
 use Application\Form\ContactForm;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -188,6 +189,62 @@ class ClientController extends AbstractActionController
         ]);  
     }    
     
+   public function editFormAction()
+   {
+        // Создаем форму.
+        $form = new ClientForm($this->entityManager);
+    
+        // Получаем ID tax.    
+        $clientId = $this->params()->fromRoute('id', -1);
+    
+        // Находим существующий пост в базе данных.    
+        $client = $this->entityManager->getRepository(Client::class)
+                ->findOneById($clientId);  
+        	
+        if ($client == null) {
+            $this->getResponse()->setStatusCode(401);
+            return;                        
+        } 
+        
+        // Проверяем, является ли пост POST-запросом.
+        if ($this->getRequest()->isPost()) {
+            
+            // Получаем POST-данные.
+            $data = $this->params()->fromPost();
+            
+            // Заполняем форму данными.
+            $form->setData($data);
+            if ($form->isValid()) {
+                                
+                // Получаем валидированные данные формы.
+                $data = $form->getData();
+                
+                // Используем менеджер постов, чтобы добавить новый пост в базу данных.                
+                $this->clientManager->updateClient($client, $data);
+
+                return new JsonModel(
+                   ['ok']
+                );           
+                
+            }
+        } else {
+            $data = [
+               'name' => $client->getName(),
+               'status' => $client->getStatus(),
+            ];
+            
+            $form->setData($data);
+        }
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'client' => $client,
+        ]);                
+
+    }    
+
     public function deleteAction()
     {
         $clientId = $this->params()->fromRoute('id', -1);
@@ -272,6 +329,60 @@ class ClientController extends AbstractActionController
             'form' => $form,
         ]);
     }      
+    
+    public function contactFormAction()
+    {
+        $clientId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($clientId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $client = $this->entityManager->getRepository(Client::class)
+                ->findOneById($clientId);
+        
+        $contactId = (int)$this->params()->fromQuery('contact', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        $form = new ContactForm($this->entityManager);
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($contact){
+                    $this->contactManager->updateContact($contact, $data);
+                } else {
+                    $this->contactManager->addNewContact($client, $data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($contact){
+                $form->setData([
+                    'name' => $contact->getName(), 
+                    'description' => $contact->getDescription(),
+                    'status' => $contact->getStatus(),
+                ]);
+            }    
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'client' => $client,
+            'contact' => $contact,
+        ]);                        
+    }
     
     public function managerTransferAction()
     {
