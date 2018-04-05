@@ -301,6 +301,14 @@ class ClientController extends AbstractActionController
             return;                        
         }      
         
+        $contacts = $client->getContacts();
+
+        if (!count($contacts)){
+            $data['full_name'] = $data['name'] = $client->getName();
+            $data['status'] = Contact::STATUS_ACTIVE;
+            $this->contactManager->addNewContact($client, $data);
+        }
+        
         $form = new ContactForm($this->entityManager);
         // Проверяем, является ли пост POST-запросом.
         if($this->getRequest()->isPost()) {
