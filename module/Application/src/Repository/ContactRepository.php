@@ -30,17 +30,44 @@ class ContactRepository extends EntityRepository
         $queryBuilder->select('c')
             ->from(Contact::class, 'c')
             ->where('c.status = :status')
-            ->setParameter('2', Contact::STATUS_LEGAL)    
                 ;
         
         if ($parent instanceof \Application\Entity\Supplier ){
-            $queryBuilder->where('c.supplier = :parentId');
+            $queryBuilder->andWhere('c.supplier = :parentId');
         } elseif ($parent instanceof \Application\Entity\Client){
-            $queryBuilder->where('c.client = :parentId');            
+            $queryBuilder->andWhere('c.client = :parentId');            
         } elseif ($parent instanceof \Company\Entity\Office){
-            $queryBuilder->where('c.office = :parentId');            
+            $queryBuilder->andWhere('c.office = :parentId');            
         } elseif ($parent instanceof \User\Entity\User) {
-            $queryBuilder->where('c.user = :parentId');            
+            $queryBuilder->andWhere('c.user = :parentId');            
+        } else {
+            throw new \Exception('Неверный тип родительской сущности');
+        }
+        
+        $queryBuilder->setParameters(['status' => Contact::STATUS_LEGAL, 'parentId' => $parent->getId()]); 
+        
+        return $queryBuilder->getQuery()->getResult();
+    }        
+
+    public function findRecordForOther($parent)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('c')
+            ->from(Contact::class, 'c')
+            ->where('c.status != :status')
+                ;
+        
+        if ($parent instanceof \Application\Entity\Supplier ){
+            $queryBuilder->andWhere('c.supplier = :parentId');
+        } elseif ($parent instanceof \Application\Entity\Client){
+            $queryBuilder->andWhere('c.client = :parentId');            
+        } elseif ($parent instanceof \Company\Entity\Office){
+            $queryBuilder->andWhere('c.office = :parentId');            
+        } elseif ($parent instanceof \User\Entity\User) {
+            $queryBuilder->andWhere('c.user = :parentId');            
         } else {
             throw new \Exception('Неверный тип родительской сущности');
         }
