@@ -301,11 +301,12 @@ class ClientController extends AbstractActionController
             return;                        
         }      
         
-        $contacts = $client->getContacts();
+        $forLegals = $this->entityManager->getRepository(Contact::class)
+                ->findRecordForLegal($client);
 
-        if (!count($contacts)){
+        if (!count($forLegals)){
             $data['full_name'] = $data['name'] = $client->getName();
-            $data['status'] = Contact::STATUS_ACTIVE;
+            $data['status'] = Contact::STATUS_LEGAL;
             $this->contactManager->addNewContact($client, $data);
         }
         

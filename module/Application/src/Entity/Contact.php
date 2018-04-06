@@ -22,6 +22,7 @@ class Contact {
     // Константы доступности.
     const STATUS_ACTIVE       = 1; // Active user.
     const STATUS_RETIRED      = 2; // Retired user.
+    const STATUS_LEGAL      = 3; // legal record.
     
     /**
      * @ORM\Id
@@ -219,7 +220,8 @@ class Contact {
     {
         return [
             self::STATUS_ACTIVE => 'Доступен',
-            self::STATUS_RETIRED => 'В отставке'
+            self::STATUS_RETIRED => 'В отставке',
+            self::STATUS_LEGAL => 'Юридические лица',
         ];
     }    
     
