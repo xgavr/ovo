@@ -51,9 +51,9 @@ $this->headScript()
         
         <h3 class="contact-header">Контакты</h3>
         <p>
-            <button value="/client/contact-form/<?= $client->getId() ?>" class="btn btn-default"
+            <button value="/client/contact-form/<?= $client->getId() ?>" class="btn btn-default btn-xs"
                     data-toggle="modal" data-target="#modal-dialog" title="Добавить контакт">
-                <span class="glyphicon glyphicon-user" ></span>
+                <span class="glyphicon glyphicon-plus" ></span>
                 Добавить контакт
             </button>                    
         </p>
@@ -83,13 +83,15 @@ $this->headScript()
                         <?= ($contact->getUser() ? 'есть':'нет') ?>
                 </td>
                 <td>
-                    <button value="/client/contact-form/<?= $client->getId() ?>?contact=<?= $contact->getId() ?>" class="btn btn-info"
-                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                        <span class="glyphicon glyphicon-pencil" ></span>
-                    </button>                    
-                    <button value="/contact/delete-form/<?= $contact->getId() ?>" class="btn btn-danger this-delete" title="Удалить">
-                        <span class="glyphicon glyphicon-remove" ></span>
-                    </button>                    
+                    <div class="pull-right">
+                        <button value="/client/contact-form/<?= $client->getId() ?>?contact=<?= $contact->getId() ?>" class="btn btn-default  btn-xs"
+                                data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                            <span class="glyphicon glyphicon-edit" ></span>
+                        </button>                    
+                        <button value="/contact/delete-form/<?= $contact->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                            <span class="glyphicon glyphicon-remove" ></span>
+                        </button>                                            
+                    </div>
                 </td>    
             </tr>
 
@@ -124,9 +126,9 @@ $this->headScript()
             <h3>Юридические лица</h3>
             <?php foreach ($client->getLegalContacts() as $contact):?>
                 <p>
-                    <a class="btn btn-default" href="<?= $this->url('legals', 
+                    <a class="btn btn-default btn-xs" href="<?= $this->url('legals', 
                                         ['action'=>'legal', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-bank" ></span> <?= (count($contact->getLegals())) ? 'Изменить':'Добавить'; ?>
+                                    <span class="glyphicon glyphicon-piggy-bank" ></span> <?= (count($contact->getLegals())) ? 'Изменить':'Добавить'; ?>
                     </a>
                 </p>
                 <table class="table table-striped table-bordered">
@@ -149,7 +151,7 @@ $this->headScript()
     <div class="col-sm-3" id="side-nav" >
         <ul class="nav nav-stacked nav-list affix">
             <li class="active"><a href="#section1">Контакты</a></li>
-            <li><a href="#section2">Адрес</a></li>
+            <li><a href="#section2">Адреса</a></li>
             <li><a href="#section3">Юридические лица</a></li>
         </ul>
     </div>
