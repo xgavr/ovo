@@ -112,6 +112,12 @@ class Contact {
    */
    private $emails;
 
+   /**
+    * @ORM\OneToMany(targetEntity="Application\Entity\Address", mappedBy="contact")
+    * @ORM\JoinColumn(name="id", referencedColumnName="contact_id")
+   */
+   private $addresses;
+
     /**
      * @ORM\ManyToMany(targetEntity="\Company\Entity\Legal", inversedBy="contacts")
      * @ORM\JoinTable(name="contact_legal",
@@ -125,6 +131,7 @@ class Contact {
       $this->phones = new ArrayCollection();
       $this->emails = new ArrayCollection();
       $this->legals = new ArrayCollection();
+      $this->addresses = new ArrayCollection();
    }
    
     public function getId() 
@@ -406,8 +413,26 @@ class Contact {
     {
         $this->emails[] = $email;
     }       
+
     /**
-     * Возвращает email для этого contact.
+     * Возвращает адреса для этого contact.
+     * @return array
+     */   
+    public function getAddresses() {
+      return $this->addresses;
+   }    
+   
+    /**
+     * Добавляет новый адрес к этому contact.
+     * @param $address
+     */   
+    public function addAddress($address) 
+    {
+        $this->addresses[] = $address;
+    }       
+    
+    /**
+     * Возвращает юрлицо для этого contact.
      * @return array
      */   
 
