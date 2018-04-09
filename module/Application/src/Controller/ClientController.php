@@ -301,8 +301,7 @@ class ClientController extends AbstractActionController
             return;                        
         }      
         
-        $forLegals = $this->entityManager->getRepository(Contact::class)
-                ->findRecordForLegal($client);
+        $forLegals = $client->getLegalContacts();
 
         if (!count($forLegals)){
             $data['full_name'] = $data['name'] = $client->getName();

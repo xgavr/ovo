@@ -10,6 +10,8 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\Entity\Contact;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Description of Client
@@ -170,6 +172,26 @@ class Client {
     public function getContacts()
     {
         return $this->contacts;
+    }
+        
+    /**
+     * Returns the array of for legal contacts assigned to this.
+     * @return array
+     */
+    public function getLegalContacts()
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("status", Contact::STATUS_LEGAL));
+        return $this->getContacts()->matching($criteria);
+    }
+        
+    /**
+     * Returns the array of for other contacts assigned to this.
+     * @return array
+     */
+    public function getOtherContacts()
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->neq("status", Contact::STATUS_LEGAL));
+        return $this->getContacts()->matching($criteria);
     }
         
     /**

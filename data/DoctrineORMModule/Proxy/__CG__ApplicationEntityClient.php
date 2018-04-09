@@ -290,6 +290,28 @@ class Client extends \Application\Entity\Client implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function getLegalContacts()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLegalContacts', []);
+
+        return parent::getLegalContacts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOtherContacts()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtherContacts', []);
+
+        return parent::getOtherContacts();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addContact($contact)
     {
 

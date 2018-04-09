@@ -183,6 +183,7 @@ class ContactForm extends Form
                 'value_options' => [
                     1 => 'Доступен',
                     2 => 'Не доступен',                    
+                    3 => 'Юридическое лицо',                    
                 ]
             ],
         ]);
@@ -353,7 +354,7 @@ class ContactForm extends Form
                     ['name' => 'ToInt'],
                 ],                
                 'validators' => [
-                    ['name'=>'InArray', 'options'=>['haystack'=>[1, 2]]]
+                    ['name'=>'InArray', 'options'=>['haystack'=>[1, 2, 3]]]
                 ],
             ]); 
         

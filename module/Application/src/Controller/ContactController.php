@@ -515,6 +515,8 @@ class ContactController extends AbstractActionController
                 return new JsonModel(
                    ['ok']
                 );           
+            } else {
+                var_dump($form->getMessages());
             }
         } else {
             $form->setData(['address' => $contact->getAddress(), 'addressSms' => $contact->getAddressSms()]);
