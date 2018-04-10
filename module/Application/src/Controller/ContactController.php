@@ -14,10 +14,12 @@ use Application\Entity\Client;
 use Application\Entity\Supplier;
 use Application\Entity\Phone;
 use Application\Entity\Email;
+use Application\Entity\Address;
 use User\Entity\User;
 use Application\Form\ContactForm;
 use Application\Form\PhoneForm;
 use Application\Form\EmailForm;
+use Application\Form\AddressForm;
 use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
@@ -498,19 +500,30 @@ class ContactController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
+        $addressId = (int)$this->params()->fromQuery('address', -1);
+        
+        // Validate input parameter
+        if ($addressId>0) {
+            $address = $this->entityManager->getRepository(Address::class)
+                    ->findOneById($addressId);
+        } else {
+            $address = null;
+        }        
 
-        $form = new ContactForm();
+        $form = new AddressForm();
 
         if ($this->getRequest()->isPost()) {
             
             $data = $this->params()->fromPost();
-            $data['name'] = $contact->getName();
-            $data['status'] = $contact->getStatus();
             $form->setData($data);
 
             if ($form->isValid()) {
-
-                $this->contactManager->updateAddress($contact, $data);                    
+                
+                if ($address){
+                    $this->contactManager->updateAddress($address, $data);                                        
+                } else {
+                    $this->contactManager->addNewAddress($contact, $data, true);                                                            
+                }
                 
                 return new JsonModel(
                    ['ok']
@@ -519,30 +532,37 @@ class ContactController extends AbstractActionController
                 var_dump($form->getMessages());
             }
         } else {
-            $form->setData(['address' => $contact->getAddress(), 'addressSms' => $contact->getAddressSms()]);
+            if ($address){
+                $form->setData([
+                    'name' => $address->getName(), 
+                    'address' => $address->getAddress(), 
+                    'addressSms' => $address->getAddressSms()
+                ]);
+            }    
         }    
         $this->layout()->setTemplate('layout/terminal');
         // Render the view template.
         return new ViewModel([
             'form' => $form,
             'contact' => $contact,
+            'address' => $address,
         ]);                
         
     }
 
     public function deleteAddressFormAction()
     {
-        $contactId = $this->params()->fromRoute('id', -1);
+        $addressId = $this->params()->fromRoute('id', -1);
         
-        $contact = $this->entityManager->getRepository(Contact::class)
-                ->findOneById($contactId);
+        $address = $this->entityManager->getRepository(Address::class)
+                ->findOneById($addressId);
         
-        if ($contact == null) {
+        if ($address == null) {
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
         
-        $this->contactManager->updateAddress($contact, ['address' => '', 'addressSms' => $contact->getAddressSms()]);
+        $this->contactManager->removeAddress($address);
         
         return new JsonModel(
            ['ok']

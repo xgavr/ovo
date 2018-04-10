@@ -16,7 +16,17 @@ class Version20180409160003 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-
+        $table = $schema->createTable('address');
+        $table->addColumn('id', 'integer', ['autoincrement'=>true]);        
+        $table->addColumn('name', 'string', ['notnull'=>false, 'length'=>128]);        
+        $table->addColumn('address', 'string', ['notnull'=>true, 'length'=>1024]);
+        $table->addColumn('address_sms', 'string', ['notnull'=>false, 'length'=>256]);
+        $table->addColumn('contact_id', 'integer', ['notnull'=>true]);
+        $table->addColumn('date_created', 'datetime', ['notnull'=>true]);
+        $table->setPrimaryKey(['id']);
+        $table->addForeignKeyConstraint('contact', ['contact_id'], ['id'], 
+                ['onDelete'=>'CASCADE', 'onUpdate'=>'CASCADE'], 'contact_id_address_contact_id_fk');        
+        $table->addOption('engine' , 'InnoDB');
     }
 
     /**
@@ -25,6 +35,7 @@ class Version20180409160003 extends AbstractMigration
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $schema->dropTable('address');
 
     }
 }

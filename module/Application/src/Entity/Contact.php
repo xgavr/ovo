@@ -361,7 +361,7 @@ class Contact {
       return $this->phones;
    }    
    
-       /**
+    /**
      * Returns the string of assigned phones.
      */
     public function getPhonesAsString()
@@ -405,6 +405,25 @@ class Contact {
       return $this->emails;
    }    
    
+    /**
+     * Returns the string of assigned phones.
+     */
+    public function getEmailsAsString()
+    {
+        $emailList = '';
+        
+        $count = count($this->emails);
+        $i = 0;
+        foreach ($this->emails as $email) {
+            $emailList .= $email->getName();
+            if ($i<$count-1)
+                $emailList .= ', ';
+            $i++;
+        }
+        
+        return $emailList;
+    }
+
     /**
      * Добавляет новый email к этому contact.
      * @param $email

@@ -13,6 +13,7 @@ use Application\Entity\Phone;
 use Application\Entity\Email;
 use Application\Entity\Supplier;
 use Application\Entity\Client;
+use Application\Entity\Address;
 use User\Entity\User;
 use User\Filter\PhoneFilter;
 
@@ -266,6 +267,12 @@ class ContactManager
         foreach ($emails as $email) {
             $this->entityManager->remove($email);
         }        
+
+        $addresses = $contact->getAddresses();
+        foreach ($addresses as $address) {
+            $this->entityManager->remove($address);
+        }        
+
         $this->entityManager->remove($contact);
         
         $this->entityManager->flush();
@@ -291,13 +298,41 @@ class ContactManager
         $this->entityManager->flush();
     }    
     
-    public function updateAddress($contact, $data) 
+    public function addNewAddress($contact, $data, $flushnow = false)
+    {                
+        $address = new Address();            
+        $address->setName($data['name']);
+        $address->setAddress($data['address']);
+        $address->setAddressSms($data['addressSms']);
+
+        $currentDate = date('Y-m-d H:i:s');
+        $address->setDateCreated($currentDate);
+
+        $this->entityManager->persist($address);
+
+        $address->setContact($contact);
+
+        if ($flushnow){
+            $this->entityManager->flush();                
+        }
+    }
+        
+    public function updateAddress($address, $data) 
     {
-        $contact->setAddress($data['address']);
-        $contact->setAddressSms($data['addressSms']);
+        $address->setName($data['name']);
+        $address->setAddress($data['address']);
+        $address->setAddressSms($data['addressSms']);
                 
-        $this->entityManager->persist($contact);
+        $this->entityManager->persist($address);
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
     }        
+    
+    public function removeAddress($address) 
+    {   
+        
+        $this->entityManager->remove($address);
+        
+        $this->entityManager->flush();
+    }    
 }

@@ -185,6 +185,16 @@ class Client {
     }
         
     /**
+     * Returns the array of for first legal contact assigned to this.
+     * @return array
+     */
+    public function getLegalContact()
+    {
+        $contacts = $this->getLegalContacts();
+        return $contacts[0];
+    }
+        
+    /**
      * Returns the array of for other contacts assigned to this.
      * @return array
      */

@@ -64,10 +64,10 @@ class Contact extends \Application\Entity\Contact implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'name', 'description', 'signature', 'address', 'addressSms', 'status', 'icq', 'telegramm', 'dateCreated', 'supplier', 'client', 'user', 'office', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'phones', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'emails', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'legals'];
+            return ['__isInitialized__', 'id', 'name', 'description', 'signature', 'address', 'addressSms', 'status', 'icq', 'telegramm', 'dateCreated', 'supplier', 'client', 'user', 'office', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'phones', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'emails', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'addresses', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'legals'];
         }
 
-        return ['__isInitialized__', 'id', 'name', 'description', 'signature', 'address', 'addressSms', 'status', 'icq', 'telegramm', 'dateCreated', 'supplier', 'client', 'user', 'office', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'phones', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'emails', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'legals'];
+        return ['__isInitialized__', 'id', 'name', 'description', 'signature', 'address', 'addressSms', 'status', 'icq', 'telegramm', 'dateCreated', 'supplier', 'client', 'user', 'office', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'phones', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'emails', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'addresses', '' . "\0" . 'Application\\Entity\\Contact' . "\0" . 'legals'];
     }
 
     /**
@@ -565,12 +565,45 @@ class Contact extends \Application\Entity\Contact implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getEmailsAsString()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEmailsAsString', []);
+
+        return parent::getEmailsAsString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addEmail($email)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addEmail', [$email]);
 
         return parent::addEmail($email);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getAddresses()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAddresses', []);
+
+        return parent::getAddresses();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addAddress($address)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAddress', [$address]);
+
+        return parent::addAddress($address);
     }
 
     /**
