@@ -54,33 +54,44 @@ $this->headScript()
                 Добавить контакт
             </button>                    
         </p>
-        <table class="table table-striped">
+        <table class="table table-striped table-bordered">
 
            <tr>
                 <th>ID</th>
                 <th>Имя</th>
-                <th>Описание</th>
                 <th>Телефон</th>
                 <th>Email</th>
                 <th>Доступ</th>
-                <th>Действие</th>
             </tr>
 
             <?php foreach ($client->getOtherContacts() as $contact): ?>
 
             <tr>
-                <td><?= $this->escapeHtml($contact->getId()); ?></td>
                 <td>
-                        <?= $this->escapeHtml($contact->getName()); ?>
+                    <?= $this->escapeHtml($contact->getId()); ?>
                 </td>
                 <td>
+                    <div class="pull-left">                    
+                        <?= $this->escapeHtml($contact->getName()); ?>    
+                        <br/>
                         <?= $this->escapeHtml($contact->getDescription()); ?>
+                    </div>    
+                    <div class="pull-right">
+                        <button value="/client/contact-form/<?= $client->getId() ?>?contact=<?= $contact->getId() ?>" class="btn btn-default  btn-xs"
+                                data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                            <span class="glyphicon glyphicon-edit" ></span>
+                        </button>                    
+                        <button value="/contact/delete-form/<?= $contact->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                            <span class="glyphicon glyphicon-remove" ></span>
+                        </button>                                            
+                    </div>
                 </td>
                 <td>
                     <div>
                         <button value="/contact/phone-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
                                 data-toggle="modal" data-target="#modal-dialog" title="Добавить телефон">
                             <span class="glyphicon glyphicon-plus" ></span>
+                            телефон
                         </button>                    
                         
                     </div>
@@ -102,30 +113,34 @@ $this->headScript()
                     <?php endforeach;?>
                 </td>
                 <td>
-                    <?= $this->escapeHtml($contact->getEmailsAsString()); ?>
                     <div>
                         <button value="/contact/email-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
                                 data-toggle="modal" data-target="#modal-dialog" title="Добавить email">
                             <span class="glyphicon glyphicon-plus" ></span>
-                            Добавить email
+                            email
                         </button>                    
                         
-                    </div>                        
+                    </div>     
+                    <?php foreach($contact->getEmails() as $email):?>
+                        <div>
+                            <div class="pull-left">
+                                <?= $this->escapeHtml($email->getName()); ?>
+                            </div>
+                            <div class="pull-right">
+                                <button value="/contact/email-form/<?= $contact->getId() ?>?email=<?= $email->getId() ?>" class="btn btn-default  btn-xs"
+                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                    <span class="glyphicon glyphicon-edit" ></span>
+                                </button>                    
+                                <button value="/contact/delete-email-form/<?= $email->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                                    <span class="glyphicon glyphicon-remove" ></span>
+                                </button>                                            
+                            </div>                                                
+                        </div>
+                    <?php endforeach;?>                    
                 </td>
                 <td>
                         <?= ($contact->getUser() ? 'есть':'нет') ?>
                 </td>
-                <td>
-                    <div class="pull-right">
-                        <button value="/client/contact-form/<?= $client->getId() ?>?contact=<?= $contact->getId() ?>" class="btn btn-default  btn-xs"
-                                data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                            <span class="glyphicon glyphicon-edit" ></span>
-                        </button>                    
-                        <button value="/contact/delete-form/<?= $contact->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
-                            <span class="glyphicon glyphicon-remove" ></span>
-                        </button>                                            
-                    </div>
-                </td>    
             </tr>
 
             <?php endforeach; ?>   
