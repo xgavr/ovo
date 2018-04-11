@@ -4,20 +4,23 @@ $form = $this->form;
 
 $form->get('name')->setAttributes([
     'class'=>'form-control', 
+    'placeholder'=>'Наименование'
     ]);
 
+$form->get('status')->setAttributes([
+    'class'=>'form-control'
+    ]);
 
-$form->get('submit')->setAttributes(['class'=>'btn btn-primary', 'value' => 'Сохранить', 'id' => 'email-submit']);
-
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
 $form->prepare();
 
-?>
 
+?>
             
             <?= $this->form()->openTag($form); ?>
             
             <div class="modal-header">
-                <h5 class="modal-title">Контактный email</h5>
+                <h5 class="modal-title">Данные клиента</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -26,28 +29,36 @@ $form->prepare();
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-10">
-                        <div class="input-group">
+                        
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('name')); ?>
                             <?= $this->formElement($form->get('name')); ?>
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-primary" id="email-submit">Сохранить</button>
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
-                            </div>    
-                        </div>    
-                        <div class="input-group">
                             <?= $this->formElementErrors($form->get('name')); ?>                  
-                        </div>    
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('status')); ?>
+                            <?= $this->formElement($form->get('status')); ?>
+                            <?= $this->formElementErrors($form->get('status')); ?>                  
+                        </div>
+
                     </div>        
                 </div>
             </div>    
                 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="supplier-submit">Сохранить</button>
+            </div>
+                
             <?= $this->form()->closeTag(); ?>
             
 <script>
-    $('#email-submit').on('click', function() {
+    $('#supplier-submit').on('click', function() {
         $.ajax({
             type: 'POST',
-            url: '/contact/email-form/<?= $contact->getId() ?>?email=<?= ($email ? $email->getId():'') ?>',
-            data: $('#email-form').serialize()
+            url: '/supplier/edit-form/<?= $supplier->getId() ?>',
+            data: $('#supplier-form').serialize()
         })
             .done(function (data) {
                 if (data == 'ok'){

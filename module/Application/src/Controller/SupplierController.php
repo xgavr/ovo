@@ -14,6 +14,7 @@ use Application\Entity\Contact;
 use Application\Form\SupplierForm;
 use Application\Form\ContactForm;
 use Application\Form\UploadPriceForm;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -152,6 +153,62 @@ class SupplierController extends AbstractActionController
         ]);  
     }    
     
+   public function editFormAction()
+   {
+        // Создаем форму.
+        $form = new SupplierForm($this->entityManager);
+    
+        // Получаем ID tax.    
+        $supplierId = $this->params()->fromRoute('id', -1);
+    
+        // Находим существующий пост в базе данных.    
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);  
+        	
+        if ($supplier == null) {
+            $this->getResponse()->setStatusCode(401);
+            return;                        
+        } 
+        
+        // Проверяем, является ли пост POST-запросом.
+        if ($this->getRequest()->isPost()) {
+            
+            // Получаем POST-данные.
+            $data = $this->params()->fromPost();
+            
+            // Заполняем форму данными.
+            $form->setData($data);
+            if ($form->isValid()) {
+                                
+                // Получаем валидированные данные формы.
+                $data = $form->getData();
+                
+                // Используем менеджер постов, чтобы добавить новый пост в базу данных.                
+                $this->supplierManager->updateSupplier($supplier, $data);
+
+                return new JsonModel(
+                   ['ok']
+                );           
+                
+            }
+        } else {
+            $data = [
+               'name' => $supplier->getName(),
+               'status' => $supplier->getStatus(),
+            ];
+            
+            $form->setData($data);
+        }
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'supplier' => $supplier,
+        ]);                
+
+    }    
+    
     public function deleteAction()
     {
         $supplierId = $this->params()->fromRoute('id', -1);
@@ -207,35 +264,76 @@ class SupplierController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
-        
-        $form = new ContactForm();
-        // Проверяем, является ли пост POST-запросом.
-        if($this->getRequest()->isPost()) {
-            
-            // Получаем POST-данные.
-            $data = $this->params()->fromPost();
-            
-            // Заполняем форму данными.
-            $form->setData($data);
-            if($form->isValid()) {
-                                
-                // Получаем валадированные данные формы.
-                $data = $form->getData();
-              
-                $this->supplierManager->addContactToSupplier($supplier, $data);
-                
-                // Снова перенаправляем пользователя на страницу "view".
-                return $this->redirect()->toRoute('supplier', ['action'=>'view', 'id'=>$supplierId]);
-            }
+
+        $forLegals = $supplier->getLegalContacts();
+
+        if (!count($forLegals)){
+            $data['full_name'] = $data['name'] = $supplier->getName();
+            $data['status'] = Contact::STATUS_LEGAL;
+            $this->contactManager->addNewContact($supplier, $data);
         }
-        
+                
         // Render the view template.
         return new ViewModel([
             'supplier' => $supplier,
-            'form' => $form,
             'supplierManager' => $this->supplierManager,
         ]);
     }    
+    
+    public function contactFormAction()
+    {
+        $supplierId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($supplierId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);
+        
+        $contactId = (int)$this->params()->fromQuery('contact', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        $form = new ContactForm($this->entityManager);
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($contact){
+                    $this->contactManager->updateContact($contact, $data);
+                } else {
+                    $this->contactManager->addNewContact($supplier, $data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($contact){
+                $form->setData([
+                    'name' => $contact->getName(), 
+                    'description' => $contact->getDescription(),
+                    'status' => $contact->getStatus(),
+                ]);
+            }    
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'supplier' => $supplier,
+            'contact' => $contact,
+        ]);                        
+    }
+    
     
     public function uploadPriceAction()
     {

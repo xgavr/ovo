@@ -1,0 +1,116 @@
+<?php
+
+$form = $this->form;
+
+$form->get('name')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Имя'
+    ]);
+
+$form->get('description')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Должность и т.п.'
+    ]);
+
+$form->get('phone')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'8 (000) 000-0000',
+    'aria-describedby' => "basic-addon2",
+    ]);
+
+$form->get('email')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Email',
+    'label' => 'Элктронная почта',
+    ]);
+
+$form->get('status')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
+$form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
+$form->prepare();
+
+
+?>
+            
+            <?= $this->form()->openTag($form); ?>
+            
+            <div class="modal-header">
+                <h5 class="modal-title">Добавить контакт</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('name')); ?>
+                            <?= $this->formElement($form->get('name')); ?>
+                            <?= $this->formElementErrors($form->get('name')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('description')); ?>
+                            <?= $this->formElement($form->get('description')); ?>
+                            <?= $this->formElementErrors($form->get('description')); ?>                  
+                        </div>
+
+                        <?php if (!$contact):?>
+                            <div class="form-group">
+                                <?= $this->formLabel($form->get('phone')); ?>
+                                <?= $this->formElement($form->get('phone')); ?>
+                                <?= $this->formElementErrors($form->get('phone')); ?>                  
+                            </div>
+
+                            <div class="form-group">
+                                <?= $this->formLabel($form->get('email')); ?>
+                                <?= $this->formElement($form->get('email')); ?>
+                                <?= $this->formElementErrors($form->get('email')); ?>                  
+                            </div>
+                        
+                        <?php endif; ?>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('status')); ?>
+                            <?= $this->formElement($form->get('status')); ?>
+                            <?= $this->formElementErrors($form->get('status')); ?>                  
+                        </div>
+
+                    </div>        
+                </div>
+            </div>    
+                
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-primary" id="contact-submit">Сохранить</button>
+            </div>
+                
+            <?= $this->form()->closeTag(); ?>
+            
+<script>
+    $('#contact_phone').mask('8 (000) 000-0000', {selectOnFocus: false});
+    
+    $('#contact-submit').on('click', function() {
+        $.ajax({
+            type: 'POST',
+            url: '/supplier/contact-form/<?= $supplier->getId() ?>?contact=<?= ($contact) ? $contact->getId():"" ?>',
+            data: $('#contact-form').serialize()
+        })
+            .done(function (data) {
+                if (data == 'ok'){
+                    $('#modal-dialog').modal('hide');
+                    window.location.reload();
+                } else {
+                    $('#modal-content').html(data);
+                }    
+            })
+            .fail(function (e) {
+                console.log(e);
+                alert("Ошибка при открытии формы.");
+
+            });
+    })    
+</script>

@@ -49,6 +49,13 @@ class Goods {
     protected $price;
     
     /**
+     * @ORM\ManyToOne(targetEntity="Application\Entity\GoodsGroup", inversedBy="goods") 
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
+     * 
+     */
+    protected $group;
+    
+    /**
      * @ORM\ManyToOne(targetEntity="Application\Entity\Producer", inversedBy="goods") 
      * @ORM\JoinColumn(name="producer_id", referencedColumnName="id")
      * 
@@ -132,6 +139,25 @@ class Goods {
     public function setPrice($price) 
     {
         $this->price = $price;
+    }     
+
+    /*
+     * Возвращает связанный group.
+     * @return \Application\Entity\GoodsGroup
+     */    
+    public function getGroup() 
+    {
+        return $this->group;
+    }
+    
+    /**
+     * Задает связанный group.
+     * @param \Application\Entity\GoodsGroup $group
+     */    
+    public function setGroup($group) 
+    {
+        $this->group = $group;
+        $group->addGood($this);
     }     
 
     /*

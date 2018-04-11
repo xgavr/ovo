@@ -58,7 +58,7 @@ $this->headScript()
 
            <tr>
                 <th>ID</th>
-                <th>Имя</th>
+                <th width="30%">Имя</th>
                 <th>Телефон</th>
                 <th>Email</th>
                 <th>Доступ</th>
@@ -95,22 +95,26 @@ $this->headScript()
                         </button>                    
                         
                     </div>
-                    <?php foreach($contact->getPhones() as $phone):?>
-                        <div>
-                            <div class="pull-left">
-                                <?= $this->escapeHtml($phone->getName().' '.$phone->getComment()); ?>
-                            </div>
-                            <div class="pull-right">
-                                <button value="/contact/phone-form/<?= $contact->getId() ?>?phone=<?= $phone->getId() ?>" class="btn btn-default  btn-xs"
-                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                                    <span class="glyphicon glyphicon-edit" ></span>
-                                </button>                    
-                                <button value="/contact/delete-phone-form/<?= $phone->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
-                                    <span class="glyphicon glyphicon-remove" ></span>
-                                </button>                                            
-                            </div>                                                
-                        </div>
-                    <?php endforeach;?>
+                    <table width="100%">
+                        <?php foreach($contact->getPhones() as $phone):?>
+                        <tr>
+                            <td>
+                                <?= $this->escapeHtml($phone->getName().' '.$phone->getComment()); ?>                                
+                            </td>
+                            <td align="right">
+                                <div style="white-space: nowrap">
+                                    <button value="/contact/phone-form/<?= $contact->getId() ?>?phone=<?= $phone->getId() ?>" class="btn btn-default  btn-xs"
+                                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                        <span class="glyphicon glyphicon-edit" ></span>
+                                    </button>                    
+                                    <button value="/contact/delete-phone-form/<?= $phone->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                                        <span class="glyphicon glyphicon-remove" ></span>
+                                    </button>                                                                                                                
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach;?>
+                    </table>        
                 </td>
                 <td>
                     <div>
@@ -118,25 +122,28 @@ $this->headScript()
                                 data-toggle="modal" data-target="#modal-dialog" title="Добавить email">
                             <span class="glyphicon glyphicon-plus" ></span>
                             email
-                        </button>                    
-                        
+                        </button>                                            
                     </div>     
-                    <?php foreach($contact->getEmails() as $email):?>
-                        <div>
-                            <div class="pull-left">
-                                <?= $this->escapeHtml($email->getName()); ?>
-                            </div>
-                            <div class="pull-right">
-                                <button value="/contact/email-form/<?= $contact->getId() ?>?email=<?= $email->getId() ?>" class="btn btn-default  btn-xs"
-                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                                    <span class="glyphicon glyphicon-edit" ></span>
-                                </button>                    
-                                <button value="/contact/delete-email-form/<?= $email->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
-                                    <span class="glyphicon glyphicon-remove" ></span>
-                                </button>                                            
-                            </div>                                                
-                        </div>
-                    <?php endforeach;?>                    
+                    <table width="100%">
+                        <?php foreach($contact->getEmails() as $email):?>
+                        <tr>
+                            <td>
+                                <?= $this->escapeHtml($email->getName()); ?>                                
+                            </td>
+                            <td align="right">
+                                <div style="white-space: nowrap">
+                                    <button value="/contact/email-form/<?= $contact->getId() ?>?email=<?= $email->getId() ?>" class="btn btn-default  btn-xs"
+                                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                        <span class="glyphicon glyphicon-edit" ></span>
+                                    </button>                    
+                                    <button value="/contact/delete-email-form/<?= $email->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                                        <span class="glyphicon glyphicon-remove" ></span>
+                                    </button>                                                                                                                
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach;?>
+                    </table>        
                 </td>
                 <td>
                         <?= ($contact->getUser() ? 'есть':'нет') ?>

@@ -205,6 +205,9 @@ class ContactManager
             throw new \Exception('Неверный тип родительской сущности');
         }
 
+        // Добавляем сущность в менеджер сущностей.
+        $this->entityManager->persist($contact);
+
         $this->addPhone($contact, ['phone' => $data['phone']]);
         
         $this->addEmail($contact, $data['email']);
@@ -219,10 +222,7 @@ class ContactManager
                 $contact->setUser($user);
             }   
        }
-        
-        // Добавляем сущность в менеджер сущностей.
-        $this->entityManager->persist($contact);
-        
+                
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
         
