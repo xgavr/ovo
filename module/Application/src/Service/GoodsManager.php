@@ -11,6 +11,8 @@ use Zend\ServiceManager\ServiceManager;
 use Application\Entity\Goods;
 use Application\Entity\Producer;
 use Application\Entity\Tax;
+use Application\Entity\Cart;
+use Application\Entity\Bid;
 use MvlabsPHPExcel\Service;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
@@ -133,10 +135,24 @@ class GoodsManager
         $this->entityManager->flush();
         
         return $goods;
-    }    
+    }
     
-    public function removeGoods($good) 
+    public function removeGood($good, $flushnow = true) 
     {   
+        $carts = $this->entityManager->getRepository(Cart::class)
+                ->getCartInGood($good);
+
+        if (count($carts)){
+            return;
+        }
+                
+        $bids = $this->entityManager->getRepository(Bid::class)
+                ->getBidInGood($good);
+        
+        if (count($bids)){
+            return;
+        }
+                
         $rawprices = $this->entityManager->getRepository(Goods::class)
                     ->findGoodRawprice($good);
         
@@ -145,10 +161,30 @@ class GoodsManager
             $this->entityManager->persist($rawprice);
         }
         
+        $images = $this->entityManager->getRepository(Goods::class)
+                    ->findGoodsImage($good);
+        
+        foreach ($images as $image){
+            $this->entityManager->remove($image);
+        }
+        
         $this->entityManager->remove($good);
         
-        $this->entityManager->flush();
-    }    
+        if ($flushnow){
+            $this->entityManager->flush();
+        }    
+    }
+
+    public function removeAllGoods()
+    {
+       $goods = $this->entityManager->getRepository(Goods::class)->findAll();
+       
+       foreach ($goods as $good){
+           $this->removeGood($good, false);
+       }
+       
+       $this->entityManager->flush();
+    }
 
     public function getMaxPrice($good)
     {

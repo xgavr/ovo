@@ -9,6 +9,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Application\Entity\Goods;
 use Application\Form\GoodsForm;
 use Application\Form\GoodSettingsForm;
@@ -193,11 +194,21 @@ class GoodsController extends AbstractActionController
             return;                        
         }        
         
-        $this->goodsManager->removeGoods($goods);
+        $this->goodsManager->removeGood($goods);
         
         // Перенаправляем пользователя на страницу "rb/tax".
         return $this->redirect()->toRoute('goods', []);
     }    
+    
+    public function deleteAllAction()
+    {
+        $this->goodsManager->removeAllGoods();
+        
+        return new JsonModel([
+            'ok'
+        ]);
+    }
+    
 
     public function viewAction() 
     {       

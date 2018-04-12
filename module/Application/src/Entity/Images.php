@@ -12,7 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Description of Images
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="\Application\Repository\GoodsRepository")
  * @ORM\Table(name="images")
  * @author Daddy
  */

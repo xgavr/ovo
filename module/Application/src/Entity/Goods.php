@@ -97,7 +97,6 @@ class Goods {
     {
       $this->images = new ArrayCollection();   
       $this->rawprice = new ArrayCollection();      
-      $this->cart = new ArrayCollection();      
     }
     
   

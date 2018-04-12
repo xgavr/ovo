@@ -98,5 +98,22 @@ class OrderRepository extends EntityRepository{
         return $queryBuilder->getQuery();
     }        
     
+    /*
+     * @var Application\Entyti\Goods
+     */
+    public function getBidInGood($good)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Bid::class, 'r')
+            ->where('r.good = :goodId')    
+            ->setParameters(['goodId' => $good->getId()])
+                ;
+        return $queryBuilder->getQuery()->getResult();
+    }
+    
     
 }

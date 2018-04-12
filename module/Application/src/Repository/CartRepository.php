@@ -80,6 +80,23 @@ class CartRepository extends EntityRepository{
     }
     
     /*
+     * @var Application\Entyti\Goods
+     */
+    public function getCartInGood($good)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+            ->from(Cart::class, 'r')
+            ->where('r.good = :goodId')    
+            ->setParameters(['goodId' => $good->getId()])
+                ;
+        return $queryBuilder->getQuery()->getResult();
+    }
+    
+    /*
      * @var Application\Entity\Client @client
      * @var int $goodId
      */
