@@ -11,7 +11,7 @@ namespace Application\Repository;
 use Doctrine\ORM\EntityRepository;
 use Application\Entity\Goods;
 use Application\Entity\Rawprice;
-use Application\Entity\Images;
+use Application\Entity\Image;
 use Application\Entity\Producer;
 /**
  * Description of GoodsRepository
@@ -71,6 +71,7 @@ class GoodsRepository extends EntityRepository{
             ->orderBy('c.id')
             ->setParameter('1', $good->getId())    
                 ;
+//        var_dump($queryBuilder->getQuery()->getSQL()); exit;
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -85,12 +86,12 @@ class GoodsRepository extends EntityRepository{
         $queryBuilder = $entityManager->createQueryBuilder();
 
         $queryBuilder->select('c')
-            ->from(Images::class, 'c')
+            ->from(Image::class, 'c')
             ->where('c.good = ?1')    
             ->orderBy('c.id')
             ->setParameter('1', $good->getId())    
                 ;
-//        var_dump($queryBuilder->getQuery()->getDQL()); exit;
+        var_dump($queryBuilder->getQuery()->getSQL()); exit;
 
         return $queryBuilder->getQuery()->getResult();
     }

@@ -85,7 +85,7 @@ class Goods {
     private $rawprice;
  
     /**
-     * @ORM\OneToMany(targetEntity="\Application\Entity\Images", mappedBy="goods")
+     * @ORM\OneToMany(targetEntity="Application\Entity\Image", mappedBy="good")
      * @ORM\JoinColumn(name="id", referencedColumnName="good_id")
      */
     protected $images;

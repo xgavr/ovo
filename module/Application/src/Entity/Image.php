@@ -7,40 +7,41 @@
  */
 
 namespace Application\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Description of Images
+ * Description of Image
  * @ORM\Entity(repositoryClass="\Application\Repository\GoodsRepository")
  * @ORM\Table(name="image")
  * @author Daddy
  */
-class Images {
+class Image {
     
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(name="id")   
      */
-    protected $id;
+    private $id;
     
     /**
      * @ORM\Column(name="name")   
      */
-    protected $name;
+    private $name;
 
     /**
      * @ORM\Column(name="path")   
      */
-    protected $path;
+    private $path;
 
     /*
     * @ORM\ManyToOne(targetEntity="Application\Entity\Goods", inversedBy="images")
     * @ORM\JoinColumn(name="good_id", referencedColumnName="id")    
+     * 
     * 
     */
-    protected $good;
+    private $good;
     
      
     public function getId() 

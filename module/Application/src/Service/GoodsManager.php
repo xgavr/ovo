@@ -161,12 +161,12 @@ class GoodsManager
             $this->entityManager->persist($rawprice);
         }
         
-        $images = $this->entityManager->getRepository(Goods::class)
-                    ->findGoodsImage($good);
-        
-        foreach ($images as $image){
-            $this->entityManager->remove($image);
-        }
+//        $images = $this->entityManager->getRepository(Goods::class)
+//                    ->findGoodsImage($good);
+//        
+//        foreach ($images as $image){
+//            $this->entityManager->remove($image);
+//        }
         
         $this->entityManager->remove($good);
         
