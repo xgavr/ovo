@@ -35,6 +35,13 @@ class Images {
      */
     protected $path;
 
+    /*
+    * @ORM\ManyToOne(targetEntity="Application\Entity\Goods", inversedBy="images")
+    * @ORM\JoinColumn(name="good_id", referencedColumnName="id")    
+    * 
+    */
+    protected $good;
+     
     public function getId() 
     {
         return $this->id;
@@ -65,13 +72,6 @@ class Images {
         $this->path = $path;
     }     
     
-    /*
-    * @ORM\ManyToOne(targetEntity="\Application\Entity\Goods", inversedBy="images")
-    * @ORM\JoinColumn(name="good_id", referencedColumnName="id")    
-    * 
-    */
-    protected $good;
-     
     /*
      * Возвращает связанный товар.
      * @return \Application\Entity\Goods

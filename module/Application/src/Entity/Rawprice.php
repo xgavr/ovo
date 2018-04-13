@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Zend\Json\Json;
 
 /**
- * Description of Customer
+ * Description of Rawprice
  * @ORM\Entity(repositoryClass="\Application\Repository\RawRepository")
  * @ORM\Table(name="rawprice")
  * @author Daddy
@@ -229,6 +229,8 @@ class Rawprice {
     public function setGood($good) 
     {
         $this->good = $good;
-        $good->addRawprice($this);
+        if ($good){
+            $good->addRawprice($this);
+        }    
     }     
 }

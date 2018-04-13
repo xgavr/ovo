@@ -196,7 +196,7 @@ class GoodsController extends AbstractActionController
         
         $this->goodsManager->removeGood($goods);
         
-        // Перенаправляем пользователя на страницу "rb/tax".
+        // Перенаправляем пользователя на страницу "goods".
         return $this->redirect()->toRoute('goods', []);
     }    
     

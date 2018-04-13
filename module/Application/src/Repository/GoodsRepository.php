@@ -90,6 +90,7 @@ class GoodsRepository extends EntityRepository{
             ->orderBy('c.id')
             ->setParameter('1', $good->getId())    
                 ;
+//        var_dump($queryBuilder->getQuery()->getDQL()); exit;
 
         return $queryBuilder->getQuery()->getResult();
     }
