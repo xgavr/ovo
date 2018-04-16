@@ -68,6 +68,10 @@ $this->headTitle($raw->getSupplier()->getName().' прайс '. $raw->getFilenam
         <?php endforeach; ?>    
         </td>    
         <td>
+            <button value="/rawprice/delete-form/<?= $row->getId() ?>" class="btn btn-default btn-xs this-delete"
+                    title="Удалить">
+                <span class="glyphicon glyphicon-remove" ></span>
+            </button>                                                            
         </td>    
     </tr>
         
@@ -78,3 +82,53 @@ $this->headTitle($raw->getSupplier()->getName().' прайс '. $raw->getFilenam
             'Sliding',
             'application/partial/paginator', 
             ['route' => array('route' => 'raw', 'action' => 'view', 'id' => $raw->getId())]); ?>
+
+<div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('#modal-dialog').on('show.bs.modal', function (e) {        
+        var url = e.relatedTarget.value;
+        if (url){
+            $.ajax({
+                type: 'GET',
+                url: url
+            })
+                .done(function (data) {
+                   $('#modal-content').html(data);
+                })
+                .fail(function () {
+                    alert("Ошибка открытия формы.");
+                }); 
+        }
+    })    
+        
+    $('.this-delete').on('click', function(e) {
+        var url = e.currentTarget.value;
+        if (url){
+            if (confirm('Удалить запись?')){
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                })
+                    .done(function (data) {
+                        if (data == 'ok'){
+                            window.location.reload();
+                        } else {
+                            alert("Не удалось удалить!");
+                        }    
+                    })
+                    .fail(function (e) {
+                        alert("Не удалось удалить.");
+
+                    });
+            }        
+        }        
+    })    
+    
+</script>

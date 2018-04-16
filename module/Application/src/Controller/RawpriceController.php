@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Raw;
 use Application\Entity\Rawprice;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -86,6 +87,29 @@ class RawpriceController extends AbstractActionController
         // Перенаправляем пользователя на страницу "raw".
         return $this->redirect()->toRoute('raw', []);
     }    
+    
+    public function deleteFormAction()
+    {
+        $rawpriceId = $this->params()->fromRoute('id', -1);
+        
+        $rawprice = $this->entityManager->getRepository(Rawprice::class)
+                ->findOneById($rawpriceId); 
+        
+        if ($rawprice == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->rawManager->removeRawprice($rawprice);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }    
+
+    
     
     public function parseAction()
     {
