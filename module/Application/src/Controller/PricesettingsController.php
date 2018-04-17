@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Application\Entity\Supplier;
 use Application\Entity\Pricesettings;
 use Application\Form\PricesettingsForm;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -225,4 +226,99 @@ class PricesettingsController extends AbstractActionController
             'supplierManager' => $this->supplierManager,
         ]);
     }      
+    
+    public function formAction()
+    {
+        $supplierId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($supplierId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);
+        
+        if ($supplier == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $pricesettingsId = (int)$this->params()->fromQuery('pricesettings', -1);
+        
+        // Validate input parameter
+        if ($pricesettingsId>0) {
+            $pricesettings = $this->entityManager->getRepository(Pricesettings::class)
+                    ->findOneById($pricesettingsId);
+        } else {
+            $pricesettings = null;
+        }        
+        $form = new PricesettingsForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($pricesettings){
+                    $this->supplierManager->updatePricesettings($pricesettings, $data);
+                } else {
+                    $this->supplierManager->addNewPricesettings($supplier, $data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            } else {
+                var_dump($form->getMessages());
+            }
+        } else {
+            if ($pricesettings){
+                $data = [
+                    'name' => $pricesettings->getName(),
+                    'article' => $pricesettings->getArticle(),
+                    'iid' => $pricesettings->getIid(),
+                    'price' => $pricesettings->getPrice(),
+                    'producer' => $pricesettings->getProducer(),
+                    'rest' => $pricesettings->getRest(),
+                    'title' => $pricesettings->getTitle(),
+                    'status' => $pricesettings->getStatus(),
+                ];
+                $form->setData($data);
+            }  
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'supplier' => $supplier,
+            'pricesettings' => $pricesettings,
+        ]);                
+        
+    }
+    
+    public function deleteFormAction()
+    {
+        $pricesettingsId = $this->params()->fromRoute('id', -1);
+        
+        $pricesettings = $this->entityManager->getRepository(Pricesettings::class)
+                ->findOneById($pricesettingsId);
+        
+        if ($pricesettings == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->supplierManager->removePricesettings($pricesettings);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+    
+    
 }

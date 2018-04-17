@@ -1,87 +1,142 @@
 <?php
-$this->headTitle($raw->getSupplier()->getName().' прайс '. $raw->getFilename());
-  
+$this->headTitle($raw->getFilename());
+
+$this->mainMenu()->setActiveItemId('raw');
+
+$breadcrumbs_items = [
+        'Главная' => $this->url('home'),
+        'Прайсы' => $this->url('raw'),
+        $raw->getSupplier()->getName() => $this->url('supplier', ['action' => 'view', 'id' => $raw->getSupplier()->getId()]),        
+        $raw->getFilename() => $this->url('raw', ['action' => 'view', 'id' => $raw->getId()]),        
+    ];
+
+$this->pageBreadcrumbs()->setItems($breadcrumbs_items);
+
 ?>
 
-<a href="
-    <?= $this->url('raw', ['action' => 'view', 'id' => $raw->getId()]); ?>">
-    &lt;&lt; Назад в <?= $raw->getFilename() ?>
-</a>
-
-<h1>
-    <?= $this->escapeHtml($raw->getSupplier()->getName().' прайс '. $raw->getFilename()); ?>    
-</h1>
-
-
-<h3 class="contact-header">Данные</h3>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'parse', 'id' => $raw->getId()]); ?>">
-    1. Парсить все записи
-</a>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'new-unknown-producer', 'id' => $raw->getId()]); ?>">
-    2.1. Производители - найти новых
-</a>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'unknown-producer', 'id' => $raw->getId()]); ?>">
-    2.2. Производители - привязать
-</a>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'new-goods', 'id' => $raw->getId()]); ?>">
-    3.1. Товары - найти новые
-</a>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'goods', 'id' => $raw->getId()]); ?>">
-    3.2. Товары - привязать
-</a>
-<a class="btn btn-default" href="
-    <?= $this->url('raw', ['action'=>'price', 'id' => $raw->getId()]); ?>">
-    4. Установить цены
-</a>
-
-<table class="table table-striped">
-
-   <tr>
-        <th>ID</th>
-        <th>Данные</th>
-        <th>Действие</th>
-    </tr>
-    
-    <?php foreach ($rawprice as $row): ?>
-    
-    <tr>
-        <td>
-            <a href="<?= $this->url('rawprice', ['action'=>'view', 'id'=>$row->getId()]); ?>">            
-                <?= $this->escapeHtml($row->getId()); ?>
-            </a>    
-        </td>
-        <td>
-        <?php 
-            $rawdates = $row->getRawdataAsArray();
-            $i = 0;
-        ?>
-        <?php foreach ($rawdates as $rawdata): ?>
-            <?php $i++ ?>
+<div class="row">
+    <div class="col-sm-9">
+        <div id="section1">
+            <h1>
+                <?= $this->escapeHtml($raw->getSupplier()->getName().' прайс '. $raw->getFilename()); ?>    
+            </h1>
+        </div>
+        <div id="section2">
+            <h3 class="contact-header">Данные</h3>
             <div>
-                <b><?= $i?>:</b><?= $this->escapeHtml($rawdata); ?>
+                <button value="/pricesettings/form/<?= $raw->getSupplier()->getId() ?>" class="btn btn-default btn-xs"
+                        data-toggle="modal" data-target="#modal-dialog" title="Добавить настройку прайса">
+                    <span class="glyphicon glyphicon-plus" ></span>
+                    Добавить настройку прайса
+                </button>       
             </div>
-        <?php endforeach; ?>    
-        </td>    
-        <td>
-            <button value="/rawprice/delete-form/<?= $row->getId() ?>" class="btn btn-default btn-xs this-delete"
-                    title="Удалить">
-                <span class="glyphicon glyphicon-remove" ></span>
-            </button>                                                            
-        </td>    
-    </tr>
-        
-    <?php endforeach; ?>   
-    
-</table>
-<?= $this->paginationControl($rawprice,
-            'Sliding',
-            'application/partial/paginator', 
-            ['route' => array('route' => 'raw', 'action' => 'view', 'id' => $raw->getId())]); ?>
+            <table class="table table-striped">
+                <tr>
+                    <th>
+                        Наименование настройки
+                    </th>
+                    <th>
+                        Действие
+                    </th>
+                </tr>
+                <?php foreach($raw->getSupplier()->getPricesettings() as $pricesettings):?>
+                <tr>
+                    <td>
+                        <?= $this->escapeHtml($pricesettings->getName()); ?>                                
+                    </td>
+                    <td align="right">
+                        <div style="white-space: nowrap">
+                            <button value="/pricesettings/form/<?= $raw->getSupplier()->getId() ?>?pricesettings=<?= $pricesettings->getId() ?>" class="btn btn-default  btn-xs"
+                                    data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                <span class="glyphicon glyphicon-edit" ></span>
+                            </button>                    
+                            <button value="/pricesettings/delete-form/<?= $pricesettings->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                                <span class="glyphicon glyphicon-remove" ></span>
+                            </button>                                                                                                                
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach;?>
+            </table>        
+        </div>
+    </div>
+    <div id="section3">
+        <table class="table table-striped">
+
+           <tr>
+                <th>ID</th>
+                <th>Данные</th>
+                <th>Действие</th>
+            </tr>
+
+            <?php foreach ($rawprice as $row): ?>
+
+            <tr>
+                <td>
+                    <a href="<?= $this->url('rawprice', ['action'=>'view', 'id'=>$row->getId()]); ?>">            
+                        <?= $this->escapeHtml($row->getId()); ?>
+                    </a>    
+                </td>
+                <td>
+                <?php 
+                    $rawdates = $row->getRawdataAsArray();
+                    $i = 0;
+                ?>
+                <?php foreach ($rawdates as $rawdata): ?>
+                    <?php $i++ ?>
+                    <div>
+                        <b><?= $i?>:</b><?= $this->escapeHtml($rawdata); ?>
+                    </div>
+                <?php endforeach; ?>    
+                </td>    
+                <td>
+                    <button value="/rawprice/delete-form/<?= $row->getId() ?>" class="btn btn-default btn-xs this-delete"
+                            title="Удалить">
+                        <span class="glyphicon glyphicon-remove" ></span>
+                    </button>                                                            
+                </td>    
+            </tr>
+
+            <?php endforeach; ?>   
+
+        </table>
+        <?= $this->paginationControl($rawprice,
+                    'Sliding',
+                    'application/partial/paginator', 
+                    ['route' => array('route' => 'raw', 'action' => 'view', 'id' => $raw->getId())]); ?>
+    </div>
+    <div id="section4">
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'parse', 'id' => $raw->getId()]); ?>">
+            1. Парсить все записи
+        </a>
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'new-unknown-producer', 'id' => $raw->getId()]); ?>">
+            2.1. Производители - найти новых
+        </a>
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'unknown-producer', 'id' => $raw->getId()]); ?>">
+            2.2. Производители - привязать
+        </a>
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'new-goods', 'id' => $raw->getId()]); ?>">
+            3.1. Товары - найти новые
+        </a>
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'goods', 'id' => $raw->getId()]); ?>">
+            3.2. Товары - привязать
+        </a>
+        <a class="btn btn-default" href="
+            <?= $this->url('raw', ['action'=>'price', 'id' => $raw->getId()]); ?>">
+            4. Установить цены
+        </a>
+    </div>
+</div>    
+
+
+
+
+
 
 <div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -89,7 +144,6 @@ $this->headTitle($raw->getSupplier()->getName().' прайс '. $raw->getFilenam
         </div>
     </div>
 </div>
-
 
 <script>
     $('#modal-dialog').on('show.bs.modal', function (e) {        
