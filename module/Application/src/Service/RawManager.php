@@ -29,6 +29,8 @@ class RawManager {
     
     const PRICE_FOLDER       = './data/prices'; // папка с прайсами
     const PRICE_FOLDER_ARX   = './data/prices/arx'; // папка с архивами прайсов
+    
+    static $storedRawData = null;
 
     /**
      * Doctrine entity manager.
@@ -245,9 +247,14 @@ class RawManager {
         if ($pricesetting->getArticle() && count($rawdata) >= $pricesetting->getArticle()){
             $result['article'] = $rawdata[$pricesetting->getArticle() - 1];
         }    
+        
         if ($pricesetting->getProducer() && count($rawdata) >= $pricesetting->getProducer()){
             $result['producer'] = $rawdata[$pricesetting->getProducer() - 1];
         }    
+        if (!$pricesetting->getProducer()){
+            $result['producer'] = $pricesetting->getSupplier()->getName(); // производитель является поставщиком
+        }    
+        
         if ($pricesetting->getCountry() && count($rawdata) >= $pricesetting->getCountry()){
             $result['country'] = $rawdata[$pricesetting->getCountry() - 1];
         }    
@@ -276,9 +283,9 @@ class RawManager {
             $result['unit'] = $rawdata[$pricesetting->getUnit() - 1];
         }    
         
-        if ($result['producer'] && $result['goodname'] && $result['price']){        
+//        if ($result['producer'] && $result['goodname'] && $result['price']){        
             return $result;
-        }    
+//        }    
         
         return;
     }
@@ -307,17 +314,30 @@ class RawManager {
      * @var bool $flushnow
      */
     
-    protected function updateParsedata($rawprice, $parsedata, $flushnow)
+    protected function updateParsedata($rawprice, $parsedata, $flushnow, $storeData = false)
     {
+//        var_dump($storeData);
+        if ($storeData && is_array($this::$storedRawData)){
+            if (!$parsedata['article'] && $this::$storedRawData['article']) $parsedata['article'] = $this::$storedRawData['article'];
+            if (!$parsedata['producer'] && $this::$storedRawData['producer']) $parsedata['producer'] = $this::$storedRawData['producer'];
+            if (!$parsedata['country'] && $this::$storedRawData['country']) $parsedata['country'] = $this::$storedRawData['country'];
+            if (!$parsedata['goodname'] && $this::$storedRawData['goodname']) $parsedata['goodname'] = $this::$storedRawData['goodname'];
+            if (!$parsedata['description'] && $this::$storedRawData['description']) $parsedata['description'] = $this::$storedRawData['description'];
+            if (!$parsedata['image'] && $this::$storedRawData['image']) $parsedata['image'] = $this::$storedRawData['image'];
+            if (!$parsedata['currency'] && $this::$storedRawData['currency']) $parsedata['currency'] = $this::$storedRawData['currency'];
+            if (!$parsedata['rate'] && $this::$storedRawData['rate']) $parsedata['rate'] = $this::$storedRawData['rate'];
+        }
+        
         $rawprice->setArticle($parsedata['article']);
         $rawprice->setProducer($parsedata['producer']);
         $rawprice->setCountry($parsedata['country']);
         $rawprice->setGoodname($parsedata['goodname']);
         $rawprice->setDescription($parsedata['description']);
         $rawprice->setImage($parsedata['image']);
-        $rawprice->setPrice($parsedata['price']);
         $rawprice->setCurrency($parsedata['currency']);
         $rawprice->setRate($parsedata['rate']);
+
+        $rawprice->setPrice($parsedata['price']);
         $rawprice->setRest($parsedata['rest']);
         $rawprice->setUnit($parsedata['unit']);
         
@@ -326,6 +346,10 @@ class RawManager {
         if ($flushnow){
             $this->entityManager->flush();
         }    
+        
+        if ($storeData){
+            $this::$storedRawData = $parsedata;
+        }
     }
     
     /*
@@ -333,7 +357,7 @@ class RawManager {
      * @var Application\Entity\Rawprice $rawprice;
      * @bool $flushnow
      */
-    public function parseRawprice($rawprice, $flushnow = true)
+    public function parseRawprice($rawprice, $flushnow = true, $storeData = false)
     {
         ini_set('memory_limit', '512M');
         
@@ -351,7 +375,7 @@ class RawManager {
         }
         
         if (count($data)){
-            $this->updateParsedata($rawprice, $this->selectBestParsedata($data), $flushnow);
+            $this->updateParsedata($rawprice, $this->selectBestParsedata($data), $flushnow, $storeData);
         }    
         
         return;
@@ -364,8 +388,10 @@ class RawManager {
      */
     public function parseRaw($raw)
     {
+        $this::$storedRawData = null;
+        
         foreach ($raw->getRawprice() as $rawprice){
-            $this->parseRawprice($rawprice, false);
+            $this->parseRawprice($rawprice, false, true);
         }
         
         $this->entityManager->flush();
@@ -419,6 +445,28 @@ class RawManager {
         $this->entityManager->flush();
     }
     
+    public function getGoodName($rawprice)
+    {
+        if (is_array($rawprice)){
+            $result = $rawprice['goodname'];
+            if ($rawprice['unit']){
+                $result .= ' '.$rawprice['unit'];
+            }
+            if (!$rawprice['article'] && !$rawprice['unit']){
+                $result .= ' '.$rawprice['description'];
+            }
+        } else {
+            $result = $rawprice->getGoodname();
+            if ($rawprice->getUnit()){
+                $result .= ' '.$rawprice->getUnit();
+            }            
+            if (!$rawprice->getArticle() && !$rawprice->getUnit()){
+                $result .= ' '.$rawprice->getDescription();
+            }
+        }
+        
+        return trim($result);
+    }
     
     /*
      * Выбрать и добавить уникальные товары
@@ -434,7 +482,7 @@ class RawManager {
 
         foreach ($rawprices as $rawprice){
 
-            if (is_string($rawprice['article']) && $rawprice['goodname'] && $rawprice['unknownProducer']){
+            if ($rawprice['goodname'] && $rawprice['unknownProducer']){
                 
                 $unknownProducer = $this->entityManager->getRepository(UnknownProducer::class)
                         ->findOneById($rawprice['unknownProducer']);
@@ -445,15 +493,15 @@ class RawManager {
                                 ->findOneBy([
                                     'producer' => $unknownProducer->getProducer(), 
                                     'code' => $rawprice['article'],
-                                    'name' => $rawprice['goodname'],
+                                    'name' => $this->getGoodName($rawprice),
                                 ]);
                     
                     if ($good == NULL){
                         $good = $this->goodManager->addNewGoods([
-                            'name' => $rawprice['goodname'],
+                            'name' => $this->getGoodName($rawprice),
                             'code' => $rawprice['article'],
                             'available' => Goods::AVAILABLE_TRUE,
-                            'description' => '',
+                            'description' => $rawprice['description'],
                             'producer' => $unknownProducer->getProducer(),
                             'price' => 0,                        
                         ], false);
@@ -477,28 +525,29 @@ class RawManager {
                             ->findOneBy([
                                 'producer' => $rawprice->getUnknownProducer()->getProducer()->getId(), 
                                 'code' => $rawprice->getArticle(),
-                                'name' => $rawprice->getGoodname(),
+                                'name' => $this->getGoodName($rawprice),
                             ]);
                 if ($good == NULL){                    
                     $good = $this->goodManager->addNewGoods([
-                        'name' => $rawprice->getGoodname(),
+                        'name' => $this->getGoodName($rawprice),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
                         'description' => $rawprice->getDescription(),
                         'producer' => $rawprice->getUnknownProducer()->getProducer(),
                         'price' => $rawprice->getPrice(),
                     ]);
-                    $rawprice->setGood($good);
-                } else {
-                    $this->goodManager->updateGoods($good, [
-                        'name' => $rawprice->getGoodname(),
-                        'code' =>$rawprice->getArticle(),
-                        'available' => Goods::AVAILABLE_TRUE,
-                        'description' => $rawprice->getDescription(),
-                        'producer' => $rawprice->getUnknownProducer()->getProducer(),
-                    ]);                    
-                    $rawprice->setGood($good);
+                    
+//                } else {
+//                    $this->goodManager->updateGoods($good, [
+//                        'name' => $this->getGoodName($rawprice),
+//                        'code' =>$rawprice->getArticle(),
+//                        'available' => Goods::AVAILABLE_TRUE,
+//                        'description' => $rawprice->getDescription(),
+//                        'producer' => $rawprice->getUnknownProducer()->getProducer(),
+//                    ]);                    
                 }
+                
+                $rawprice->setGood($good);
                 
                 $this->entityManager->persist($rawprice);        
                 if ($flushnow){
@@ -516,11 +565,11 @@ class RawManager {
                             ->findOneBy([
                                 'producer' => $rawprice->getUnknownProducer()->getProducer(), 
                                 'code' => $rawprice->getArticle(),
-                                'name' => $rawprice->getGoodname(),
+                                'name' => $this->getGoodName($rawprice),
                             ]);
                 if ($good == NULL){
                     $good = $this->goodManager->addNewGoods([
-                        'name' => $rawprice->getGoodname(),
+                        'name' => $this->getGoodName($rawprice),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
                         'description' => $rawprice->getDescription(),
@@ -530,7 +579,7 @@ class RawManager {
                     $rawprice->setGood($good);
                 } else {
                     $this->goodManager->updateGoods($good, [
-                        'name' => $rawprice->getGoodname(),
+                        'name' => $this->getGoodName($rawprice),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
                         'description' => $rawprice->getDescription(),
