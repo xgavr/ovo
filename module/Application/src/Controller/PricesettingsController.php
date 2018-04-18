@@ -140,14 +140,20 @@ class PricesettingsController extends AbstractActionController
             }
         } else {
             $data = [
-               'name' => $pricesettings->getName(),
-               'article' => $pricesettings->getArticle(),
-               'iid' => $pricesettings->getIid(),
-               'price' => $pricesettings->getPrice(),
-               'producer' => $pricesettings->getProducer(),
-               'rest' => $pricesettings->getRest(),
-               'title' => $pricesettings->getTitle(),
-               'status' => $pricesettings->getStatus(),
+                    'name' => $pricesettings->getName(),
+                    'article' => $pricesettings->getArticle(),
+                    'iid' => $pricesettings->getIid(),
+                    'price' => $pricesettings->getPrice(),
+                    'currency' => $pricesettings->getCurrency(),
+                    'rate' => $pricesettings->getRate(),
+                    'producer' => $pricesettings->getProducer(),
+                    'country' => $pricesettings->getCountry(),
+                    'rest' => $pricesettings->getRest(),
+                    'unit' => $pricesettings->getUnit(),
+                    'title' => $pricesettings->getTitle(),
+                    'description' => $pricesettings->getDescription(),
+                    'image' => $pricesettings->getImage(),
+                    'status' => $pricesettings->getStatus(),
             ];
             
             $form->setData($data);
@@ -281,9 +287,15 @@ class PricesettingsController extends AbstractActionController
                     'article' => $pricesettings->getArticle(),
                     'iid' => $pricesettings->getIid(),
                     'price' => $pricesettings->getPrice(),
+                    'currency' => $pricesettings->getCurrency(),
+                    'rate' => $pricesettings->getRate(),
                     'producer' => $pricesettings->getProducer(),
+                    'country' => $pricesettings->getCountry(),
                     'rest' => $pricesettings->getRest(),
+                    'unit' => $pricesettings->getUnit(),
                     'title' => $pricesettings->getTitle(),
+                    'description' => $pricesettings->getDescription(),
+                    'image' => $pricesettings->getImage(),
                     'status' => $pricesettings->getStatus(),
                 ];
                 $form->setData($data);

@@ -126,9 +126,15 @@ class RawManager {
                         
                         $rawprice->setArticle('');
                         $rawprice->setGoodname('');
+                        $rawprice->setDescription('');
+                        $rawprice->setImage('');
                         $rawprice->setProducer('');
+                        $rawprice->setCountry('');
                         $rawprice->setPrice(0);
+                        $rawprice->setCurrency('');
+                        $rawprice->setRate(0);
                         $rawprice->setRest(0);
+                        $rawprice->setUnit('');
 
                         $rawprice->setRaw($raw);
                         
@@ -225,9 +231,15 @@ class RawManager {
         $result = [
             'article' => '',
             'producer' => '',
+            'country' => '',
             'goodname' => '',
+            'description' => '',
+            'image' => '',
             'price' => 0,
+            'currency' => '',
+            'rate' => 0,
             'rest' => 0,
+            'unit' => '',
         ];
         
         if ($pricesetting->getArticle() && count($rawdata) >= $pricesetting->getArticle()){
@@ -236,14 +248,32 @@ class RawManager {
         if ($pricesetting->getProducer() && count($rawdata) >= $pricesetting->getProducer()){
             $result['producer'] = $rawdata[$pricesetting->getProducer() - 1];
         }    
+        if ($pricesetting->getCountry() && count($rawdata) >= $pricesetting->getCountry()){
+            $result['country'] = $rawdata[$pricesetting->getCountry() - 1];
+        }    
         if ($pricesetting->getTitle() && count($rawdata) >= $pricesetting->getTitle()){
             $result['goodname'] = $rawdata[$pricesetting->getTitle() - 1];
+        }    
+        if ($pricesetting->getDescription() && count($rawdata) >= $pricesetting->getDescription()){
+            $result['description'] = $rawdata[$pricesetting->getDescription() - 1];
+        }    
+        if ($pricesetting->getImage() && count($rawdata) >= $pricesetting->getImage()){
+            $result['image'] = $rawdata[$pricesetting->getImage() - 1];
         }    
         if ($pricesetting->getPrice() && count($rawdata) >= $pricesetting->getPrice()){
             $result['price'] = $rawdata[$pricesetting->getPrice() - 1];
         }   
+        if ($pricesetting->getCurrency() && count($rawdata) >= $pricesetting->getCurrency()){
+            $result['currency'] = $rawdata[$pricesetting->getCurrency() - 1];
+        }   
+        if ($pricesetting->getRate() && count($rawdata) >= $pricesetting->getRate()){
+            $result['rate'] = $rawdata[$pricesetting->getRate() - 1];
+        }   
         if ($pricesetting->getRest() && count($rawdata) >= $pricesetting->getRest()){
             $result['rest'] = $rawdata[$pricesetting->getRest() - 1];
+        }    
+        if ($pricesetting->getUnit() && count($rawdata) >= $pricesetting->getUnit()){
+            $result['unit'] = $rawdata[$pricesetting->getUnit() - 1];
         }    
         
         if ($result['producer'] && $result['goodname'] && $result['price']){        
@@ -281,9 +311,15 @@ class RawManager {
     {
         $rawprice->setArticle($parsedata['article']);
         $rawprice->setProducer($parsedata['producer']);
+        $rawprice->setCountry($parsedata['country']);
         $rawprice->setGoodname($parsedata['goodname']);
+        $rawprice->setDescription($parsedata['description']);
+        $rawprice->setImage($parsedata['image']);
         $rawprice->setPrice($parsedata['price']);
+        $rawprice->setCurrency($parsedata['currency']);
+        $rawprice->setRate($parsedata['rate']);
         $rawprice->setRest($parsedata['rest']);
+        $rawprice->setUnit($parsedata['unit']);
         
         $this->entityManager->persist($rawprice);
         
@@ -417,7 +453,7 @@ class RawManager {
                             'name' => $rawprice['goodname'],
                             'code' => $rawprice['article'],
                             'available' => Goods::AVAILABLE_TRUE,
-                            'description' => $rawprice['goodname'],
+                            'description' => $rawprice['description'],
                             'producer' => $unknownProducer->getProducer(),
                         ], false);
                     }                
@@ -447,8 +483,9 @@ class RawManager {
                         'name' => $rawprice->getGoodname(),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
-                        'description' => $rawprice->getGoodname(),
+                        'description' => $rawprice->getDescription(),
                         'producer' => $rawprice->getUnknownProducer()->getProducer(),
+                        'price' => $rawprice->getPrice(),
                     ]);
                 }
                 
@@ -476,7 +513,7 @@ class RawManager {
                         'name' => $rawprice->getGoodname(),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
-                        'description' => $rawprice->getGoodname(),
+                        'description' => $rawprice->getDescription(),
                         'producer' => $rawprice->getUnknownProducer()->getProducer(),
                     ]);
                 }

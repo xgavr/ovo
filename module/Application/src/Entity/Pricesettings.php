@@ -51,9 +51,24 @@ class Pricesettings {
     protected $producer;
     
     /**
+     * @ORM\Column(name="country")   
+     */
+    protected $country;
+    
+    /**
      * @ORM\Column(name="title")   
      */
     protected $title;
+    
+    /**
+     * @ORM\Column(name="description")   
+     */
+    protected $description;
+    
+    /**
+     * @ORM\Column(name="image")   
+     */
+    protected $image;
     
     /**
      * @ORM\Column(name="price")   
@@ -61,10 +76,25 @@ class Pricesettings {
     protected $price;
     
     /**
+     * @ORM\Column(name="currency")   
+     */
+    protected $currency;
+
+    /**
+     * @ORM\Column(name="rate")   
+     */
+    protected $rate;
+
+    /**
      * @ORM\Column(name="rest")   
      */
     protected $rest;
     
+    /**
+     * @ORM\Column(name="unit")   
+     */
+    protected $unit;
+
     /**
      * @ORM\Column(name="date_created")  
      */
@@ -132,6 +162,16 @@ class Pricesettings {
         $this->producer = $producer;
     }     
 
+    public function getCountry() 
+    {
+        return $this->country;
+    }
+
+    public function setCountry($country) 
+    {
+        $this->country = $country;
+    }     
+
     public function getTitle() 
     {
         return $this->title;
@@ -140,6 +180,26 @@ class Pricesettings {
     public function setTitle($title) 
     {
         $this->title = $title;
+    }     
+
+    public function getDescription() 
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description) 
+    {
+        $this->description = $description;
+    }     
+
+    public function getImage() 
+    {
+        return $this->image;
+    }
+
+    public function setImage($image) 
+    {
+        $this->image = $image;
     }     
 
     public function getPrice() 
@@ -152,6 +212,26 @@ class Pricesettings {
         $this->price = $price;
     }     
 
+    public function getCurrency() 
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency($currency) 
+    {
+        $this->currency = $currency;
+    }     
+
+    public function getRate() 
+    {
+        return $this->rate;
+    }
+
+    public function setRate($rate) 
+    {
+        $this->rate = $rate;
+    }     
+
     public function getRest() 
     {
         return $this->rest;
@@ -160,6 +240,16 @@ class Pricesettings {
     public function setRest($rest) 
     {
         $this->rest = $rest;
+    }     
+
+    public function getUnit() 
+    {
+        return $this->unit;
+    }
+
+    public function setUnit($unit) 
+    {
+        $this->unit = $unit;
     }     
 
     public function getDateCreated() 

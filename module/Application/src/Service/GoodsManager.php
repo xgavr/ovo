@@ -9,6 +9,7 @@ namespace Application\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Application\Entity\Goods;
+use Application\Entity\GoodsGroup;
 use Application\Entity\Producer;
 use Application\Entity\Tax;
 use Application\Entity\Cart;
@@ -78,6 +79,7 @@ class GoodsManager
         $goods->setCode($data['code']);
         $goods->setAvailable($data['available']);
         $goods->setDescription($data['description']);
+        $goods->setPrice($data['price']);
         
         $producer = $this->entityManager->getRepository(Producer::class)
                     ->findOneById($data['producer']);
@@ -198,4 +200,43 @@ class GoodsManager
         }    
         return 0;
     } 
+    
+    public function addNewGroup($data)
+    {
+        $group = new GoodsGroup();
+        $group->setName($data['name']);
+        $group->setDescription($data['description']);
+                
+        // Добавляем сущность в менеджер сущностей.
+        $this->entityManager->persist($group);
+        
+        $this->entityManager->flush();
+        
+        return $group;        
+    }
+    
+    public function updateGroup($group, $data) 
+    {
+        $group->setName($data['name']);
+        $group->setDescription($data['description']);
+               
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+        
+        return $group;
+    }
+    
+    public function removeGroup($group)
+    {
+        
+        foreach ($group->getGoods() as $good){
+            $this->removeGood($good, false);
+        }
+                
+        $this->entityManager->remove($group);
+        
+        $this->entityManager->flush();
+        
+    }
+    
 }

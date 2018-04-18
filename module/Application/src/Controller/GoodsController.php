@@ -11,7 +11,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Application\Entity\Goods;
+use Application\Entity\GoodsGroup;
 use Application\Form\GoodsForm;
+use Application\Form\GoodsGroupForm;
 use Application\Form\GoodSettingsForm;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
@@ -233,5 +235,76 @@ class GoodsController extends AbstractActionController
         return new ViewModel([
             'goods' => $goods,
         ]);
-    }      
+    }
+    
+    public function groupFormAction()
+    {
+        $groupId = (int)$this->params()->fromRoute('id', -1);
+        
+        $group = null;
+        if ($groupId>0) {
+            $group = $this->entityManager->getRepository(GoodsGroup::class)
+                    ->findOneById($groupId);
+        }
+        
+        $form = new GoodsGroupForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($group){
+                    $this->goodsManager->updateGroup($group, $data);
+                } else {
+                    $this->goodsManager->addNewGroup($data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            } else {
+                var_dump($form->getMessages());
+            }
+        } else {
+            if ($group){
+                $data = [
+                    'name' => $pricesettings->getName(),
+                    'description' => $pricesettings->getDescription(),
+                ];
+                $form->setData($data);
+            }  
+        }    
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'group' => $group,
+        ]);                        
+    }
+    
+    public function deleteGroupFormAction()
+    {
+        $groupId = $this->params()->fromRoute('id', -1);
+        
+        $group = $this->entityManager->getRepository(Group::class)
+                ->findOneById($groupId);
+        
+        if ($group == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->goodsManager->removeGroup($group);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
+    
+    
 }

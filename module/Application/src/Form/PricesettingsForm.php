@@ -87,6 +87,17 @@ class PricesettingsForm extends Form
             ],
         ]);
         
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'country',
+            'attributes' => [
+                'id' => 'country'
+            ],
+            'options' => [
+                'label' => 'страна',
+            ],
+        ]);
+
         // Добавляем поле "title"
         $this->add([           
             'type'  => 'text',
@@ -96,6 +107,28 @@ class PricesettingsForm extends Form
             ],
             'options' => [
                 'label' => 'Наименование',
+            ],
+        ]);
+        
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'description',
+            'attributes' => [
+                'id' => 'description'
+            ],
+            'options' => [
+                'label' => 'Описание',
+            ],
+        ]);
+        
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'image',
+            'attributes' => [
+                'id' => 'description'
+            ],
+            'options' => [
+                'label' => 'Картинка',
             ],
         ]);
         
@@ -111,6 +144,28 @@ class PricesettingsForm extends Form
             ],
         ]);
         
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'currency',
+            'attributes' => [
+                'id' => 'ps_price'
+            ],
+            'options' => [
+                'label' => 'Валюта',
+            ],
+        ]);
+        
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'rate',
+            'attributes' => [
+                'id' => 'rate'
+            ],
+            'options' => [
+                'label' => 'Курс валюты',
+            ],
+        ]);
+        
         // Добавляем поле "rest"
         $this->add([           
             'type'  => 'text',
@@ -120,6 +175,17 @@ class PricesettingsForm extends Form
             ],
             'options' => [
                 'label' => 'Количество',
+            ],
+        ]);
+        
+        $this->add([           
+            'type'  => 'text',
+            'name' => 'unit',
+            'attributes' => [
+                'id' => 'ps_rest'
+            ],
+            'options' => [
+                'label' => 'Единица измерения',
             ],
         ]);
         
@@ -234,7 +300,64 @@ class PricesettingsForm extends Form
             ]);
         
         $inputFilter->add([
+                'name'     => 'country',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
                 'name'     => 'title',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
+                'name'     => 'description',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
+                'name'     => 'image',
                 'required' => false,
                 'filters'  => [
                     ['name' => 'StringTrim'],
@@ -272,7 +395,64 @@ class PricesettingsForm extends Form
             ]);
         
         $inputFilter->add([
+                'name'     => 'currency',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
+                'name'     => 'rate',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
                 'name'     => 'rest',
+                'required' => false,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 11
+                        ],
+                    ],
+                ],
+            ]);
+        
+        $inputFilter->add([
+                'name'     => 'unit',
                 'required' => false,
                 'filters'  => [
                     ['name' => 'StringTrim'],

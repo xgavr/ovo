@@ -158,11 +158,17 @@ class SupplierManager
         $pricesettings->setIid($data['iid']);
         $pricesettings->setName($data['name']);
         $pricesettings->setPrice($data['price']);
+        $pricesettings->setCurrency($data['currency']);
+        $pricesettings->setRate($data['rate']);
         $pricesettings->setProducer($data['producer']);
+        $pricesettings->setCountry($data['country']);
         $pricesettings->setRest($data['rest']);
+        $pricesettings->setUnit($data['unit']);
         $pricesettings->setStatus($data['status']);
         $pricesettings->setSupplier($supplier);
         $pricesettings->setTitle($data['title']);
+        $pricesettings->setDescription($data['description']);
+        $pricesettings->setImage($data['image']);
         
         $currentDate = date('Y-m-d H:i:s');
         $pricesettings->setDateCreated($currentDate);        
@@ -181,10 +187,16 @@ class SupplierManager
         $pricesettings->setIid($data['iid']);
         $pricesettings->setName($data['name']);
         $pricesettings->setPrice($data['price']);
+        $pricesettings->setCurrency($data['currency']);
+        $pricesettings->setRate($data['rate']);
         $pricesettings->setProducer($data['producer']);
+        $pricesettings->setCountry($data['country']);
         $pricesettings->setRest($data['rest']);
+        $pricesettings->setUnit($data['unit']);
         $pricesettings->setStatus($data['status']);
         $pricesettings->setTitle($data['title']);
+        $pricesettings->setDescription($data['description']);
+        $pricesettings->setImage($data['image']);
         
         // Добавляем сущность в менеджер сущностей.
         $this->entityManager->persist($pricesettings);

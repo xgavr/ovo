@@ -20,9 +20,24 @@ $form->get('producer')->setAttributes([
     'placeholder'=>'Колонка производитель',
     ]);
 
+$form->get('country')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка страна',
+    ]);
+
 $form->get('title')->setAttributes([
     'class'=>'form-control', 
     'placeholder'=>'Колонка нименование товара',
+    ]);
+
+$form->get('description')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка описание товара',
+    ]);
+
+$form->get('image')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка картинка товара',
     ]);
 
 $form->get('price')->setAttributes([
@@ -30,9 +45,24 @@ $form->get('price')->setAttributes([
     'placeholder'=>'Колонка цена',
     ]);
 
+$form->get('currency')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка валюта',
+    ]);
+
+$form->get('rate')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка курс валюты',
+    ]);
+
 $form->get('rest')->setAttributes([
     'class'=>'form-control', 
     'placeholder'=>'Колонка количество',
+    ]);
+
+$form->get('unit')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Колонка единица измерения',
     ]);
 
 $form->get('status')->setAttributes([
@@ -56,7 +86,7 @@ $form->prepare();
             
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-5">
                         <div class="form-group">
                             <?= $this->formLabel($form->get('name')); ?>
                             <?= $this->formElement($form->get('name')); ?>
@@ -67,12 +97,6 @@ $form->prepare();
                             <?= $this->formLabel($form->get('article')); ?>
                             <?= $this->formElement($form->get('article')); ?>
                             <?= $this->formElementErrors($form->get('article')); ?>                  
-                        </div>
-
-                        <div class="form-group">
-                            <?= $this->formLabel($form->get('iid')); ?>
-                            <?= $this->formElement($form->get('iid')); ?>
-                            <?= $this->formElementErrors($form->get('iid')); ?>                  
                         </div>
 
                         <div class="form-group">
@@ -88,6 +112,12 @@ $form->prepare();
                         </div>
 
                         <div class="form-group">
+                            <?= $this->formLabel($form->get('image')); ?>
+                            <?= $this->formElement($form->get('image')); ?>
+                            <?= $this->formElementErrors($form->get('image')); ?>                  
+                        </div>
+
+                        <div class="form-group">
                             <?= $this->formLabel($form->get('price')); ?>
                             <?= $this->formElement($form->get('price')); ?>
                             <?= $this->formElementErrors($form->get('price')); ?>                  
@@ -99,10 +129,50 @@ $form->prepare();
                             <?= $this->formElementErrors($form->get('rest')); ?>                  
                         </div>
 
+                    </div>
+                    
+                    <div class="col-md-5">
+
                         <div class="form-group">
                             <?= $this->formLabel($form->get('status')); ?>
                             <?= $this->formElement($form->get('status')); ?>
                             <?= $this->formElementErrors($form->get('status')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('iid')); ?>
+                            <?= $this->formElement($form->get('iid')); ?>
+                            <?= $this->formElementErrors($form->get('iid')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('country')); ?>
+                            <?= $this->formElement($form->get('country')); ?>
+                            <?= $this->formElementErrors($form->get('country')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('description')); ?>
+                            <?= $this->formElement($form->get('description')); ?>
+                            <?= $this->formElementErrors($form->get('description')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('currency')); ?>
+                            <?= $this->formElement($form->get('currency')); ?>
+                            <?= $this->formElementErrors($form->get('currency')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('rate')); ?>
+                            <?= $this->formElement($form->get('rate')); ?>
+                            <?= $this->formElementErrors($form->get('rate')); ?>                  
+                        </div>
+
+                        <div class="form-group">
+                            <?= $this->formLabel($form->get('unit')); ?>
+                            <?= $this->formElement($form->get('unit')); ?>
+                            <?= $this->formElementErrors($form->get('unit')); ?>                  
                         </div>
 
                     </div>        

@@ -48,9 +48,24 @@ class Rawprice {
     protected $producer;
 
     /**
+     * @ORM\Column(name="country")   
+     */
+    protected $country;
+
+    /**
      * @ORM\Column(name="goodname")   
      */
     protected $goodname;
+
+    /**
+     * @ORM\Column(name="description")   
+     */
+    protected $description;
+
+    /**
+     * @ORM\Column(name="image")   
+     */
+    protected $image;
 
     /**
      * @ORM\Column(name="price")   
@@ -58,9 +73,24 @@ class Rawprice {
     protected $price;
 
     /**
+     * @ORM\Column(name="currency")   
+     */
+    protected $currency;
+
+    /**
+     * @ORM\Column(name="rate")   
+     */
+    protected $rate;
+
+    /**
      * @ORM\Column(name="rest")   
      */
     protected $rest;
+
+    /**
+     * @ORM\Column(name="unit")   
+     */
+    protected $unit;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\Entity\Raw", inversedBy="rawprice") 
@@ -110,6 +140,16 @@ class Rawprice {
         $this->producer = $producer;
     }     
     
+    public function getCountry() 
+    {
+        return $this->country;
+    }
+
+    public function setCountry($country) 
+    {
+        $this->country = $country;
+    }     
+    
     public function getGoodname() 
     {
         return $this->goodname;
@@ -120,6 +160,26 @@ class Rawprice {
         $this->goodname = $goodname;
     }     
     
+    public function getDescription() 
+    {
+        return $this->description;
+    }
+
+    public function setDescription($description) 
+    {
+        $this->description = $description;
+    }     
+
+    public function getImage() 
+    {
+        return $this->image;
+    }
+
+    public function setImage($image) 
+    {
+        $this->image = $image;
+    }     
+
     public function getPrice() 
     {
         return $this->price;
@@ -130,6 +190,26 @@ class Rawprice {
         $this->price = $price;
     }     
     
+    public function getCurrency() 
+    {
+        return $this->currency;
+    }
+
+    public function setCurrency($currency) 
+    {
+        $this->currency = $currency;
+    }     
+
+    public function getRate() 
+    {
+        return $this->rate;
+    }
+
+    public function setRate($rate) 
+    {
+        $this->rate = $rate;
+    }     
+
     public function getRest() 
     {
         return $this->rest;
@@ -138,6 +218,16 @@ class Rawprice {
     public function setRest($rest) 
     {
         $this->rest = $rest;
+    }     
+
+    public function getUnit() 
+    {
+        return $this->unit;
+    }
+
+    public function setUnit($unit) 
+    {
+        $this->unit = $unit;
     }     
 
     public function getRawdata() 
