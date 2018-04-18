@@ -75,6 +75,23 @@ class GoodsForm extends Form implements ObjectManagerAwareInterface
         
         $this->add([
             'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
+            'name' => 'group',
+            'attributes' => [                
+                'id' => 'goodsgroup',
+                'data-live-search'=> "true",
+                'class' => "selectpicker",
+            ],
+            'options' => [
+                'object_manager' => $this->entityManager,
+                'target_class'   => 'Application\Entity\GoodsGroup',
+                'label' => 'Группа товара',
+                'property'       => 'name',
+                'display_empty_item' => true,
+                'empty_item_label'   => '--выберете группу товара--',                 
+            ],
+       ]);
+        $this->add([
+            'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
             'name' => 'producer',
             'attributes' => [                
                 'id' => 'goodsproducer',
@@ -190,6 +207,25 @@ class GoodsForm extends Form implements ObjectManagerAwareInterface
                 ],
             ]);          
 
+        $inputFilter->add([
+                'name'     => 'group',
+                'required' => true,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 1024
+                        ],
+                    ],
+                ],
+            ]);
+        
         $inputFilter->add([
                 'name'     => 'producer',
                 'required' => true,

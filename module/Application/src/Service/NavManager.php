@@ -141,6 +141,12 @@ class NavManager
                 ];
             
                 $rbDropdownItems[] = [
+                    'id' => 'goods',
+                    'label' => 'Группы товаров',
+                    'link'  => $url('goods', ['action' => 'groups'])
+                ];
+            
+                $rbDropdownItems[] = [
                             'id' => 'producer',
                             'label' => 'Производители',
                             'link' => $url('producer', [])

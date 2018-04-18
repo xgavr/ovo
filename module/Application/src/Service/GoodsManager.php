@@ -65,6 +65,7 @@ class GoodsManager
         }
         
         $config->good->defaultTax = $data['defaultTax'];
+        $config->good->defaultGroup = $data['defaultGroup'];
         
         $writer = new PhpArray();
         
@@ -88,6 +89,7 @@ class GoodsManager
         }
         
         $goods->setProducer($producer);
+        
         if (array_key_exists('tax', $data)){
             if (!$data['tax']) $data['tax'] = $this->getSettings()->defaultTax;
         } else {
@@ -99,8 +101,21 @@ class GoodsManager
         if ($tax == null){
             $tax = new Tax();
         }
-        
         $goods->setTax($tax);
+        
+        if (array_key_exists('group', $data)){
+            if (!$data['group']) $data['group'] = $this->getSettings()->defaultGroup;
+        } else {
+            $data['group'] = $this->getSettings()->defaultGroup;
+        }    
+        
+        $group = $this->entityManager->getRepository(GoodsGroup::class)
+                    ->findOneById($data['group']);
+        if ($group == null){
+            $group = new GoodsGroup();
+        }
+        
+        $goods->setGroup($group);
         
         // Добавляем сущность в менеджер сущностей.
         $this->entityManager->persist($goods);
@@ -128,11 +143,31 @@ class GoodsManager
         
         $goods->setProducer($producer);
         
+        if (array_key_exists('tax', $data)){
+            if (!$data['tax']) $data['tax'] = $this->getSettings()->defaultTax;
+        } else {
+            $data['tax'] = $this->getSettings()->defaultTax;
+        }    
         $tax = $this->entityManager->getRepository(Tax::class)
                     ->findOneById($data['tax']);
         if ($tax == null){
             $tax = new Tax();
         }
+        $goods->setTax($tax);
+
+        if (array_key_exists('group', $data)){
+            if (!$data['group']) $data['group'] = $this->getSettings()->defaultGroup;
+        } else {
+            $data['group'] = $this->getSettings()->defaultGroup;
+        }    
+        
+        $group = $this->entityManager->getRepository(GoodsGroup::class)
+                    ->findOneById($data['group']);
+        if ($group == null){
+            $group = new GoodsGroup();
+        }
+        $goods->setGroup($group);
+        
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
         

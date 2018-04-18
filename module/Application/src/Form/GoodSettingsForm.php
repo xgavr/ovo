@@ -50,6 +50,25 @@ class GoodSettingsForm extends Form implements ObjectManagerAwareInterface
                         
         $this->add([
             'options' => [
+                'label' => 'Группа товара по умолчанию',
+            ],
+            'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
+            'name' => 'defaultGroup',
+            'attributes' => [                
+                'id' => 'defaultGroup',
+            ],
+            'options' => [
+                'object_manager' => $this->entityManager,
+                'target_class'   => 'Application\Entity\GoodsGroup',
+                'label' => 'Группа товара',
+                'property' => 'name',
+                'empty_item_label'   => '--выберете группу товара--',                 
+//                'value' => 1,
+            ],
+       ]);
+                
+        $this->add([
+            'options' => [
                 'label' => 'Налог по умолчанию',
             ],
             'type'  => 'DoctrineModule\Form\Element\ObjectSelect',
@@ -62,6 +81,7 @@ class GoodSettingsForm extends Form implements ObjectManagerAwareInterface
                 'target_class'   => 'Application\Entity\Tax',
                 'label' => 'Налог',
                 'property' => 'name',
+                'empty_item_label'   => '--выберете налог--',                 
 //                'value' => 1,
             ],
        ]);
@@ -83,6 +103,25 @@ class GoodSettingsForm extends Form implements ObjectManagerAwareInterface
         $inputFilter = new InputFilter();        
         $this->setInputFilter($inputFilter);
                 
+        $inputFilter->add([
+                'name'     => 'defaultGroup',
+                'required' => true,
+                'filters'  => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags'],
+                    ['name' => 'StripNewlines'],
+                ],                
+                'validators' => [
+                    [
+                        'name'    => 'StringLength',
+                        'options' => [
+                            'min' => 1,
+                            'max' => 1024
+                        ],
+                    ],
+                ],
+            ]);          
+        
         $inputFilter->add([
                 'name'     => 'defaultTax',
                 'required' => true,

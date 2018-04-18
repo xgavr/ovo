@@ -237,6 +237,19 @@ class GoodsController extends AbstractActionController
         ]);
     }
     
+    public function groupsAction()
+    {
+        $groups = $this->entityManager->getRepository(GoodsGroup::class)
+               ->findBy([], []);
+        
+        // Визуализируем шаблон представления.
+        return new ViewModel([
+            'groups' => $groups,
+            'goodsManager' => $this->goodsManager
+        ]);  
+        
+    }
+    
     public function groupFormAction()
     {
         $groupId = (int)$this->params()->fromRoute('id', -1);
@@ -247,7 +260,7 @@ class GoodsController extends AbstractActionController
                     ->findOneById($groupId);
         }
         
-        $form = new GoodsGroupForm();
+        $form = new GoodsGroupForm($this->entityManager);
 
         if ($this->getRequest()->isPost()) {
             
@@ -271,8 +284,8 @@ class GoodsController extends AbstractActionController
         } else {
             if ($group){
                 $data = [
-                    'name' => $pricesettings->getName(),
-                    'description' => $pricesettings->getDescription(),
+                    'name' => $group->getName(),
+                    'description' => $group->getDescription(),
                 ];
                 $form->setData($data);
             }  
@@ -289,7 +302,7 @@ class GoodsController extends AbstractActionController
     {
         $groupId = $this->params()->fromRoute('id', -1);
         
-        $group = $this->entityManager->getRepository(Group::class)
+        $group = $this->entityManager->getRepository(GoodsGroup::class)
                 ->findOneById($groupId);
         
         if ($group == null) {

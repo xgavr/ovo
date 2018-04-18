@@ -453,8 +453,9 @@ class RawManager {
                             'name' => $rawprice['goodname'],
                             'code' => $rawprice['article'],
                             'available' => Goods::AVAILABLE_TRUE,
-                            'description' => $rawprice['description'],
+                            'description' => '',
                             'producer' => $unknownProducer->getProducer(),
+                            'price' => 0,                        
                         ], false);
                     }                
                 }    
@@ -487,9 +488,18 @@ class RawManager {
                         'producer' => $rawprice->getUnknownProducer()->getProducer(),
                         'price' => $rawprice->getPrice(),
                     ]);
+                    $rawprice->setGood($good);
+                } else {
+                    $this->goodManager->updateGoods($good, [
+                        'name' => $rawprice->getGoodname(),
+                        'code' =>$rawprice->getArticle(),
+                        'available' => Goods::AVAILABLE_TRUE,
+                        'description' => $rawprice->getDescription(),
+                        'producer' => $rawprice->getUnknownProducer()->getProducer(),
+                    ]);                    
+                    $rawprice->setGood($good);
                 }
                 
-                $rawprice->setGood($good);
                 $this->entityManager->persist($rawprice);        
                 if ($flushnow){
                     $this->entityManager->flush();    
@@ -509,13 +519,24 @@ class RawManager {
                                 'name' => $rawprice->getGoodname(),
                             ]);
                 if ($good == NULL){
-                    $good = $this->goodManager->updateGoods($rawprice->getGood(), [
+                    $good = $this->goodManager->addNewGoods([
                         'name' => $rawprice->getGoodname(),
                         'code' =>$rawprice->getArticle(),
                         'available' => Goods::AVAILABLE_TRUE,
                         'description' => $rawprice->getDescription(),
                         'producer' => $rawprice->getUnknownProducer()->getProducer(),
+                        'price' => $rawprice->getPrice(),
                     ]);
+                    $rawprice->setGood($good);
+                } else {
+                    $this->goodManager->updateGoods($good, [
+                        'name' => $rawprice->getGoodname(),
+                        'code' =>$rawprice->getArticle(),
+                        'available' => Goods::AVAILABLE_TRUE,
+                        'description' => $rawprice->getDescription(),
+                        'producer' => $rawprice->getUnknownProducer()->getProducer(),
+                    ]);                    
+                    
                 }
                 
                 $rawprice->setGood($good);

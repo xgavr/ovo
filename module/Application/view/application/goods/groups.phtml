@@ -1,0 +1,106 @@
+<?php
+$this->headTitle('Группы товаров');
+
+$this->mainMenu()->setActiveItemId('rb');
+
+$breadcrumbs_items = [
+        'Главная' => $this->url('home'),
+        'Справочники' => $this->url('rb'),
+        'Группы товаров' => $this->url('rb', ['action' => 'groups']),
+    ];
+
+$this->pageBreadcrumbs()->setItems($breadcrumbs_items);
+
+?>
+
+<h1>Группы товаров</h1>
+<p>
+    <button value="/goods/group-form" class="btn btn-default btn-xs"
+            data-toggle="modal" data-target="#modal-dialog" title="Добавить группу товара">
+        <span class="glyphicon glyphicon-plus" ></span>
+        Добавить группу товара
+    </button>       
+</p>
+
+<table class="table table-striped">
+
+   <tr>
+        <th>ID</th>
+        <th>Наименование</th>
+        <th>Описание</th>
+        <th>Действие</th>
+    </tr>
+    
+    <?php foreach ($groups as $group): ?>
+    
+    <tr>
+        <td><?= $this->escapeHtml($group->getId()); ?></td>
+        <td>
+            <?= $this->escapeHtml($group->getName()); ?>
+        </td>
+        <td><?= $this->escapeHtml($group->getDescription()); ?></td>        
+        <td align="right">
+            <div style="white-space: nowrap">
+                <button value="/goods/group-form/<?= $group->getId() ?>" class="btn btn-default  btn-xs"
+                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                    <span class="glyphicon glyphicon-edit" ></span>
+                </button>                    
+                <button value="/goods/delete-group-form/<?= $group->getId() ?>" class="btn btn-default this-delete  btn-xs" title="Удалить">
+                    <span class="glyphicon glyphicon-remove" ></span>
+                </button>                                                                                                                
+            </div>
+        </td>
+    </tr>
+        
+    <?php endforeach; ?>   
+    
+</table>
+
+<div class="modal fade" id="modal-dialog" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" id="modal-content">
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#modal-dialog').on('show.bs.modal', function (e) {        
+        var url = e.relatedTarget.value;
+        if (url){
+            $.ajax({
+                type: 'GET',
+                url: url
+            })
+                .done(function (data) {
+                   $('#modal-content').html(data);
+                })
+                .fail(function () {
+                    alert("Ошибка открытия формы.");
+                }); 
+        }
+    })    
+        
+    $('.this-delete').on('click', function(e) {
+        var url = e.currentTarget.value;
+        if (url){
+            if (confirm('Удалить запись?')){
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                })
+                    .done(function (data) {
+                        if (data == 'ok'){
+                            window.location.reload();
+                        } else {
+                            alert("Не удалось удалить!");
+                        }    
+                    })
+                    .fail(function (e) {
+                        alert("Не удалось удалить.");
+
+                    });
+            }        
+        }        
+    })    
+    
+</script>

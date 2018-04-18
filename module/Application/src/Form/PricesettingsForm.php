@@ -94,7 +94,7 @@ class PricesettingsForm extends Form
                 'id' => 'country'
             ],
             'options' => [
-                'label' => 'страна',
+                'label' => 'Страна',
             ],
         ]);
 

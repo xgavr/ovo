@@ -6,6 +6,11 @@ $form->get('defaultTax')->setAttributes([
     'placeholder'=>'Налог по умолчанию',
     ]);
 
+$form->get('defaultGroup')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'Группа товара по умолчанию',
+    ]);
+
 
 $form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
 $form->prepare();
@@ -22,6 +27,12 @@ $form->prepare();
     <div class="col-md-6">
         <?= $this->form()->openTag($form); ?>
         
+        <div class="form-group">
+            <?= $this->formLabel($form->get('defaultGroup')); ?>
+            <?= $this->formElement($form->get('defaultGroup')); ?>
+            <?= $this->formElementErrors($form->get('defaultGroup')); ?>                  
+        </div>
+                
         <div class="form-group">
             <?= $this->formLabel($form->get('defaultTax')); ?>
             <?= $this->formElement($form->get('defaultTax')); ?>
