@@ -181,8 +181,11 @@ class ContactManager
         $contact = new Contact();
         $contact->setName($data['name']);
         
-        $description = $data['description'];
-        if (!$description) $description = "";
+        $description = "";
+        if (isset($data['description'])){
+            $description = $data['description'];
+        }
+        
         $contact->setDescription($description);
         
         $contact->setStatus($data['status']);
