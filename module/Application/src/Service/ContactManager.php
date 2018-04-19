@@ -211,9 +211,13 @@ class ContactManager
         // Добавляем сущность в менеджер сущностей.
         $this->entityManager->persist($contact);
 
-        $this->addPhone($contact, ['phone' => $data['phone']]);
+        if (isset($data['phone'])){
+            $this->addPhone($contact, ['phone' => $data['phone']]);
+        }    
         
-        $this->addEmail($contact, $data['email']);
+        if (isset($data['email'])){
+            $this->addEmail($contact, $data['email']);
+        }    
         
        if ($data['email'] && $data['password']){
             $user = $this->entityManager->getRepository(User::class)
