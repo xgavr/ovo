@@ -5,7 +5,7 @@ $this->mainMenu()->setActiveItemId('supplier');
 
 $this->pageBreadcrumbs()->setItems([
             'Главная'=>$this->url('home'),
-            'Посатавщики'=>$this->url('supplier'),
+            'Поставщики'=>$this->url('supplier'),
             $supplier->getName()=>$this->url('supplier', ['action'=>'view', 'id' => $supplier->getId()])
             ]);  
 
