@@ -40,7 +40,8 @@
             "Application\\": "module/Application/src/",
             "Admin\\":"module/Admin/src/",
             "Company\\":"module/Company/src/",
-            "User\\":"module/User/src/"
+            "User\\":"module/User/src/",
+            "Blank\\": "module/Blank/src/"
         }
     },
     "autoload-dev": {
@@ -48,7 +49,8 @@
             "ApplicationTest\\": "module/Application/test/",
             "AdminTest\\":"module/Admin/test/",
             "CompanyTest\\":"module/Company/test/",
-            "UserTest\\":"module/User/test/"
+            "UserTest\\":"module/User/test/",
+            "BlankTest\\": "module/Blank/test/"
         }
     },
     "extra": [],
