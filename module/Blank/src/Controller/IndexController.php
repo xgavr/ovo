@@ -11,8 +11,22 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 class IndexController extends AbstractActionController
 {
+    /**
+     * Менеджер blank.
+     * @var Blank\Service\BlankManager 
+     */
+    private $blankManager;    
+    
+    // Метод конструктора, используемый для внедрения зависимостей в контроллер.
+    public function __construct($blankManager) 
+    {
+        $this->blankManager = $blankManager;
+
+    }    
+
     public function indexAction()
     {
+        $this->blankManager->test();
         return [];
     }
 }
