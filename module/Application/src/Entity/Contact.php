@@ -10,7 +10,8 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Company\Entity\Legal;
+use Doctrine\Common\Collections\Criteria;
 /**
  * Description of Contact
  * @ORM\Entity(repositoryClass="\Application\Repository\ContactRepository")
@@ -455,13 +456,21 @@ class Contact {
      * @return array
      */   
 
-    public function getLegals() {
+    public function getLegals() 
+    {
       return $this->legals;
-   }    
+    }
+
+    public function getActiveLegal()
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("status", Legal::STATUS_ACTIVE));
+        $legals = $this->getLegals()->matching($criteria); 
+        return $legals[0];
+    }
    
     /**
      * Добавляет новый email к этому contact.
-     * @param $email
+     * @param $legal
      */   
     public function addLegal($legal) 
     {

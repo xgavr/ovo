@@ -26,7 +26,7 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        $this->blankManager->test();
+        $this->blankManager->invoice([]);
         return [];
     }
 }

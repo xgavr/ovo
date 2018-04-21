@@ -31,6 +31,12 @@ class OrderController extends AbstractActionController
      */
     private $orderManager;    
     
+    /**
+     * Менеджер бланков.
+     * @var Blank\Service\BlankManager 
+     */
+    private $blankManager;    
+    
     
     private $authService; 
     
@@ -41,12 +47,13 @@ class OrderController extends AbstractActionController
     private $rbacManager; 
     
     // Метод конструктора, используемый для внедрения зависимостей в контроллер.
-    public function __construct($entityManager, $orderManager, $authService, $rbacManager) 
+    public function __construct($entityManager, $orderManager, $authService, $rbacManager, $blankManager) 
     {
         $this->entityManager = $entityManager;
         $this->orderManager = $orderManager;
         $this->authService = $authService;
         $this->rbacManager = $rbacManager;
+        $this->blankManager = $blankManager;
     }    
     
     public function indexAction()
@@ -168,5 +175,87 @@ class OrderController extends AbstractActionController
             'bids' => $bids,
         ]);
     } 
+    
+    public function printAction()
+    {
+        $orderId = (int)$this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($orderId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        // Find the tax order ID
+        $order = $this->entityManager->getRepository(Order::class)
+                ->findOneById($orderId);
+        
+        if ($order == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+      
+        $bids = $this->entityManager->getRepository(Order::class)
+                    ->findBidOrder($order)->getResult();
+        
+        $data = [
+            'firmName' => '',
+            'firmAddress' => '',
+            'firmName' => '',
+            'firmInn' => '',
+            'firmKpp' => '',
+            'firmRs' => '',
+            'firmBik' => '',
+            'firmBank' => '',
+            'firmKs' => '',
+            'invoiceId' => $order->getId(),
+            'invoiceDate' => $order->getDateCreated(),
+            'clientName' => $order->getClient()->getLegalContact()->getActiveLegal()->getName(),
+            'clientConsignee' => '',
+            'itemsTotal' => count($bids),
+            'total_without_tax' => $order->getTotal(),
+            'taxTotal' => 'Без НДС',
+            'total' => $order->getTotal(),
+            'chief' => '',
+            'chiefAccount' => '',
+            'items' =>[],
+        ];
+        
+        foreach ($bids as $bid){
+            $data['items'][] = [
+                'goodName' => $bid->getGood()->getName(),
+                'unit' => '',
+                'quantity' => $bid->getNum(),
+                'price' => $bid->getPrice(),
+                'total' => $bid->getPrice()*$bid->getNum(),
+            ];
+        }
+        
+        $filename = $this->blankManager->invoice($data);
+        $output_filename = 'Счет на оплату №'.$order->getId().'.xls';
+        
+        if (file_exists($filename)){
+         
+            $response = new \Zend\Http\Response\Stream();
+            $response->setStream(fopen($filename, 'r'));
+            $response->setStatusCode(200);
+            $response->setStreamName($output_filename);
+            $headers = new \Zend\Http\Headers();
+            $headers->addHeaders(array(
+                'Content-Disposition' => 'attachment; filename="'.$output_filename.'"',
+                'Content-Type' => 'application/octet-stream',
+                'Content-Length' => filesize($filename),
+                'Expires' => '@0', // @0, because zf2 parses date as string to \DateTime() object
+                'Cache-Control' => 'must-revalidate',
+                'Pragma' => 'public'
+            ));
+
+            $response->setHeaders($headers);
+            
+//            unlink($filename);
+            return $response;
+        }    
+        return $this->redirect()->toRoute('order', ['action' => 'view', 'id' => $order->getId()]);
+    }
     
 }

@@ -10,6 +10,8 @@ namespace Company\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Application\Entity\Contact;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Description of Office

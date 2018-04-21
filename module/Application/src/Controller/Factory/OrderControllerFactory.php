@@ -12,6 +12,7 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 use Application\Controller\OrderController;
 use Application\Service\OrderManager;
 use User\Service\RbacManager;
+use Blank\Service\BlankManager;
 
 
 /**
@@ -28,8 +29,9 @@ class OrderControllerFactory implements FactoryInterface {
         $orderManager = $container->get(OrderManager::class);
         $authService = $container->get(\Zend\Authentication\AuthenticationService::class);
         $rbacManager = $container->get(RbacManager::class);
+        $blankManager = $container->get(BlankManager::class);
         
         // Инстанцируем контроллер и внедряем зависимости.
-        return new OrderController($entityManager, $orderManager, $authService, $rbacManager);
+        return new OrderController($entityManager, $orderManager, $authService, $rbacManager, $blankManager);
     }
 }
