@@ -24,15 +24,14 @@ $this->headScript()
     <div class="col-sm-9">
         <div id="section1">
             <h2>Офис</h2>
-            <p>
-                <button value="/offices/edit-form/<?= $office->getId() ?>" class="btn btn-default"
+            <div>
+                <button value="/offices/edit-form/<?= $office->getId() ?>" class="btn btn-default btn-xs"
                         data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                    Изменить
                     <span class="glyphicon glyphicon-edit" ></span>
-                </button>                                                            
-                
-            </p>
+                    Изменить
+                </button>                    
 
+            </div>
             <table class="table table-striped table-bordered">
                  <tr>
                     <th>ID:</th>
@@ -55,14 +54,15 @@ $this->headScript()
 
         <div id="section2">
             <h2>Контактные телефоны</h2>
-            <?php foreach ($office->getOtherContacts() as $contact):?>
-                <p>
-                    <button value="/contact/phone-form/<?= $contact->getId() ?>" class="btn btn-default"
+            <?php foreach ($office->getLegalContacts() as $contact):?>
+                <div>
+                    <button value="/contact/phone-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
                             data-toggle="modal" data-target="#modal-dialog" title="Добавить телефон">
-                        <span class="glyphicon glyphicon-phone" ></span>
-                        Добавить телефон
+                        <span class="glyphicon glyphicon-plus" ></span>
+                        телефон
                     </button>                    
-                </p>
+
+                </div>
                 <table class="table table-striped table-bordered">
                     <?php foreach ($contact->getPhones() as $phone): ?>
                         <tr>
@@ -89,14 +89,14 @@ $this->headScript()
         </div>
         <div id="section3">
             <h2>Электронная почта</h2>
-            <?php foreach ($office->getContacts() as $contact):?>
-                <p>
-                    <button value="/contact/email-form/<?= $contact->getId() ?>" class="btn btn-default"
-                            data-toggle="modal" data-target="#modal-dialog" title="Добавить электронную почту">
-                        <span class="glyphicon glyphicon-envelope" ></span>
-                        Добавить электронную почту
-                    </button>                    
-                </p>
+            <?php foreach ($office->getLegalContacts() as $contact):?>
+                <div>
+                    <button value="/contact/email-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
+                            data-toggle="modal" data-target="#modal-dialog" title="Добавить email">
+                        <span class="glyphicon glyphicon-plus" ></span>
+                        email
+                    </button>                                            
+                </div>     
                 <table class="table table-striped table-bordered">
                     <?php foreach ($contact->getEmails() as $email): ?>
                         <tr>
@@ -121,40 +121,15 @@ $this->headScript()
             <?php endforeach; ?>
         </div>
 
-        <div id="section4">
-            <h2>Мессенджеры</h2>
-            <?php foreach ($office->getContacts() as $contact):?>
-                <table class="table table-striped table-bordered">
-                    <tr>
-                       <td width="5%">Telegramm</td>
-                       <th> 
-                            <div class="pull-left">
-                               <?= $contact->getTelegramm() ?>
-                            </div>                                        
-                            <div class="pull-right">
-                                <button value="/contact/telegramm-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs"
-                                        data-toggle="modal" data-target="#modal-dialog" title="Изменить">
-                                    <span class="glyphicon glyphicon-edit" ></span>
-                                </button>                                                            
-                                <button value="/contact/delete-telegramm-form/<?= $contact->getId() ?>" class="btn btn-default btn-xs this-delete"
-                                        title="Удалить">
-                                    <span class="glyphicon glyphicon-remove" ></span>
-                                </button>                                                            
-                            </div>                                        
-                       </th>
-                    </tr>
-                </table>
-            <?php endforeach; ?>
-        </div>
         <div id="section5">
-            <h2>Адреса</h2>
+            <h3>Адреса</h3>
             <p>
                 <button value="/contact/address-form/<?= $office->getLegalContact()->getId() ?>" class="btn btn-default btn-xs"
                         data-toggle="modal" data-target="#modal-dialog" title="Добавить адрес">
                     <span class="glyphicon glyphicon-plus" ></span>
                     Добавить адрес
                 </button>                    
-            </p>                        
+            </p>            
             <table class="table table-striped table-bordered">
                 <?php if (count($office->getLegalContact()->getAddresses())):?>
                     <?php foreach ($office->getLegalContact()->getAddresses() as $address): ?>
@@ -186,9 +161,9 @@ $this->headScript()
             <h2>Юридические лица</h2>
             <?php foreach ($office->getLegalContacts() as $contact):?>
                 <p>
-                    <a class="btn btn-default" href="<?= $this->url('legals', 
+                    <a class="btn btn-default btn-xs" href="<?= $this->url('legals', 
                                         ['action'=>'legal', 'id'=>$contact->getId()]); ?>">
-                                    <span class="glyphicon glyphicon-pencil" ></span> <?= (count($contact->getLegals())) ? 'Изменить':'Добавить'; ?>
+                                    <span class="glyphicon glyphicon-piggy-bank" ></span> <?= (count($contact->getLegals())) ? 'Изменить':'Добавить'; ?>
                     </a>
                 </p>
                 <table class="table table-striped table-bordered">
@@ -198,11 +173,6 @@ $this->headScript()
                            <th class=""><?= $legal->getInn() ?></th>
                            <th class=""><?= $legal->getKpp() ?></th>
                        </tr>
-                       <tr>
-                           <td colspan="3">
-                               <?= $legal->getAddress() ?>
-                           </td>
-                       </tr>
                     <?php endforeach; ?>
                 </table>
             <?php endforeach; ?>
@@ -211,9 +181,7 @@ $this->headScript()
     <div class="col-sm-3" id="side-nav" >
         <ul class="nav nav-stacked nav-list affix">
             <li class="active"><a href="#section1">Офис</a></li>
-            <li><a href="#section2">Контактные телефоны</a></li>
-            <li><a href="#section3">Электронная почта</a></li>
-            <li><a href="#section3">Мессенджеры</a></li>
+            <li><a href="#section2">Контакты</a></li>
             <li><a href="#section3">Адреса</a></li>
             <li><a href="#section3">Юридические лица</a></li>
         </ul>
