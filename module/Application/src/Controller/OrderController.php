@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Order;
 use User\Entity\User;
+use Company\Entity\Office;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -198,12 +199,16 @@ class OrderController extends AbstractActionController
         $bids = $this->entityManager->getRepository(Order::class)
                     ->findBidOrder($order)->getResult();
         
+        $offices = $this->entityManager->getRepository(Office::class)
+                    ->findAll([]);
+        
+        $office = $offices[0];
+        
         $data = [
-            'firmName' => '',
-            'firmAddress' => '',
-            'firmName' => '',
-            'firmInn' => '',
-            'firmKpp' => '',
+            'firmName' => $office->getLegalContact()->getActiveLegal()->getName(),
+            'firmAddress' => $office->getLegalContact()->getActiveLegal()->getAddress(),
+            'firmInn' => $office->getLegalContact()->getActiveLegal()->getInn(),
+            'firmKpp' => $office->getLegalContact()->getActiveLegal()->getKpp(),
             'firmRs' => '',
             'firmBik' => '',
             'firmBank' => '',

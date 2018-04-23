@@ -40,7 +40,6 @@ class BlankManager {
         $data = [
             'firmName' => '',
             'firmAddress' => '',
-            'firmName' => '',
             'firmInn' => '',
             'firmKpp' => '',
             'firmRs' => '',
