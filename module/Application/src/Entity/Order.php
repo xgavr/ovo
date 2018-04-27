@@ -95,6 +95,11 @@ class Order {
         return $this->dateCreated;
     }
 
+    public function getDateCreatedFormat($format) 
+    {
+        return date($format, strtotime($this->dateCreated));
+    }
+
     public function setDateCreated($dateCreated) 
     {
         $this->dateCreated = $dateCreated;
