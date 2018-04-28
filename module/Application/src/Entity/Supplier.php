@@ -78,6 +78,13 @@ class Supplier {
     private $pricesettings;    
     
     /**
+    * @ORM\OneToMany(targetEntity="Application\Entity\Reserve", mappedBy="supplier")
+    * @ORM\JoinColumn(name="id", referencedColumnName="supplier_id")
+     */
+    private $reserves;
+
+    
+    /**
      * Constructor.
      */
     public function __construct() 
@@ -85,6 +92,8 @@ class Supplier {
         $this->contacts = new ArrayCollection();
         $this->raw = new ArrayCollection();
         $this->pricesettings = new ArrayCollection();
+        $this->reserves = new ArrayCollection();
+        
     }
     
     
@@ -279,5 +288,23 @@ class Supplier {
     {
         $this->pricesettings[] = $pricesettings;
     }
+    
+    /**
+     * Returns the array of reserve assigned to this.
+     * @return array
+     */
+    public function getReserves()
+    {
+        return $this->reserves;
+    }
+        
+    /**
+     * Assigns.
+     */
+    public function addReserve($reserve)
+    {
+        $this->reserves[] = $reserve;
+    }
+        
     
 }

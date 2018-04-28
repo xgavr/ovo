@@ -238,6 +238,14 @@ class Client {
         return $this->order;
     }
         
+    /**
+     * Assigns.
+     */
+    public function addOrder($order)
+    {
+        $this->order[] = $order;
+    }
+        
     /*
      * Возвращает связанный manager.
      * @return \User\Entity\User
@@ -257,13 +265,5 @@ class Client {
         $this->manager = $user;
         $user->addClient($this);
     }     
-        
-    /**
-     * Assigns.
-     */
-    public function addOrder($order)
-    {
-        $this->order[] = $order;
-    }
         
 }
