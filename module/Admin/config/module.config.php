@@ -36,7 +36,7 @@ return [
     ],
     'access_filter' => [
         'controllers' => [
-            \Controller\IndexController::class => [
+            Controller\IndexController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '+admin.manage']
             ],

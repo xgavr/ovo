@@ -267,63 +267,63 @@ return [
     ],
     'access_filter' => [
         'controllers' => [
-            \Controller\ClientController::class => [
+            Controller\ClientController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\ContactController::class => [
+            Controller\ContactController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\CurrencyController::class => [
+            Controller\CurrencyController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\GoodsController::class => [
+            Controller\GoodsController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\IndexController::class => [
+            Controller\IndexController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\OrderController::class => [
+            Controller\OrderController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\PriceController::class => [
+            Controller\PriceController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\PricesettingsController::class => [
+            Controller\PricesettingsController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\ProducerController::class => [
+            Controller\ProducerController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\RawController::class => [
+            Controller\RawController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '+raw.manage']
             ],
-            \Controller\RawpriceController::class => [
+            Controller\RawpriceController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '+raw.manage']
             ],
-            \Controller\RbController::class => [
+            Controller\RbController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
-            \Controller\ReserveController::class => [
+            Controller\ReserveController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '+supplier.manage']
             ],
-            \Controller\SupplierController::class => [
+            Controller\SupplierController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '+supplier.manage']
             ],
-            \Controller\ShopController::class => [
+            Controller\ShopController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
             ],
