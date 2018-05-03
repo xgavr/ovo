@@ -9,7 +9,7 @@ namespace Application\Controller\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Application\Controller\OrderController;
+use Application\Controller\ReserveController;
 use Application\Service\OrderManager;
 use User\Service\RbacManager;
 use Blank\Service\BlankManager;

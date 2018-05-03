@@ -90,19 +90,33 @@ class NavManager
             }
             
             if ($this->rbacManager->isGranted(null, 'supplier.manage')) {
-                $items[] = [
-                    'id' => 'supplier',
-                    'label' => 'Поставщики',
-                    'link'  => $url('supplier')
-                ];
-            }
-            
-            if ($this->rbacManager->isGranted(null, 'supplier.manage')) {
-                $items[] = [
+                $supplierDropdownItems = [];
+    
+                $supplierDropdownItems[] = [
+                            'id' => 'supplier',
+                            'label' => 'Поставщики',
+                            'link'  => $url('supplier')
+                        ];
+                
+                $supplierDropdownItems[] = [
                     'id' => 'raw',
                     'label' => 'Прайсы',
                     'link'  => $url('raw')
                 ];
+            
+                $supplierDropdownItems[] = [
+                            'id' => 'reserve',
+                            'label' => 'Заявки поставщикам',
+                            'link' => $url('reserve')
+                        ];
+
+                if (count($supplierDropdownItems)!=0) {
+                    $items[] = [
+                        'id' => 'supplier',
+                        'label' => 'Поставщики',
+                        'dropdown' => $supplierDropdownItems
+                    ];
+                }
             }
             
             //Предприятие

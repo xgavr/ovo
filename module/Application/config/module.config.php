@@ -267,10 +267,6 @@ return [
     ],
     'access_filter' => [
         'controllers' => [
-            \Admin\Controller\IndexController::class => [
-                // Allow access to authenticated users.
-                ['actions' => '*', 'allow' => '+admin.manage']
-            ],
             \Controller\ClientController::class => [
                 // Allow access to authenticated users.
                 ['actions' => '*', 'allow' => '@']
