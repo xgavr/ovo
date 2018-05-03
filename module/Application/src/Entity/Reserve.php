@@ -67,8 +67,8 @@ class Reserve {
     private $user;
         
     /**
-    * @ORM\OneToMany(targetEntity="Application\Entity\BidReserve", mappedBy="orders")
-    * @ORM\JoinColumn(name="id", referencedColumnName="order_id")
+    * @ORM\OneToMany(targetEntity="Application\Entity\BidReserve", mappedBy="reserve")
+    * @ORM\JoinColumn(name="id", referencedColumnName="reserve_id")
      */
     private $bid;
     

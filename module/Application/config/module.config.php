@@ -77,6 +77,20 @@ return [
                     ],
                 ],
             ],        
+            'reserve' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/reserve[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]*'
+                    ],
+                    'defaults' => [
+                        'controller'    => Controller\ReserveController::class,
+                        'action'        => 'index',
+                    ],
+                ],
+            ],        
             'client' => [
                 'type'    => Segment::class,
                 'options' => [
@@ -246,26 +260,96 @@ return [
             Controller\RawController::class => Controller\Factory\RawControllerFactory::class,
             Controller\RawpriceController::class => Controller\Factory\RawpriceControllerFactory::class,
             Controller\RbController::class => Controller\Factory\RbControllerFactory::class,
+            Controller\ReserveController::class => Controller\Factory\ReserveControllerFactory::class,
             Controller\SupplierController::class => Controller\Factory\SupplierControllerFactory::class,
             Controller\ShopController::class => Controller\Factory\ShopControllerFactory::class,
         ],
+    ],
+    'access_filter' => [
+        'controllers' => [
+            \Admin\Controller\IndexController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+admin.manage']
+            ],
+            \Controller\ClientController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\ContactController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\CurrencyController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\GoodsController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\IndexController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\OrderController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\PriceController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\PricesettingsController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\ProducerController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\RawController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+raw.manage']
+            ],
+            \Controller\RawpriceController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+raw.manage']
+            ],
+            \Controller\RbController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+            \Controller\ReserveController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+supplier.manage']
+            ],
+            \Controller\SupplierController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+supplier.manage']
+            ],
+            \Controller\ShopController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '@']
+            ],
+        ]
     ],
     'service_manager' => [
         'factories' => [
             Service\ClientManager::class => Service\Factory\ClientManagerFactory::class,
             Service\ContactManager::class => Service\Factory\ContactManagerFactory::class,
             Service\CurrencyManager::class => Service\Factory\CurrencyManagerFactory::class,
-            Service\SupplierManager::class => Service\Factory\SupplierManagerFactory::class,
-            Service\ShopManager::class => Service\Factory\ShopManagerFactory::class,
+            Service\GoodsManager::class => Service\Factory\GoodsManagerFactory::class,
             Service\ProducerManager::class => Service\Factory\ProducerManagerFactory::class,
             Service\RbManager::class => Service\Factory\RbManagerFactory::class,
-            Service\GoodsManager::class => Service\Factory\GoodsManagerFactory::class,
+            Service\NavManager::class => Service\Factory\NavManagerFactory::class,
             Service\OrderManager::class => Service\Factory\OrderManagerFactory::class,
             Service\PostManager::class => Service\Factory\PostManagerFactory::class,
             Service\PriceManager::class => Service\Factory\PriceManagerFactory::class,
             Service\RawManager::class => Service\Factory\RawManagerFactory::class,
-            Service\NavManager::class => Service\Factory\NavManagerFactory::class,
             Service\RbacAssertionManager::class => Service\Factory\RbacAssertionManagerFactory::class,  
+            Service\ReserveManager::class => Service\Factory\ReserveManagerFactory::class,
+            Service\ShopManager::class => Service\Factory\ShopManagerFactory::class,
+            Service\SupplierManager::class => Service\Factory\SupplierManagerFactory::class,
             'doctrine.cache.doctrine_cache' => Service\Factory\DoctrineCacheFactory::class,
         ],
     ],    

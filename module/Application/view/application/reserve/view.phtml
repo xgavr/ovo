@@ -1,0 +1,96 @@
+<?php
+$this->headTitle('Заказ №'. $order->getId() .' от  '.$order->getDateCreatedFormat('d.m.Y').' '.$order->getClient()->getName());
+
+$this->mainMenu()->setActiveItemId('order');
+
+$this->pageBreadcrumbs()->setItems([
+                'Главная'=>$this->url('home'),
+                'Заказы'=>$this->url('order'),
+                'Заказ №'. $order->getId() .' от  '.$order->getDateCreatedFormat('d.m.Y').' '.$order->getClient()->getName() => $this->url('order', ['action' => 'view', 'id' => $order->getId()]),
+                ]);
+  
+?>
+
+<h1>
+    <?= $this->escapeHtml($order->getClient()->getName()); ?>
+    <br/>
+    <?= $this->escapeHtml('Заказ №'.$order->getId().' от '. date('d-m-Y H:i:s', strtotime($order->getDateCreated()))); ?>    
+</h1>
+
+<?php if ($order->getClient()->getLegalContact()->getActiveLegal()):?>
+    <div class="row">
+        <div class="col-md-offset-10">
+            <a class="btn btn-info btn-xs" href="<?= $this->url('order', 
+                    ['action'=>'print', 'id'=>$order->getId()]); ?>">
+                <span class="glyphicon glyphicon-download" ></span> Счет на оплату
+            </a>        
+        </div>    
+    </div>
+<?php else: ?>
+    <div class="row">
+        <div class="col-md-offset-9">
+            <a class="btn btn-warning btn-xs" href="<?= $this->url('legals', 
+                    ['action'=>'legal', 'id'=>$order->getClient()->getLegalContact()->getId()]); ?>">
+                <span class="glyphicon glyphicon-piggy-bank" ></span>
+                Заполните реквизиты юридического лица
+            </a>        
+        </div>    
+    </div>
+<?php endif;?>
+
+<table class="table table-striped table-bordered">
+
+   <tr>
+        <th>ID</th>
+        <th>Товар</th>
+        <th>Количество</th>
+        <th>Цена</th>
+        <th>Сумма</th>
+        <th>Действие</th>
+    </tr>
+    
+    <?php foreach ($bids as $row): ?>
+    
+    <tr>
+        <td>
+            <?= $this->escapeHtml($row->getId()); ?>
+        </td>
+        <td>
+            <?= $this->escapeHtml($row->getGood()->getName()); ?>
+        </td>
+        <td align="right">
+            <?= $this->escapeHtml($row->getNum()); ?>
+        </td>
+        <td align="right">
+            <?= $this->escapeHtml(number_format($row->getPrice(), 2, ',', ' ')); ?>
+        </td>
+        <td align="right">
+            <?= $this->escapeHtml(number_format($row->getNum()*$row->getPrice(), 2, ',', ' ')); ?>
+        </td>
+        <td>
+        </td>    
+    </tr>
+        
+    <?php endforeach; ?>   
+    <tr>
+        <th></th>
+        <th align="right">
+            Всего:
+        </th>
+        <th align="right">
+            
+        </th>
+        <th align="right">
+            
+        </th>
+        <td align="right">
+            <b>
+                <?= $this->escapeHtml(number_format($order->getTotal(), 2, ',', ' ')); ?>
+            </b>
+        </td>
+        <th>
+            
+        </th>
+    </tr>
+    
+</table>

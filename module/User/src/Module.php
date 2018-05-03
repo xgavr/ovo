@@ -34,6 +34,17 @@ class Module
         // Register the event listener method. 
         $sharedEventManager->attach(AbstractActionController::class, 
                 MvcEvent::EVENT_DISPATCH, [$this, 'onDispatch'], 100);
+        
+       $sessionManager =
+            $event->getApplication()->getServiceManager()
+              ->get('Zend\Session\SessionManager');
+
+        try {
+            $sessionManager->start();
+            return;
+        } catch (\Exception $e) {
+            session_unset();
+        }        
     }
 
 

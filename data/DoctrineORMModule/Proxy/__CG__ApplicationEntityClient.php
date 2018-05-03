@@ -367,6 +367,17 @@ class Client extends \Application\Entity\Client implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function addOrder($order)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addOrder', [$order]);
+
+        return parent::addOrder($order);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getManager()
     {
 
@@ -384,17 +395,6 @@ class Client extends \Application\Entity\Client implements \Doctrine\ORM\Proxy\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setManager', [$user]);
 
         return parent::setManager($user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addOrder($order)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addOrder', [$order]);
-
-        return parent::addOrder($order);
     }
 
 }
