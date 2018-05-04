@@ -64,10 +64,10 @@ class Supplier extends \Application\Entity\Supplier implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'name', 'info', 'status', 'address', 'dateCreated', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'contacts', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'raw', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'pricesettings'];
+            return ['__isInitialized__', 'id', 'name', 'info', 'status', 'address', 'dateCreated', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'contacts', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'raw', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'pricesettings', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'reserves'];
         }
 
-        return ['__isInitialized__', 'id', 'name', 'info', 'status', 'address', 'dateCreated', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'contacts', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'raw', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'pricesettings'];
+        return ['__isInitialized__', 'id', 'name', 'info', 'status', 'address', 'dateCreated', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'contacts', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'raw', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'pricesettings', '' . "\0" . 'Application\\Entity\\Supplier' . "\0" . 'reserves'];
     }
 
     /**
@@ -439,6 +439,28 @@ class Supplier extends \Application\Entity\Supplier implements \Doctrine\ORM\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPricesettings', [$pricesettings]);
 
         return parent::addPricesettings($pricesettings);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getReserves()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getReserves', []);
+
+        return parent::getReserves();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addReserve($reserve)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addReserve', [$reserve]);
+
+        return parent::addReserve($reserve);
     }
 
 }
