@@ -10,7 +10,7 @@ namespace Application\Service\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Application\Service\OrderManager;
+use Application\Service\reserveManager;
 /**
  * Description of OrderManagerFactory
  *

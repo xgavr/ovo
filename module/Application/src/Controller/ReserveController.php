@@ -10,6 +10,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Order;
+use Application\Entity\Reserve;
 use User\Entity\User;
 use Company\Entity\Office;
 
@@ -28,9 +29,9 @@ class ReserveController extends AbstractActionController
     
     /**
      * Менеджер товаров.
-     * @var Application\Service\OrderManager 
+     * @var Application\Service\ReserveManager 
      */
-    private $orderManager;    
+    private $reserveManager;    
     
     /**
      * Менеджер бланков.
@@ -38,22 +39,12 @@ class ReserveController extends AbstractActionController
      */
     private $blankManager;    
     
-    
-    private $authService; 
-    
-    /**
-     * RBAC manager.
-     * @var User\Service\RbacManager
-     */
-    private $rbacManager; 
-    
+        
     // Метод конструктора, используемый для внедрения зависимостей в контроллер.
-    public function __construct($entityManager, $orderManager, $authService, $rbacManager, $blankManager) 
+    public function __construct($entityManager, $reserveManager, $blankManager) 
     {
         $this->entityManager = $entityManager;
-        $this->orderManager = $orderManager;
-        $this->authService = $authService;
-        $this->rbacManager = $rbacManager;
+        $this->reserveManager = $reserveManager;
         $this->blankManager = $blankManager;
     }    
     
@@ -61,32 +52,8 @@ class ReserveController extends AbstractActionController
     {
         $page = $this->params()->fromQuery('page', 1);
         
-        if (!$this->rbacManager->isGranted(null, 'order.any.manage')) {
-            if (!$this->rbacManager->isGranted(null, 'order.own.manage')){
-                if (!$this->rbacManager->isGranted(null, 'order.client.manage')){
-                    return $this->redirect()->toRoute('not-authorized');
-                } else {
-                    $client = null;
-                    $contacts = $this->currentUser()->getContacts();
-                    foreach ($contacts as $contact){
-                        $client = $contact->getClient();
-                        if ($client) break;
-                    }
-                    if ($client){
-                        $query = $this->entityManager->getRepository(Order::class)
-                                    ->findClientOrder($client);
-                    } else {
-                        throw new \Exception('Не определен покупатель у пользователя ');
-                    }   
-                }
-            } else {
-                $query = $this->entityManager->getRepository(Order::class)
-                            ->findAllOrder($this->currentUser());                
-            }
-        } else {
-            $query = $this->entityManager->getRepository(Order::class)
-                        ->findAllOrder();
-        }    
+        $query = $this->entityManager->getRepository(Reserve::class)
+                        ->findAllReserve();
                         
         $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
         $paginator = new Paginator($adapter);
@@ -94,8 +61,8 @@ class ReserveController extends AbstractActionController
         $paginator->setCurrentPageNumber($page);        
         // Визуализируем шаблон представления.
         return new ViewModel([
-            'order' => $paginator,
-            'orderManager' => $this->orderManager
+            'reserves' => $paginator,
+            'reserveManager' => $this->reserveManager
         ]);  
     }
     

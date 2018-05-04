@@ -30,7 +30,7 @@ class ReserveRepository extends EntityRepository{
                 ;
         
         if ($user){
-            $queryBuilder->join("o.client", 'c', 'WITH')
+            $queryBuilder->join("o.supplier", 'c', 'WITH')
                     ->where('c.manager = ?1')
                     ->setParameter('1', $user)
                     ;

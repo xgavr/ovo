@@ -10,8 +10,7 @@ namespace Application\Controller\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Application\Controller\ReserveController;
-use Application\Service\OrderManager;
-use User\Service\RbacManager;
+use Application\Service\ReserveManager;
 use Blank\Service\BlankManager;
 
 
@@ -26,12 +25,10 @@ class ReserveControllerFactory implements FactoryInterface {
                      $requestedName, array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
-        $orderManager = $container->get(OrderManager::class);
-        $authService = $container->get(\Zend\Authentication\AuthenticationService::class);
-        $rbacManager = $container->get(RbacManager::class);
+        $reserveManager = $container->get(ReserveManager::class);
         $blankManager = $container->get(BlankManager::class);
         
         // Инстанцируем контроллер и внедряем зависимости.
-        return new ReserveController($entityManager, $orderManager, $authService, $rbacManager, $blankManager);
+        return new ReserveController($entityManager, $reserveManager, $blankManager);
     }
 }
