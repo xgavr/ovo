@@ -50,6 +50,11 @@ class AuthManager
         $this->rbacManager = $rbacManager;
     }
     
+    public function isLogin()
+    {
+        return $this->authService->hasIdentity();
+    }
+    
     /**
      * Performs a login attempt. If $rememberMe argument is true, it forces the session
      * to last for one month (otherwise the session expires on one hour).

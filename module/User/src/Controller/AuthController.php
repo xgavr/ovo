@@ -61,6 +61,9 @@ class AuthController extends AbstractActionController
             throw new \Exception("Too long redirectUrl argument passed");
         }
 
+        if ($this->authManager->isLogin()){
+            goto isLogin;
+        }
         // Check if we do not have users in database at all. If so, create
         // the 'Admin' user.
         $this->userManager->createAdminUserIfNotExists();
@@ -93,6 +96,7 @@ class AuthController extends AbstractActionController
                 // Check result.
                 if ($result->getCode() == Result::SUCCESS) {
                     
+                    isLogin:
                     // Get redirect URL.
                     $redirectUrl = $this->params()->fromPost('redirect_url', '');
 
