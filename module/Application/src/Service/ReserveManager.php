@@ -9,11 +9,13 @@ namespace Application\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Application\Entity\Bid;
+use Application\Entity\BidReserve;
 use Application\Entity\Order;
+use Application\Entity\Reserve;
 use Application\Entity\Goods;
 use Application\Entity\Cart;
 use User\Entity\User;
-use Application\Entity\Client;
+use Application\Entity\Supplier;
 
 /**
  * Description of OrderService
@@ -38,9 +40,9 @@ class ReserveManager
         $this->authService = $authService;
     }
     
-    public function addNewBid($order, $data, $flushnow=true)
+    public function addNewBid($reserve, $data, $flushnow=true)
     {
-        $bid = new Bid();
+        $bid = new BidReserve();
         $bid->setNum($data['num']);
         $bid->setPrice($data['price']);
         $currentDate = date('Y-m-d H:i:s');        
@@ -69,19 +71,19 @@ class ReserveManager
         }    
     }
     
-    public function addNewOrder($data) 
+    public function addNewReserve($data) 
     {
         // Создаем новую сущность.
-        $order = new Order();
+        $order = new Reserve();
         $order->setComment($data['comment']);
         $order->setTotal(round(0, 2));
         
-        if ($data['client'] instanceof Client){
-            $order->setClient($data['client']);            
+        if ($data['supplier'] instanceof Supplier){
+            $order->setSupplier($data['supplier']);            
         } else {
-            $client = $this->entityManager->getRepository(Client::class)
-                        ->findOneById($data['client']);        
-            $order->setClient($client);
+            $client = $this->entityManager->getRepository(Supplier::class)
+                        ->findOneById($data['supplier']);        
+            $order->setClient($supplier);
         }    
         
         $currentUser = $this->entityManager->getRepository(User::class)
@@ -103,51 +105,51 @@ class ReserveManager
         return $order;
     }   
     
-    public function updateOrderTotal($order)
+    public function updateReserveTotal($reserve)
     {
-        $result = $this->entityManager->getRepository(Bid::class)
-                ->getOrderNum($order);
+        $result = $this->entityManager->getRepository(BidReserve::class)
+                ->getReserveNum($reserve);
         
-        $order->setTotal($result[0]['total']);
+        $reserve->setTotal($result[0]['total']);
         
-        $this->entityManager->persist($order);
+        $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
     }
     
-    public function updateOrder($order, $data) 
+    public function updateReserve($reserve, $data) 
     {
         $order->setComment($data['comment']);
 
-        $this->entityManager->persist($order);
+        $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
     }    
     
-    public function removeOrder($order) 
+    public function removeReserve($reserve) 
     {   
-        $bids = $this->entityManager->getRepository(Order::class)
-                    ->findBidOrder($order)->getResult();
+        $bids = $this->entityManager->getRepository(Reserve::class)
+                    ->findBidReserve($reserve)->getResult();
         
         foreach ($bids as $bid){
             $this->entityManager->remove($bid);
         }
         
-        $this->entityManager->remove($order);
+        $this->entityManager->remove($reserve);
         
         $this->entityManager->flush();
     }    
 
     /*
-     * @var Application\Entity\Clent $client
-     * @var Application\Entity\Cart $carts
+     * @var Application\Entity\Supplier $client
+     * @var Application\Entity\Order $order
      * 
      */
-    public function checkoutClient($client)
+    public function checkout($order = null)
     {
         
-        $carts = $this->entityManager->getRepository(Cart::class)
-                    ->findClientCart($client)->getResult();
+        $carts = $this->entityManager->getRepository(Bid::class)
+                    ->findToReserve($order)->getResult();
         
         $order = null;
         if (count($carts)){         

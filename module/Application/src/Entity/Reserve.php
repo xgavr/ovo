@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Description of App
  * @ORM\Entity(repositoryClass="\Application\Repository\ReserveRepository")
- * @ORM\Table(name="orders")
+ * @ORM\Table(name="reserve")
  * @author Daddy
  */
 class Reserve {

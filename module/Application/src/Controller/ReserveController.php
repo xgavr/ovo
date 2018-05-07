@@ -54,7 +54,7 @@ class ReserveController extends AbstractActionController
         
         $query = $this->entityManager->getRepository(Reserve::class)
                         ->findAllReserve();
-                        
+
         $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
         $paginator = new Paginator($adapter);
         $paginator->setDefaultItemCountPerPage(10);        

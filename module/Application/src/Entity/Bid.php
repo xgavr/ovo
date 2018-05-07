@@ -9,6 +9,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Description of Bid
@@ -57,6 +58,20 @@ class Bid {
      */
     private $order;
     
+    /**
+     * @ORM\ManyToMany(targetEntity="\Company\Entity\BidReserve", inversedBy="bids")
+     * @ORM\JoinTable(name="bid_bid_reserve",
+     *      joinColumns={@ORM\JoinColumn(name="bid_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="bid_reserve_id", referencedColumnName="id")}
+     *      )
+     */
+   private $bidReserves;
+    
+   
+   public function __construct() {
+      $this->bidReserves = new ArrayCollection();
+   }
+   
     
     public function getId() 
     {
@@ -163,5 +178,25 @@ class Bid {
         $this->order = $order;
         $order->addBid($this);
     }     
-        
+
+    public function getBidReserves() 
+    {
+      return $this->bidReserves;
+    }
+
+    /**
+     * Добавляет новый bidReserve к этому bid.
+     * @param $bidReserve
+     */   
+    public function addBidReserve($bidReserve) 
+    {
+        $this->bidReserves[] = $bidReserve;
+    }       
+    
+    // Удаляет связь между этим bidReserve и заданным bid.
+    public function removeBidReserveAssociation($bidReserve) 
+    {
+        $this->bidReseves->removeElement($bidReserve);
+    }    
+    
 }

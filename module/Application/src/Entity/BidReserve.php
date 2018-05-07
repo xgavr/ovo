@@ -9,6 +9,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Description of Bid
@@ -57,6 +58,16 @@ class BidReserve {
      */
     private $reserve;
     
+    /**
+     * @ORM\ManyToMany(targetEntity="\Application\Entity\Bid", mappedBy="bidReserves")
+     */
+    private $bids;
+    
+    public function __construct() 
+    {
+        $this->bids = new ArrayCollection();
+    }
+        
     
     public function getId() 
     {
@@ -163,5 +174,26 @@ class BidReserve {
         $this->reserve = $reserve;
         $reserve->addBid($this);
     }     
+    
+    /*
+     * Возвращает связанный bid.
+     * @return \Application\Entity\Bid
+     */
+    
+    public function getBids() 
+    {
+        return $this->bids;
+    }
+
+    /**
+     * Задает связанный bid.
+     * @param \Application\Entity\Bid $bid
+     */    
+    public function addBid($bid) 
+    {
+        $this->bids[] = $bid;
+        $bid->removeBidReserveAssociation($bid);
+        $bid->addBidReserve($this);
+    }         
         
 }
