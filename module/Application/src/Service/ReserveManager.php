@@ -148,11 +148,10 @@ class ReserveManager
     public function checkout($order = null)
     {
         
-        $carts = $this->entityManager->getRepository(Bid::class)
+        $bids = $this->entityManager->getRepository(BidReserve::class)
                     ->findToReserve($order)->getResult();
         
-        $order = null;
-        if (count($carts)){         
+        if (count($bids)){         
             $orderData = ['client' => $client];
             $order = $this->addNewOrder($orderData);
 

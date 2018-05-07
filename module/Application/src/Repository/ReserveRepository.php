@@ -11,6 +11,7 @@ namespace Application\Repository;
 use Doctrine\ORM\EntityRepository;
 use Application\Entity\Reserve;
 use Application\Entity\BidReserve;
+use Application\Entity\Bid;
 /**
  * Description of OrderRepository
  *
@@ -115,5 +116,26 @@ class ReserveRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
     }
     
-    
+    /*
+     *  Application\Entity\Order $order
+     */
+    public function findToReserve($order = null)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('r')
+                ->from(Bid::class, 'r')
+                ;
+        
+        if ($order){
+            $queryBuilder->where('r.order = ?1')
+                    ->setParameter('1', $order->getId())
+                ;
+        }
+        
+        return $queryBuilder->getQuery()->getResult();
+        
+    }
 }
