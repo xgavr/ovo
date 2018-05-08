@@ -8,12 +8,10 @@
 namespace Application\Service;
 
 use Zend\ServiceManager\ServiceManager;
-use Application\Entity\Bid;
 use Application\Entity\BidReserve;
 use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\Goods;
-use Application\Entity\Cart;
 use User\Entity\User;
 use Application\Entity\Supplier;
 
@@ -60,7 +58,7 @@ class ReserveManager
                 ->findOneByEmail($this->authService->getIdentity());
         $bid->setUser($currentUser);  
         
-        $bid->setOrder($order);
+        $bid->setReserve($reserve);
         
         // Добавляем сущность в менеджер сущностей.
         $this->entityManager->persist($bid);
@@ -107,6 +105,18 @@ class ReserveManager
         return $reserve;
     }   
     
+    public function getReserve($supplier)
+    {
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneBy(['supplier' => $supplier, 'status' => Reserve::STATUS_NEW]);
+        
+        if ($reserve){
+           return $reserve; 
+        }
+        
+        return $this->addNewReserve(['supplier' => $supplier]);
+    }
+    
     public function updateReserveTotal($reserve)
     {
         $result = $this->entityManager->getRepository(BidReserve::class)
@@ -142,6 +152,30 @@ class ReserveManager
         $this->entityManager->flush();
     }    
 
+    /*
+     * $var array $params
+     * @var Application\Entity\Supplier $supplier
+     * $var Application\Entity\Bid $bid
+     * $var Application\Entity\Goods $good
+     */
+    public function addWork($params)
+    {
+        if ($params['supplier']){
+            $reserve = $this->getReserve($params['supplier']);
+            if ($reserve){
+                $this->addNewBid($reserve, 
+                        [
+                            'num' => $params['num'],
+                            'good' => $params['good'],
+                            'price' => $params['price'],
+                        ]
+                   );
+            }
+        }
+        
+        return;
+    }
+    
     /*
      * @var Application\Entity\Order $order
      * 

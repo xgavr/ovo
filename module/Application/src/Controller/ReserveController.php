@@ -13,6 +13,7 @@ use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\BidReserve;
 use Application\Entity\Rawprice;
+use Application\Entity\Supplier;
 use Company\Entity\Office;
 use Zend\View\Model\JsonModel;
 
@@ -57,6 +58,28 @@ class ReserveController extends AbstractActionController
         
     }
     
+    public function addWorkAction()
+    {
+        if ($this->getRequest()->isPost()) {
+            
+            // Получаем POST-данные.
+            $data = $this->params()->fromPost();
+            
+            $supplier = $this->entityManager->getRepository(Supplier::class)
+                    ->findOneById($data['supplier']);
+            
+            if ($supplier){
+                $data['supplier'] = $supplier;
+                //$this->reverseManager->addWork($data);                        
+            }    
+        }
+                                
+        return new JsonModel([
+            'bid' => $data['bid'],
+        ]);        
+        
+    }
+
     public function workContentAction()
     {
         
@@ -85,10 +108,12 @@ class ReserveController extends AbstractActionController
                 $rawprice = $this->entityManager->getRepository(Rawprice::class)
                     ->findMinPriceRawprice($row->getGood());
                 
+                $bid['good_id'] = $row->getGood()->getId();
                 $bid['name'] = $row->getGood()->getName();
                 $bid['code'] = $row->getGood()->getCode();
                 $bid['producer'] = $row->getGood()->getProducer()->getName();
                 $bid['price'] = $rawprice->getPrice();
+                $bid['supplier_id'] = $rawprice->getRaw()->getSupplier()->getId();
                 $bid['supplier'] = $rawprice->getRaw()->getSupplier()->getName();
             };    
             $bids[] = $bid;

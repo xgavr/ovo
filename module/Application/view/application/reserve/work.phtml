@@ -92,7 +92,7 @@ $this->headScript()
         }
         btn += ' aria-label="Left Align"'; 
         btn += ' id="reserve_index_add_work_' + row.id+'"';
-        btn += ' onClick="addWork({good: '+row.id+', price: '+row.price+'})"';
+        btn += ' onClick="addWork({id:'+row.id+', supplier: '+row.supplier_id+', good: '+row.good_id+', price: '+row.price+'})"';
         if (row.num > row.reserved){
             btn += '>';
         } else {
@@ -116,22 +116,22 @@ $this->headScript()
     }
     
     var addWork = function(data){
-        data.num = $('#num'+data.good).val();
+        data.num = $('#num'+data.id).val();
         $.post(
             '/reserve/add-work',
             data,
-            addCartSuccess
+            addWorkSuccess
         );
     };
     
     function addWorkSuccess(data)
     {
-        if (data.num){  
-            $('#nav_cart_badge').html(data.num);
-        }  
-        if (data.good){
-            $('#reserve_index_add_work_'+data.good).removeClass('btn-default');
-            $('#reserve_index_add_work_'+data.good).addClass('btn-success');
-        }
+//        if (data.num){  
+//            $('#nav_cart_badge').html(data.num);
+//        }  
+//        if (data.good){
+//            $('#reserve_index_add_work_'+data.good).removeClass('btn-default');
+//            $('#reserve_index_add_work_'+data.good).addClass('btn-success');
+//        }
     }
 </script>
