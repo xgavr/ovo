@@ -36,6 +36,11 @@ class Bid {
     protected $num;
 
     /**
+     * @ORM\Column(name="reserved")   
+     */
+    protected $reserved;
+
+    /**
      * @ORM\Column(name="date_created")  
      */
     protected $dateCreated;    
@@ -59,7 +64,7 @@ class Bid {
     private $order;
     
     /**
-     * @ORM\ManyToMany(targetEntity="\Company\Entity\BidReserve", inversedBy="bids")
+     * @ORM\ManyToMany(targetEntity="\Application\Entity\BidReserve", inversedBy="bids")
      * @ORM\JoinTable(name="bid_bid_reserve",
      *      joinColumns={@ORM\JoinColumn(name="bid_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="bid_reserve_id", referencedColumnName="id")}
@@ -101,6 +106,16 @@ class Bid {
     public function setNum($num) 
     {
         $this->num = $num;
+    }     
+    
+    public function getReserved() 
+    {
+        return $this->reserved;
+    }
+
+    public function setReserved($reserved) 
+    {
+        $this->reserved = $reserved;
     }     
     
     /**

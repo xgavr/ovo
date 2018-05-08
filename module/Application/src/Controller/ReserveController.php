@@ -11,8 +11,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Order;
 use Application\Entity\Reserve;
-use User\Entity\User;
+use Application\Entity\BidReserve;
 use Company\Entity\Office;
+use Zend\View\Model\JsonModel;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -47,6 +48,51 @@ class ReserveController extends AbstractActionController
         $this->reserveManager = $reserveManager;
         $this->blankManager = $blankManager;
     }    
+    
+    public function workAction()
+    {
+        return new ViewModel([
+        ]);          
+        
+    }
+    
+    public function workContentAction()
+    {
+        
+        $q = $this->params()->fromQuery('search', '');
+        $offset = $this->params()->fromQuery('offset');
+        $limit = $this->params()->fromQuery('limit');
+        
+        $query = $this->entityManager->getRepository(BidReserve::class)
+                    ->findToReserve(null, $q);            
+        
+        
+        if ($offset) $query->setFirstResult( $offset );
+        if ($limit) $query->setMaxResults( $limit );
+        
+        $result = $query->getResult();
+        $total = count($result);
+        $bids = [];
+        foreach ($result as $row){
+            $bid = [
+                'id' => $row->getId(),
+                'num' => $row->getNum(),
+                'reserved' => $row->getReserved(),
+            ]; 
+            if ($row->getGood()){
+                $bid['name'] = $row->getGood()->getName();
+                $bid['code'] = $row->getGood()->getCode();
+                $bid['producer'] = $row->getGood()->getProducer()->getName();
+                $bid['rawprice'] = $row->getGood()->getRawprice();
+            };    
+            $bids[] = $bid;
+        }
+        
+        return new JsonModel([
+            'total' => $total,
+            'rows' => $bids,
+        ]);          
+    }
     
     public function indexAction()
     {

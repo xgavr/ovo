@@ -244,6 +244,22 @@ class Goods {
     }
         
     /**
+     * Returns the rawprice with min price assigned to this.
+     * @return array
+     */
+    public function getMinRawprice()
+    {
+        $rawprices = $this->rawprice->toArray();
+        $result = $rawprices[0];
+//        foreach($rawprices as $rawprice){
+//            if ($result->getPrice() > $rawprice->getPrice()){
+//                $result = $rawprice;
+//            }
+//        }
+        return $result;
+    }
+
+    /**
      * Assigns.
      */
     public function addRawprice($rawprice)

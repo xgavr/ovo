@@ -16,7 +16,8 @@ class Version20180507160200 extends AbstractMigration
     public function up(Schema $schema)
     {
         // this up() migration is auto-generated, please modify it to your needs
-
+        $table = $schema->getTable('bid');
+        $table->addColumn('reserved', 'float', ['notnull'=>true]); 
     }
 
     /**
@@ -25,6 +26,6 @@ class Version20180507160200 extends AbstractMigration
     public function down(Schema $schema)
     {
         // this down() migration is auto-generated, please modify it to your needs
-
+        $table->dropColumn('reserved');
     }
 }

@@ -105,6 +105,12 @@ class NavManager
                 ];
             
                 $supplierDropdownItems[] = [
+                    'id' => 'work',
+                    'label' => 'Обработка заявок',
+                    'link'  => $url('reserve', ['action' => 'work'])
+                ];
+            
+                $supplierDropdownItems[] = [
                             'id' => 'reserve',
                             'label' => 'Заявки поставщикам',
                             'link' => $url('reserve')

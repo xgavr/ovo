@@ -78,25 +78,30 @@ class OrderRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
         
     }
-    
+
     /*
-     * @var Apllication\Entity\Order
+     *  Application\Entity\Order $order
      */
-    public function findBidOrder($order)
+    public function findToReserve($order = null, $search = null)
     {
         $entityManager = $this->getEntityManager();
 
         $queryBuilder = $entityManager->createQueryBuilder();
 
-        $queryBuilder->select('c')
-            ->from(Bid::class, 'c')
-            ->where('c.order = ?1')    
-            ->orderBy('c.id')
-            ->setParameter('1', $order->getId())    
+        $queryBuilder->select('r')
+                ->from(Bid::class, 'r')
+                ->where('(r.num - r.reserved) > 0')
                 ;
-
+        
+        if ($order){
+            $queryBuilder->where('r.order = ?1')
+                    ->setParameter('1', $order->getId())
+                ;
+        }
+        
         return $queryBuilder->getQuery();
-    }        
+        
+    }
     
     /*
      * @var Application\Entyti\Goods

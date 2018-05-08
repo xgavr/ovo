@@ -68,41 +68,43 @@ class ReserveManager
         // Применяем изменения к базе данных.
         if ($flushnow){
             $this->entityManager->flush(); 
-        }    
+        }   
+        
+        return $bid;
     }
     
     public function addNewReserve($data) 
     {
         // Создаем новую сущность.
-        $order = new Reserve();
-        $order->setComment($data['comment']);
-        $order->setTotal(round(0, 2));
+        $reserve = new Reserve();
+        $reserve->setComment($data['comment']);
+        $reserve->setTotal(round(0, 2));
         
         if ($data['supplier'] instanceof Supplier){
-            $order->setSupplier($data['supplier']);            
+            $reserve->setSupplier($data['supplier']);            
         } else {
-            $client = $this->entityManager->getRepository(Supplier::class)
+            $reserve = $this->entityManager->getRepository(Supplier::class)
                         ->findOneById($data['supplier']);        
-            $order->setClient($supplier);
+            $reserve->setClient($supplier);
         }    
         
         $currentUser = $this->entityManager->getRepository(User::class)
                 ->findOneByEmail($this->authService->getIdentity());
-        $order->setUser($currentUser);
+        $reserve->setUser($currentUser);
         
-        $order->setStatus(Order::STATUS_NEW);
+        $reserve->setStatus(Order::STATUS_NEW);
         
         $currentDate = date('Y-m-d H:i:s');        
-        $order->setDateCreated($currentDate);
+        $reserve->setDateCreated($currentDate);
         
         
         // Добавляем сущность в менеджер сущностей.
-        $this->entityManager->persist($order);
+        $this->entityManager->persist($reserve);
         
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
         
-        return $order;
+        return $reserve;
     }   
     
     public function updateReserveTotal($reserve)
@@ -141,7 +143,6 @@ class ReserveManager
     }    
 
     /*
-     * @var Application\Entity\Supplier $client
      * @var Application\Entity\Order $order
      * 
      */
@@ -152,27 +153,18 @@ class ReserveManager
                     ->findToReserve($order)->getResult();
         
         if (count($bids)){         
-            $orderData = ['client' => $client];
-            $order = $this->addNewOrder($orderData);
 
-            foreach ($carts as $cart){
-                $bidData = [
-                    'num' => $cart->getNum(),
-                    'price' => $cart->getPrice(),
-                    'good' => $cart->getGood(),
-                ];
+            foreach ($bids as $bid){
 
                 $this->addNewBid($order, $bidData, false);
 
-                $this->entityManager->remove($cart);
             }
 
             $this->entityManager->flush();
             
-            $this->updateOrderTotal($order);
         }
         
-        return $order;
+        return;
     }
     
 }

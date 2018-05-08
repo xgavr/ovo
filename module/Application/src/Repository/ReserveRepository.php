@@ -119,7 +119,7 @@ class ReserveRepository extends EntityRepository{
     /*
      *  Application\Entity\Order $order
      */
-    public function findToReserve($order = null)
+    public function findToReserve($order = null, $search = null)
     {
         $entityManager = $this->getEntityManager();
 
@@ -127,6 +127,7 @@ class ReserveRepository extends EntityRepository{
 
         $queryBuilder->select('r')
                 ->from(Bid::class, 'r')
+                ->where('(r.num - r.reserved) > 0')
                 ;
         
         if ($order){
@@ -135,7 +136,7 @@ class ReserveRepository extends EntityRepository{
                 ;
         }
         
-        return $queryBuilder->getQuery()->getResult();
+        return $queryBuilder->getQuery();
         
     }
 }
