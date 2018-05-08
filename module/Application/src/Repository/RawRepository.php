@@ -91,4 +91,26 @@ class RawRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
     }        
         
+    /*
+     * Выбрать строку прайса с минимальной ценой
+     * @var Apllication\Entity\Good
+     */
+    public function findMinPriceRawprice($good)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('c')
+            ->from(Rawprice::class, 'c')
+            ->where('c.good = ?1')
+            ->andWhere('c.price > 0')    
+            ->orderBy('c.price')    
+            ->distinct()    
+            ->setParameter('1', $good->getId())    
+                ;
+
+        return $queryBuilder->getQuery()->getOneOrNullResult();
+    }        
+        
 }

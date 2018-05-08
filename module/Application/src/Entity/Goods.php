@@ -249,7 +249,7 @@ class Goods {
      */
     public function getMinRawprice()
     {
-        $rawprices = $this->rawprice->toArray();
+        $rawprices = $this->getRawprice();
         $result = $rawprices[0];
 //        foreach($rawprices as $rawprice){
 //            if ($result->getPrice() > $rawprice->getPrice()){

@@ -45,7 +45,9 @@ $this->headScript()
              <th data-field="producer">Производитель</th>
              <th data-field="num" data-align='rigth'>Заказать</th>
              <th data-field="reserved" data-formatter="numFormatter" data-align='rigth'>Заказано</th>
-             <th data-field="rawprice" data-formatter="priceFormatter" data-align='rigth'>Цена</th>
+             <th data-field="price" data-formatter="priceFormatter" data-align='rigth'>Цена</th>
+             <th data-field="supplier">Поставщик</th>
+             <th data-field="incart" data-formatter="incartFormatter" data-align='center'>В заявку</th>             
          </tr>                
     </thead>
 </table>
@@ -89,9 +91,9 @@ $this->headScript()
             btn += ' btn-default"';
         }
         btn += ' aria-label="Left Align"'; 
-        btn += ' id="shop_index_add_cart_' + row.id+'"';
-        btn += ' onClick="addCart({good: '+row.id+', price: '+row.price+'})"';
-        if (row.available && row.price > 0){
+        btn += ' id="reserve_index_add_work_' + row.id+'"';
+        btn += ' onClick="addWork({good: '+row.id+', price: '+row.price+'})"';
+        if (row.num > row.reserved){
             btn += '>';
         } else {
             btn += ' disabled>';
@@ -110,27 +112,26 @@ $this->headScript()
     }
     
     function priceFormatter(value, row) {
-        console.log(value);
         return parseFloat(value).toFixed(2);
     }
     
-    var addCart = function(data){
+    var addWork = function(data){
         data.num = $('#num'+data.good).val();
         $.post(
-            '/shop/add-cart',
+            '/reserve/add-work',
             data,
             addCartSuccess
         );
     };
     
-    function addCartSuccess(data)
+    function addWorkSuccess(data)
     {
         if (data.num){  
             $('#nav_cart_badge').html(data.num);
         }  
         if (data.good){
-            $('#shop_index_add_cart_'+data.good).removeClass('btn-default');
-            $('#shop_index_add_cart_'+data.good).addClass('btn-success');
+            $('#reserve_index_add_work_'+data.good).removeClass('btn-default');
+            $('#reserve_index_add_work_'+data.good).addClass('btn-success');
         }
     }
 </script>

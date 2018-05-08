@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\BidReserve;
+use Application\Entity\Rawprice;
 use Company\Entity\Office;
 use Zend\View\Model\JsonModel;
 
@@ -80,10 +81,15 @@ class ReserveController extends AbstractActionController
                 'reserved' => $row->getReserved(),
             ]; 
             if ($row->getGood()){
+                
+                $rawprice = $this->entityManager->getRepository(Rawprice::class)
+                    ->findMinPriceRawprice($row->getGood());
+                
                 $bid['name'] = $row->getGood()->getName();
                 $bid['code'] = $row->getGood()->getCode();
                 $bid['producer'] = $row->getGood()->getProducer()->getName();
-                $bid['rawprice'] = $row->getGood()->getRawprice();
+                $bid['price'] = $rawprice->getPrice();
+                $bid['supplier'] = $rawprice->getRaw()->getSupplier()->getName();
             };    
             $bids[] = $bid;
         }
