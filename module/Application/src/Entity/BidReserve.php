@@ -194,6 +194,7 @@ class BidReserve {
         $this->bids[] = $bid;
         $bid->removeBidReserveAssociation($bid);
         $bid->addBidReserve($this);
+        $bid->setReserved($bid->getReserved() + $this->getNum());
     }         
         
 }

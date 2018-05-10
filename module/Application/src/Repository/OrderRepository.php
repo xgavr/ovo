@@ -78,6 +78,27 @@ class OrderRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
         
     }
+    
+    /*
+     * @var Apllication\Entity\Order
+     */
+    public function findBidOrder($order)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('c')
+            ->from(Bid::class, 'c')
+            ->where('c.order = ?1')    
+            ->orderBy('c.id')
+            ->setParameter('1', $order->getId())    
+                ;
+
+        return $queryBuilder->getQuery();
+    }        
+    
+    
 
     /*
      *  Application\Entity\Order $order

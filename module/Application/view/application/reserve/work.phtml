@@ -92,7 +92,7 @@ $this->headScript()
         }
         btn += ' aria-label="Left Align"'; 
         btn += ' id="reserve_index_add_work_' + row.id+'"';
-        btn += ' onClick="addWork({id:'+row.id+', supplier: '+row.supplier_id+', good: '+row.good_id+', price: '+row.price+'})"';
+        btn += ' onClick="addWork({id:'+row.id+', supplier: '+row.supplier_id+', good: '+row.good_id+', price: '+row.price+', num: '+row.num+'})"';
         if (row.num > row.reserved){
             btn += '>';
         } else {
@@ -104,7 +104,7 @@ $this->headScript()
     }
     
     function numFormatter(value, row){
-       return '<input class="form-control input-sm" id="num'+row.id+'" style="width: 100px" min="0" type="number" value="0"/>'; 
+       return '<input class="form-control input-sm" id="reserve'+row.id+'" style="width: 100px" min="0" type="number" value="0"/>'; 
     }
     
     function producerFormatter(value, row) {
@@ -116,7 +116,7 @@ $this->headScript()
     }
     
     var addWork = function(data){
-        data.num = $('#num'+data.id).val();
+        data.reserve = $('#reserve'+data.id).val();
         $.post(
             '/reserve/add-work',
             data,

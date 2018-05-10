@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\BidReserve;
+use Application\Entity\Bid;
 use Application\Entity\Rawprice;
 use Application\Entity\Supplier;
 use Company\Entity\Office;
@@ -68,14 +69,21 @@ class ReserveController extends AbstractActionController
             $supplier = $this->entityManager->getRepository(Supplier::class)
                     ->findOneById($data['supplier']);
             
+            $bid = $this->entityManager->getRepository(Bid::class)
+                    ->findOneById($data['id']);
+            
             if ($supplier){
                 $data['supplier'] = $supplier;
-                //$this->reverseManager->addWork($data);                        
+                $data['bid'] = $bid;
+                if (!$data['reserve']) {
+                    $data['reserve'] = $data['num'];
+                } 
+                $this->reserveManager->addWork($data);                        
             }    
         }
                                 
         return new JsonModel([
-            'bid' => $data['bid'],
+            'bid' => $data['id'],
         ]);        
         
     }
@@ -146,7 +154,7 @@ class ReserveController extends AbstractActionController
     public function addAction() 
     {     
         // Создаем форму.
-        $form = new OrderForm($this->entityManager);
+        $form = new ReserveForm($this->entityManager);
         
         // Проверяем, является ли пост POST-запросом.
         if ($this->getRequest()->isPost()) {
@@ -162,10 +170,10 @@ class ReserveController extends AbstractActionController
                 $data = $form->getData();
                 
                 // Используем менеджер order для добавления нового good в базу данных.                
-                $this->orderManager->addNewOrder($data);
+                $this->reserveManager->addNewReserve($data);
                 
                 // Перенаправляем пользователя на страницу "order".
-                return $this->redirect()->toRoute('order', []);
+                return $this->redirect()->toRoute('reserve', []);
             }
         }
         
@@ -177,23 +185,54 @@ class ReserveController extends AbstractActionController
         
     public function deleteAction()
     {
-        $orderId = $this->params()->fromRoute('id', -1);
+        $reserveId = $this->params()->fromRoute('id', -1);
         
-        $order = $this->entityManager->getRepository(Order::class)
-                ->findOneById($orderId);        
-        if ($order == null) {
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneById($reserveId);        
+        if ($reserve == null) {
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
         
-        $this->orderManager->removeOrder($order);
+        $this->reserveManager->removeReserve($reserve);
         
         // Перенаправляем пользователя на страницу "order".
-        return $this->redirect()->toRoute('order', []);
+        return $this->redirect()->toRoute('reserve', []);
     }    
 
     public function viewAction() 
     {       
+        $reserveId = (int)$this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($reserveId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        // Find the reserve ID
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneById($reserveId);
+        
+        if ($reserve == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->reserveManager->updateReserveTotal($reserve);
+      
+        $bids = $this->entityManager->getRepository(Reserve::class)
+                    ->findBidReserve($reserve)->getResult();
+        
+        // Render the view template.
+        return new ViewModel([
+            'reserve' => $reserve,
+            'bids' => $bids,
+        ]);
+    } 
+    
+    public function checkoutAction()
+    {
         $orderId = (int)$this->params()->fromRoute('id', -1);
         
         // Validate input parameter
@@ -210,16 +249,13 @@ class ReserveController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
-      
-        $bids = $this->entityManager->getRepository(Order::class)
-                    ->findBidOrder($order)->getResult();
         
-        // Render the view template.
-        return new ViewModel([
-            'order' => $order,
-            'bids' => $bids,
-        ]);
-    } 
+        $this->reserveManager->checkout($order);
+        
+        // Перенаправляем пользователя на страницу "order".
+        return $this->redirect()->toRoute('order', ['action' => 'view', 'id' => $order->getId()]);
+        
+    }
     
     public function printAction()
     {

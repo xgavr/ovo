@@ -211,7 +211,10 @@ class Bid {
     // Удаляет связь между этим bidReserve и заданным bid.
     public function removeBidReserveAssociation($bidReserve) 
     {
-        $this->bidReseves->removeElement($bidReserve);
+        if (count($this->bidReseves)){
+            $this->bidReseves->removeElement($bidReserve);
+            $this->setReserved($this->getReserved() - $bidReserve->getNum());
+        }    
     }    
     
 }

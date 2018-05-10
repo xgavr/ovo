@@ -37,8 +37,8 @@
             <?= $this->escapeHtml(date('d-m-Y', strtotime($row->getDateCreated()))); ?>
         </td>
         <td>
-            <a href="<?= $this->url('client', ['action'=>'view', 'id'=>$row->getClient()->getId()]); ?>">
-                <?= $this->escapeHtml($row->getClient()->getName()); ?>
+            <a href="<?= $this->url('supplier', ['action'=>'view', 'id'=>$row->getSupplier()->getId()]); ?>">
+                <?= $this->escapeHtml($row->getSupplier()->getName()); ?>
             </a> 
         </td>
         <td>

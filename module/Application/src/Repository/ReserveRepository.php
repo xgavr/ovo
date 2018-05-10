@@ -91,7 +91,7 @@ class ReserveRepository extends EntityRepository{
 
         $queryBuilder->select('c')
             ->from(BidReserve::class, 'c')
-            ->where('c.order = ?1')    
+            ->where('c.reserve = ?1')    
             ->orderBy('c.id')
             ->setParameter('1', $reserve->getId())    
                 ;

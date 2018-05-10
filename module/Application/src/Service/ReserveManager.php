@@ -9,9 +9,11 @@ namespace Application\Service;
 
 use Zend\ServiceManager\ServiceManager;
 use Application\Entity\BidReserve;
+use Application\Entity\Bid;
 use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\Goods;
+use Application\Entity\Rawprice;
 use User\Entity\User;
 use Application\Entity\Supplier;
 
@@ -40,38 +42,42 @@ class ReserveManager
     
     public function addNewBid($reserve, $data, $flushnow=true)
     {
-        $bid = new BidReserve();
-        $bid->setNum($data['num']);
-        $bid->setPrice($data['price']);
+        $bidReserve = new BidReserve();
+        $bidReserve->setNum($data['reserve']);
+        $bidReserve->setPrice($data['price']);
         $currentDate = date('Y-m-d H:i:s');        
-        $bid->setDateCreated($currentDate);
+        $bidReserve->setDateCreated($currentDate);
         
         if ($data['good'] instanceof Goods){
-            $bid->setGood($data['good']);            
+            $bidReserve->setGood($data['good']);            
         } else {
             $good = $this->entityManager->getRepository(Goods::class)
                         ->findOneById($data['good']);        
-            $bid->setGood($good);
+            $bidReserve->setGood($good);
         }    
-        
+                
         $currentUser = $this->entityManager->getRepository(User::class)
                 ->findOneByEmail($this->authService->getIdentity());
-        $bid->setUser($currentUser);  
+        $bidReserve->setUser($currentUser);  
         
-        $bid->setReserve($reserve);
+        $bidReserve->setReserve($reserve);
         
         // Добавляем сущность в менеджер сущностей.
-        $this->entityManager->persist($bid);
+        $this->entityManager->persist($bidReserve);
         
+        if ($data['bid'] instanceof Bid){
+            $bidReserve->addBid($data['bid']);
+        }    
         // Применяем изменения к базе данных.
         if ($flushnow){
-            $this->entityManager->flush(); 
+            //$this->entityManager->flush();
+            $this->updateReserveTotal($reserve);
         }   
         
-        return $bid;
+        return $bidReserve;
     }
     
-    public function addNewReserve($data) 
+    public function addNewReserve($data, $flush = true) 
     {
         // Создаем новую сущность.
         $reserve = new Reserve();
@@ -100,12 +106,14 @@ class ReserveManager
         $this->entityManager->persist($reserve);
         
         // Применяем изменения к базе данных.
-        $this->entityManager->flush();
+        if ($flush){
+            $this->entityManager->flush();
+        }    
         
         return $reserve;
     }   
     
-    public function getReserve($supplier)
+    public function getReserve($supplier, $flush = true)
     {
         $reserve = $this->entityManager->getRepository(Reserve::class)
                 ->findOneBy(['supplier' => $supplier, 'status' => Reserve::STATUS_NEW]);
@@ -114,10 +122,10 @@ class ReserveManager
            return $reserve; 
         }
         
-        return $this->addNewReserve(['supplier' => $supplier]);
+        return $this->addNewReserve(['supplier' => $supplier], $flush);
     }
     
-    public function updateReserveTotal($reserve)
+    public function updateReserveTotal($reserve, $flush = true)
     {
         $result = $this->entityManager->getRepository(BidReserve::class)
                 ->getReserveNum($reserve);
@@ -126,12 +134,19 @@ class ReserveManager
         
         $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
-        $this->entityManager->flush();
+        if ($flush){
+            $this->entityManager->flush();
+        }    
     }
     
     public function updateReserve($reserve, $data) 
     {
         $order->setComment($data['comment']);
+
+        $result = $this->entityManager->getRepository(BidReserve::class)
+                ->getReserveNum($reserve);
+        
+        $reserve->setTotal($result[0]['total']);
 
         $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
@@ -153,23 +168,31 @@ class ReserveManager
     }    
 
     /*
-     * $var array $params
+     * @var array $params
      * @var Application\Entity\Supplier $supplier
-     * $var Application\Entity\Bid $bid
-     * $var Application\Entity\Goods $good
+     * @var Application\Entity\Bid $bid
+     * @var Application\Entity\Goods $good
+     * @float reserve
+     * @float price
      */
-    public function addWork($params)
+    public function addWork($params, $flush = true)
     {
         if ($params['supplier']){
-            $reserve = $this->getReserve($params['supplier']);
+            $reserve = $this->getReserve($params['supplier'], $flush);
             if ($reserve){
                 $this->addNewBid($reserve, 
                         [
-                            'num' => $params['num'],
+                            'reserve' => $params['reserve'],
                             'good' => $params['good'],
                             'price' => $params['price'],
-                        ]
+                            'bid' => $params['bid'],
+                        ], 
+                        $flush
                    );
+                
+                if (!$flush){
+                    $this->updateReserveTotal($reserve, $flush);
+                }
             }
         }
         
@@ -189,9 +212,22 @@ class ReserveManager
         if (count($bids)){         
 
             foreach ($bids as $bid){
+                
+                if ($bid->getNum() > $bid->getReserved()){
+                    $rawprice = $this->entityManager->getRepository(Rawprice::class)
+                        ->findMinPriceRawprice($bid->getGood());
 
-                $this->addNewBid($order, $bidData, false);
-
+                    if ($rawprice){
+                        $this->addWork([
+                            'supplier' => $rawprice->getRaw()->getSupplier(),
+                            'reserve' => $bid->getNum() - $bid->getReserved(),
+                            'good' => $bid->getGood(),
+                            'price' => $rawprice->getPrice(),
+                            'bid' => $bid,
+                        ], false
+                        );
+                    }    
+                }    
             }
 
             $this->entityManager->flush();

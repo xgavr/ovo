@@ -1,28 +1,28 @@
 <?php
-$this->headTitle('Заказ №'. $order->getId() .' от  '.$order->getDateCreatedFormat('d.m.Y').' '.$order->getClient()->getName());
+$this->headTitle('Заявка №'. $reserve->getId() .' от  '.$reserve->getDateCreatedFormat('d.m.Y').' '.$reserve->getSupplier()->getName());
 
-$this->mainMenu()->setActiveItemId('order');
+$this->mainMenu()->setActiveItemId('supplier');
 
 $this->pageBreadcrumbs()->setItems([
                 'Главная'=>$this->url('home'),
-                'Заказы'=>$this->url('order'),
-                'Заказ №'. $order->getId() .' от  '.$order->getDateCreatedFormat('d.m.Y').' '.$order->getClient()->getName() => $this->url('order', ['action' => 'view', 'id' => $order->getId()]),
+                'Заявки поставщикам'=>$this->url('reserve'),
+                'Заявка №'. $reserve->getId() .' от  '.$reserve->getDateCreatedFormat('d.m.Y').' '.$reserve->getSupplier()->getName() => $this->url('reserve', ['action' => 'view', 'id' => $reserve->getId()]),
                 ]);
   
 ?>
 
 <h1>
-    <?= $this->escapeHtml($order->getClient()->getName()); ?>
+    <?= $this->escapeHtml($reserve->getSupplier()->getName()); ?>
     <br/>
-    <?= $this->escapeHtml('Заказ №'.$order->getId().' от '. date('d-m-Y H:i:s', strtotime($order->getDateCreated()))); ?>    
+    <?= $this->escapeHtml('Заявка №'.$reserve->getId().' от '. date('d-m-Y H:i:s', strtotime($reserve->getDateCreated()))); ?>    
 </h1>
 
-<?php if ($order->getClient()->getLegalContact()->getActiveLegal()):?>
+<?php if ($reserve->getSupplier()->getLegalContact()->getActiveLegal()):?>
     <div class="row">
         <div class="col-md-offset-10">
-            <a class="btn btn-info btn-xs" href="<?= $this->url('order', 
-                    ['action'=>'print', 'id'=>$order->getId()]); ?>">
-                <span class="glyphicon glyphicon-download" ></span> Счет на оплату
+            <a class="btn btn-info btn-xs" href="<?= $this->url('reserve', 
+                    ['action'=>'print', 'id'=>$reserve->getId()]); ?>">
+                <span class="glyphicon glyphicon-download" ></span> Бланк заявки
             </a>        
         </div>    
     </div>
@@ -30,7 +30,7 @@ $this->pageBreadcrumbs()->setItems([
     <div class="row">
         <div class="col-md-offset-9">
             <a class="btn btn-warning btn-xs" href="<?= $this->url('legals', 
-                    ['action'=>'legal', 'id'=>$order->getClient()->getLegalContact()->getId()]); ?>">
+                    ['action'=>'legal', 'id'=>$reserve->getSupplier()->getLegalContact()->getId()]); ?>">
                 <span class="glyphicon glyphicon-piggy-bank" ></span>
                 Заполните реквизиты юридического лица
             </a>        
@@ -85,7 +85,7 @@ $this->pageBreadcrumbs()->setItems([
         </th>
         <td align="right">
             <b>
-                <?= $this->escapeHtml(number_format($order->getTotal(), 2, ',', ' ')); ?>
+                <?= $this->escapeHtml(number_format($reserve->getTotal(), 2, ',', ' ')); ?>
             </b>
         </td>
         <th>
