@@ -105,17 +105,25 @@ class BlankManager {
                     ->setCellValue("D$i", $item['quantity'])
                     ->setCellValue("E$i", $item['price'])
                     ->setCellValue("F$i", $item['total'])
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"), "B$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"), "C$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("D$sourceRow"), "D$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"), "E$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"), "F$i")    
                         ;
+                
+                if (count($data['items'])>1){
+                    $objPHPExcel->getActiveSheet()
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"), "B$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"), "C$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("D$sourceRow"), "D$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"), "E$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"), "F$i")    
+                            ;
+                }    
                 
                 $counter++;
                 $i++;
             }
-            $objPHPExcel->getActiveSheet()->removeRow($sourceRow);
+            
+            if (count($data['items'])>1){
+                $objPHPExcel->getActiveSheet()->removeRow($sourceRow);
+            }    
             
             $objWriter = $phpExcelService->createWriter($objPHPExcel, 'Excel5' );
 
@@ -237,18 +245,24 @@ class BlankManager {
                     ->setCellValue("F$i", $item['quantity'])
                     ->setCellValue("G$i", $item['price'])
                     ->setCellValue("H$i", $item['total'])
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"), "B$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"), "C$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"), "E$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"), "F$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("G$sourceRow"), "G$i")    
-                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("H$sourceRow"), "H$i")    
                         ;
+                if (count($data['items'])>1){
+                    $objPHPExcel->getActiveSheet()
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"), "B$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"), "C$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"), "E$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"), "F$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("G$sourceRow"), "G$i")    
+                        ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("H$sourceRow"), "H$i")    
+                            ;
+                }    
                 
                 $counter++;
                 $i++;
             }
-            $objPHPExcel->getActiveSheet()->removeRow($sourceRow);
+            if (count($data['items'])>1){
+                $objPHPExcel->getActiveSheet()->removeRow($sourceRow);
+            }    
             
             $objWriter = $phpExcelService->createWriter($objPHPExcel, 'Excel5' );
 

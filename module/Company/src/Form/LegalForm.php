@@ -223,7 +223,7 @@ class LegalForm extends Form
         
         $inputFilter->add([
                 'name'     => 'inn',
-                'required' => false,
+                'required' => true,
                 'filters'  => [
                     ['name' => 'StringTrim'],                    
                 ],                
