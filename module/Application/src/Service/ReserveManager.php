@@ -77,7 +77,7 @@ class ReserveManager
         return $bidReserve;
     }
     
-    public function addNewReserve($data, $flush = true) 
+    public function addNewReserve($data) 
     {
         // Создаем новую сущность.
         $reserve = new Reserve();
@@ -106,14 +106,13 @@ class ReserveManager
         $this->entityManager->persist($reserve);
         
         // Применяем изменения к базе данных.
-        if ($flush){
-            $this->entityManager->flush();
-        }    
+        $this->entityManager->flush();
+            
         
         return $reserve;
     }   
     
-    public function getReserve($supplier, $flush = true)
+    public function getReserve($supplier)
     {
         $reserve = $this->entityManager->getRepository(Reserve::class)
                 ->findOneBy(['supplier' => $supplier, 'status' => Reserve::STATUS_NEW]);
@@ -122,7 +121,7 @@ class ReserveManager
            return $reserve; 
         }
         
-        return $this->addNewReserve(['supplier' => $supplier], $flush);
+        return $this->addNewReserve(['supplier' => $supplier]);
     }
     
     public function updateReserveTotal($reserve, $flush = true)
@@ -178,7 +177,7 @@ class ReserveManager
     public function addWork($params, $flush = true)
     {
         if ($params['supplier']){
-            $reserve = $this->getReserve($params['supplier'], $flush);
+            $reserve = $this->getReserve($params['supplier']);
             if ($reserve){
                 $this->addNewBid($reserve, 
                         [

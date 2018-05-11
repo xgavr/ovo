@@ -64,6 +64,9 @@ $this->pageBreadcrumbs()->setItems([
         </td>
         <td align="right">
             <?= $this->escapeHtml($row->getNum()); ?>
+            <?php if ($this->access('supplier.manage')):?>
+                <span>/<?= $this->escapeHtml($row->getReserved()); ?></span>
+            <?php endif; ?>
         </td>
         <td align="right">
             <?= $this->escapeHtml(number_format($row->getPrice(), 2, ',', ' ')); ?>

@@ -31,6 +31,107 @@ class BlankManager {
         
     }
     
+    public function reserve($source, $options = null)
+    {
+
+        $tmp_dir = './data/tmp';
+        $tmpl_file = './data/templates/reserve.xls';
+
+        $data = [
+            'firmName' => '',
+            'deliveryAddress' => '',
+            'invoiceId' => 'б/н',
+            'invoiceDate' => date('Y-m-d'),
+            'supplierName' => '',
+            'itemsTotal' => '',
+            'items' => [
+                [
+                    'goodName' => '',
+                    'unit' => '',
+                    'quantity' => '',
+                    'price' => '',
+                    'total' => '',
+                ],    
+            ],
+        ];
+        
+        if (is_array($source)){
+            $data = array_merge($data, $source);
+        }
+        
+        if (is_array($data)){
+            $dateFilter = new DateMonthRuFilter();
+            
+            $phpExcelService = new PhpExcelService();
+            $objPHPExcel = $phpExcelService->createPHPExcelObject($tmpl_file);
+
+            $objPHPExcel->getProperties()->setCreator("ovo.msk.ru")
+                ->setLastModifiedBy("ovo.msk.ru")
+                ->setTitle("Бланк заказа поставщику")
+                ->setSubject("Бланк заказа поставщику")
+                ->setDescription("Бланк заказа поставщику, сгенерированный на сайте ovo.msk.ru")
+                ->setKeywords("Бланк заказа поставщику")
+                ->setCategory("Бланк заказа поставщику");
+
+            $objPHPExcel->setActiveSheetIndex(0)
+                ->setCellValue('C1', $data['supplierName'])
+                ->setCellValue('C2', $data['firmName'])
+                ->setCellValue('C3', $data['deliveryAddress'])
+                ->setCellValue('B6', 'Заказ №'.$data['invoiceId'].' от '.$dateFilter->filter($data['invoiceDate']))
+                ->setCellValue('F11', $data['total'])                    
+                    ;
+            
+            $i = 10; //начальная строка таблицы
+            
+
+            if (count($data['items'])>1){
+                $objPHPExcel->getActiveSheet()->insertNewRowBefore($i, count($data['items'])); 
+            }
+            
+            $sourceRow = $i + count($data['items']);
+            $pCellStyle =[
+                'B' => $objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"),
+                'C' => $objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"),
+                'D' => $objPHPExcel->getActiveSheet()->getStyle("D$sourceRow"),
+                'E' => $objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"),
+                'F' => $objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"),
+            ];
+            
+            $counter = 1;
+            foreach ($data['items'] as $item){
+                $objPHPExcel->getActiveSheet()
+                    ->setCellValue("B$i", $counter)
+                    ->setCellValue("C$i", $item['goodName'])
+                    ->setCellValue("D$i", $item['quantity'])
+                    ->setCellValue("E$i", $item['price'])
+                    ->setCellValue("F$i", $item['total'])
+                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("B$sourceRow"), "B$i")    
+                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("C$sourceRow"), "C$i")    
+                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("D$sourceRow"), "D$i")    
+                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("E$sourceRow"), "E$i")    
+                    ->duplicateStyle($objPHPExcel->getActiveSheet()->getStyle("F$sourceRow"), "F$i")    
+                        ;
+                
+                $counter++;
+                $i++;
+            }
+            $objPHPExcel->getActiveSheet()->removeRow($sourceRow);
+            
+            $objWriter = $phpExcelService->createWriter($objPHPExcel, 'Excel5' );
+
+            $filename = tempnam($this::TMP_DIR, 'res');
+            
+            if ($filename){
+                $objWriter->save($filename);
+            
+                return $filename;    
+            }    
+        }
+        
+        return;
+    }
+    
+    
     public function invoice($source, $options = null)
     {
 

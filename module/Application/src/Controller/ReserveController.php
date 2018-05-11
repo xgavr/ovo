@@ -259,25 +259,25 @@ class ReserveController extends AbstractActionController
     
     public function printAction()
     {
-        $orderId = (int)$this->params()->fromRoute('id', -1);
+        $reserveId = (int)$this->params()->fromRoute('id', -1);
         
         // Validate input parameter
-        if ($orderId<0) {
+        if ($reserveId<0) {
             $this->getResponse()->setStatusCode(404);
             return;
         }
         
-        // Find the tax order ID
-        $order = $this->entityManager->getRepository(Order::class)
-                ->findOneById($orderId);
+        // Find the reserve ID
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneById($reserveId);
         
-        if ($order == null) {
+        if ($reserve == null) {
             $this->getResponse()->setStatusCode(404);
             return;                        
         }        
       
-        $bids = $this->entityManager->getRepository(Order::class)
-                    ->findBidOrder($order)->getResult();
+        $bids = $this->entityManager->getRepository(Reserve::class)
+                    ->findBidReserve($reserve)->getResult();
         
         $offices = $this->entityManager->getRepository(Office::class)
                     ->findAll([]);
@@ -287,22 +287,11 @@ class ReserveController extends AbstractActionController
         $data = [
             'firmName' => $office->getLegalContact()->getActiveLegal()->getName(),
             'firmAddress' => $office->getLegalContact()->getActiveLegal()->getAddress(),
-            'firmInn' => $office->getLegalContact()->getActiveLegal()->getInn(),
-            'firmKpp' => $office->getLegalContact()->getActiveLegal()->getKpp(),
-            'firmRs' => $office->getLegalContact()->getActiveLegal()->getActiveBankAccount()->getRs(),
-            'firmBik' => $office->getLegalContact()->getActiveLegal()->getActiveBankAccount()->getBik(),
-            'firmBank' => $office->getLegalContact()->getActiveLegal()->getActiveBankAccount()->getName(),
-            'firmKs' => $office->getLegalContact()->getActiveLegal()->getActiveBankAccount()->getKs(),
-            'invoiceId' => $order->getId(),
-            'invoiceDate' => $order->getDateCreated(),
-            'clientName' => $order->getClient()->getLegalContact()->getActiveLegal()->getName(),
-            'clientConsignee' => $order->getClient()->getLegalContact()->getActiveLegal()->getName(),
+            'invoiceId' => $reserve->getId(),
+            'invoiceDate' => $reserve->getDateCreated(),
+            'supplierName' => $reserve->getSupplier()->getLegalContact()->getActiveLegal()->getName(),
             'itemsTotal' => count($bids),
-            'total_without_tax' => $order->getTotal(),
-            'taxTotal' => 'Без НДС',
-            'total' => $order->getTotal(),
-            'chief' => $office->getLegalContact()->getActiveLegal()->getHead(),
-            'chiefAccount' => $office->getLegalContact()->getActiveLegal()->getChiefAccount(),
+            'total' => $reserve->getTotal(),
             'items' =>[],
         ];
         
@@ -316,8 +305,8 @@ class ReserveController extends AbstractActionController
             ];
         }
         
-        $filename = $this->blankManager->invoice($data);
-        $output_filename = 'Счет на оплату №'.$order->getId().'.xls';
+        $filename = $this->blankManager->reserve($data);
+        $output_filename = 'Заказ №'.$reserve->getId().'.xls';
         
         if (file_exists($filename)){
          
@@ -340,7 +329,7 @@ class ReserveController extends AbstractActionController
 //            unlink($filename);
             return $response;
         }    
-        return $this->redirect()->toRoute('order', ['action' => 'view', 'id' => $order->getId()]);
+        return $this->redirect()->toRoute('reserve', ['action' => 'view', 'id' => $reserve->getId()]);
     }
     
 }
