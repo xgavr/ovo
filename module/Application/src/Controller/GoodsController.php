@@ -323,7 +323,7 @@ class GoodsController extends AbstractActionController
     public function testMorphyAction()
     {
         $morphyFilter = new MorphyFilter();
-        echo $morphyFilter->filter('бойцвый');
+        echo $morphyFilter->filter('Рулон для стерилизации 50мм*200м, ЕвроТайп');
         exit;
     }
     

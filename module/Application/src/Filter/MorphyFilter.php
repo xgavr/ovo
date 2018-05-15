@@ -75,25 +75,29 @@ class MorphyFilter extends AbstractFilter
         
         $textRu = $this->cleanUpRu($value);
         $testEn = $this->cleanUpEn($value);
-        
         $aTextRu = explode(' ', $textRu);
         
         $morphy = new Morphy('ru');
         foreach ($aTextRu as $word){
             //$pseudo_root = $morphy->getPseudoRoot(mb_strtoupper(trim($word), $this->options['encoding']));
             $pseudo_root = $morphy->getBaseForm(mb_strtoupper(trim($word), $this->options['encoding']));
+            
+            if (is_array($pseudo_root)){
+                foreach ($pseudo_root as $roots){
+
+                    $slovo=mb_strtolower(trim($roots), $this->options['encoding']);
+                    if (strlen( $slovo)>3 && !in_array($slovo, $this->stopword) && count($roots)==1 ){
+                        $result .= $slovo." ";                      
+                    }
+
+                }
+            } else {
+                if (!in_array($word, $this->stopword)){
+                    $result .= $word." ";                      
+                }                
+            }   
         }    
         
-        if (is_array($pseudo_root)){
-            foreach ($pseudo_root as $roots){
-
-                $slovo=mb_strtolower(trim($roots), $this->options['encoding']);
-                if (strlen( $slovo)>3 && !in_array($slovo, $this->stopword) && count($roots)==1 ){
-                    $result .= $slovo." ";                      
-                }
-
-            }
-        }    
         
         $aTextEn = explode(' ', $textEn);
         
@@ -101,19 +105,23 @@ class MorphyFilter extends AbstractFilter
         foreach ($aTextEn as $word){
             //$pseudo_root = $morphy->getPseudoRoot(mb_strtoupper(trim($word), $this->options['encoding']));
             $pseudo_root = $morphy->getBaseForm(mb_strtoupper(trim($word), $this->options['encoding']));
-        }    
-        
-        if (is_array($pseudo_root)){
-            foreach ($pseudo_root as $roots){
+            
+            if (is_array($pseudo_root)){
+                foreach ($pseudo_root as $roots){
 
-                $slovo=mb_strtolower(trim($roots), $this->options['encoding']);
-                if (strlen( $slovo)>3 && !in_array($slovo, $this->stopword) && count($roots)==1 ){
-                    $result .= $slovo." ";                      
+                    $slovo=mb_strtolower(trim($roots), $this->options['encoding']);
+                    if (strlen( $slovo)>3 && !in_array($slovo, $this->stopword) && count($roots)==1 ){
+                        $result .= $slovo." ";                      
+                    }
+
                 }
-
-            }
+            } else {
+                if (!in_array($word, $this->stopword)){
+                    $result .= $word." ";                      
+                }                
+            }   
         }    
-        
+                
         return $result;
     }
     
