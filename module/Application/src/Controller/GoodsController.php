@@ -15,6 +15,7 @@ use Application\Entity\GoodsGroup;
 use Application\Form\GoodsForm;
 use Application\Form\GoodsGroupForm;
 use Application\Form\GoodSettingsForm;
+use Application\Filter\MorphyFilter;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -316,6 +317,13 @@ class GoodsController extends AbstractActionController
            ['ok']
         );           
         
+        exit;
+    }
+    
+    public function testMorphyAction()
+    {
+        $morphyFilter = new MorphyFilter();
+        echo $morphyFilter->filter('бойцвый');
         exit;
     }
     

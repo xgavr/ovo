@@ -27,7 +27,7 @@ class GoodsManager
 {
     
     const SETTINGS_DIR       = './data/settings/'; // папка с настройками
-    const SETTINGS_FILE       = './data/settings/config.php'; // файл с настройками
+    const SETTINGS_FILE      = './data/settings/config.php'; // файл с настройками
 
     /**
      * Doctrine entity manager.
