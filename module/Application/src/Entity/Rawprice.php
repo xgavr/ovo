@@ -127,7 +127,7 @@ class Rawprice {
 
     public function setArticle($article) 
     {
-        $this->article = $article;
+        $this->article = (string) $article;
     }     
     
     public function getProducer() 
@@ -137,7 +137,7 @@ class Rawprice {
 
     public function setProducer($producer) 
     {
-        $this->producer = $producer;
+        $this->producer = (string) $producer;
     }     
     
     public function getCountry() 
@@ -147,7 +147,7 @@ class Rawprice {
 
     public function setCountry($country) 
     {
-        $this->country = $country;
+        $this->country = (string) $country;
     }     
     
     public function getGoodname() 
@@ -157,7 +157,7 @@ class Rawprice {
 
     public function setGoodname($goodname) 
     {
-        $this->goodname = $goodname;
+        $this->goodname = (string) $goodname;
     }     
     
     public function getDescription() 
@@ -167,7 +167,7 @@ class Rawprice {
 
     public function setDescription($description) 
     {
-        $this->description = $description;
+        $this->description = (string) $description;
     }     
 
     public function getImage() 
@@ -177,7 +177,7 @@ class Rawprice {
 
     public function setImage($image) 
     {
-        $this->image = $image;
+        $this->image = (string) $image;
     }     
 
     public function getPrice() 
@@ -197,7 +197,7 @@ class Rawprice {
 
     public function setCurrency($currency) 
     {
-        $this->currency = $currency;
+        $this->currency = (string) $currency;
     }     
 
     public function getRate() 
@@ -217,7 +217,7 @@ class Rawprice {
 
     public function setRest($rest) 
     {
-        $this->rest = $rest;
+        $this->rest = (string) $rest;
     }     
 
     public function getUnit() 

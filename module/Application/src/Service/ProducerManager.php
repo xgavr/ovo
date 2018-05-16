@@ -74,7 +74,7 @@ class ProducerManager
     {   
         $newProducer = new Producer();
         foreach ($producer->getUnknownProducer() as $unknownProducer){
-            $unknownProducer->setProducer($newProducer);
+            $unknownProducer->setProducer(null);
             $this->entityManager->persist($unknownProducer);
         }
         

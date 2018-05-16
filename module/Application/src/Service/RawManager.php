@@ -104,8 +104,17 @@ class RawManager {
         ini_set('memory_limit', '512M');
         
         if (file_exists($filename)){
-            $mvexcel = new Service\PhpExcelService();    
-            $excel = $mvexcel->createPHPExcelObject($filename);
+            $mvexcel = new Service\PhpExcelService(); 
+            
+            try{
+                try {
+                    $excel = $mvexcel->createPHPExcelObject($filename);
+                } catch (Exception $e) {
+                    var_dump($e->getMessage()); return;
+                }    
+            } catch (Exception $e){
+                var_dump($e->getMessage()); return;                
+            }    
             
             $raw = new Raw();
             $raw->setSupplier($supplier);
@@ -114,7 +123,7 @@ class RawManager {
 
             $currentDate = date('Y-m-d H:i:s');
             $raw->setDateCreated($currentDate);
-                        
+
             $sheets = $excel->getAllSheets();
             foreach ($sheets as $sheet) { // PHPExcel_Worksheet
 
@@ -125,7 +134,7 @@ class RawManager {
                         $rawprice = new Rawprice();
 
                         $rawprice->setRawdata(Json::encode($row));
-                        
+
                         $rawprice->setArticle('');
                         $rawprice->setGoodname('');
                         $rawprice->setDescription('');
@@ -139,7 +148,7 @@ class RawManager {
                         $rawprice->setUnit('');
 
                         $rawprice->setRaw($raw);
-                        
+
 //                        $unknownProducer = new UnknownProducer();
 //                        $rawprice->setUnknownProducer($unknownProducer);
 
@@ -151,7 +160,7 @@ class RawManager {
 
                         // Добавляем сущность в менеджер сущностей.
                         $this->entityManager->persist($rawprice);
-                        
+
                         $raw->addRawprice($rawprice);
 
                     }
@@ -160,9 +169,9 @@ class RawManager {
             }
 
             $this->entityManager->persist($raw);
-            
+
             $this->entityManager->flush();                    
-            
+
             unset($excel);
             unset($mvexcel);
         }
