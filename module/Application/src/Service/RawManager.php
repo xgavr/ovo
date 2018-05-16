@@ -106,15 +106,7 @@ class RawManager {
         if (file_exists($filename)){
             $mvexcel = new Service\PhpExcelService(); 
             
-            try{
-                try {
-                    $excel = $mvexcel->createPHPExcelObject($filename);
-                } catch (Exception $e) {
-                    var_dump($e->getMessage()); return;
-                }    
-            } catch (Exception $e){
-                var_dump($e->getMessage()); return;                
-            }    
+            $excel = $mvexcel->createPHPExcelObject($filename);
             
             $raw = new Raw();
             $raw->setSupplier($supplier);
