@@ -17,7 +17,7 @@ class Version20180512083644 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $table = $schema->getTable('goods');
-        $table->addColumn('tags', 'string', ['notnull'=>false, 'length' => 512]);
+        $table->addColumn('tags', 'string', ['notnull'=>false, 'length' => 2048]);
         $table->addIndex(['tags'], 'goods_tags_fulltext', ['fulltext']);
 
     }

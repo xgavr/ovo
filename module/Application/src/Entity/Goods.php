@@ -49,6 +49,11 @@ class Goods {
     protected $price;
     
     /**
+     * @ORM\Column(name="tags")   
+     */
+    protected $tags;
+    
+    /**
      * @ORM\ManyToOne(targetEntity="Application\Entity\GoodsGroup", inversedBy="goods") 
      * @ORM\JoinColumn(name="group_id", referencedColumnName="id")
      * 
@@ -138,6 +143,16 @@ class Goods {
     public function setPrice($price) 
     {
         $this->price = $price;
+    }     
+
+    public function getTags() 
+    {
+        return $this->tags;
+    }
+
+    public function setTags($tags) 
+    {
+        $this->tags = $tags;
     }     
 
     /*

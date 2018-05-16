@@ -187,7 +187,7 @@ class Rawprice {
 
     public function setPrice($price) 
     {
-        $this->price = $price;
+        $this->price = (float) $price;
     }     
     
     public function getCurrency() 
@@ -207,7 +207,7 @@ class Rawprice {
 
     public function setRate($rate) 
     {
-        $this->rate = $rate;
+        $this->rate = (float) $rate;
     }     
 
     public function getRest() 

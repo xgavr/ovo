@@ -123,7 +123,7 @@ class Version20171225095230 extends AbstractMigration
         $table->addColumn('producer', 'string', ['length'=>128]);
         $table->addColumn('goodname', 'string', ['length'=>256]);
         $table->addColumn('price', 'float', ['precision'=>2]);
-        $table->addColumn('rest', 'float', ['precision'=>512]);        
+        $table->addColumn('rest', 'string', ['length'=>64]);        
         $table->addColumn('date_created', 'datetime', ['notnull'=>true]);
         $table->setPrimaryKey(['id']);
         $table->addForeignKeyConstraint('raw', ['raw_id'], ['id'], 

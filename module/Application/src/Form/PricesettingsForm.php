@@ -47,7 +47,7 @@ class PricesettingsForm extends Form
                 'id' => 'ps_name'
             ],
             'options' => [
-                'label' => 'Наименование',
+                'label' => 'Наименование настройки',
             ],
         ]);
         
@@ -249,16 +249,17 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -268,16 +269,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -287,16 +290,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -306,16 +311,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -325,16 +332,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -344,16 +353,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -363,16 +374,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -382,16 +395,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -401,16 +416,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -420,16 +437,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -439,16 +458,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         $inputFilter->add([
@@ -458,16 +479,18 @@ class PricesettingsForm extends Form
                     ['name' => 'StringTrim'],
                     ['name' => 'StripTags'],
                     ['name' => 'StripNewlines'],
+                    ['name' => 'ToNull'],
+                    ['name' => 'ToInt'],
                 ],                
-                'validators' => [
-                    [
-                        'name'    => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 11
-                        ],
-                    ],
-                ],
+//                'validators' => [
+//                    [
+//                        'name'    => 'StringLength',
+//                        'options' => [
+//                            'min' => 1,
+//                            'max' => 11
+//                        ],
+//                    ],
+//                ],
             ]);
         
         // Add input for "status" field

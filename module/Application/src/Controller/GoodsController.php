@@ -327,5 +327,10 @@ class GoodsController extends AbstractActionController
         exit;
     }
     
+    public function updateTagsAction()
+    {
+        $this->goodsManager->updateGoodsTags();
+        return $this->redirect()->toRoute('goods', []);
+    }
     
 }

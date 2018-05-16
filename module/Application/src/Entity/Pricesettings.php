@@ -9,6 +9,7 @@
 namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Zend\Filter\ToNull;
 
 /**
  * Description of Pricelist
@@ -138,7 +139,8 @@ class Pricesettings {
 
     public function setArtice($article) 
     {
-        $this->article = $article;
+        $toNullFilter = new ToNull();
+        $this->article = $toNullFilter->filter($article);
     }     
 
 
@@ -149,7 +151,8 @@ class Pricesettings {
 
     public function setIid($iid) 
     {
-        $this->iid = $iid;
+        $toNullFilter = new ToNull();
+        $this->iid = $toNullFilter->filter($iid);
     }     
 
     public function getProducer() 
@@ -159,7 +162,8 @@ class Pricesettings {
 
     public function setProducer($producer) 
     {
-        $this->producer = $producer;
+        $toNullFilter = new ToNull();
+        $this->producer = $toNullFilter->filter($producer);
     }     
 
     public function getCountry() 
@@ -169,7 +173,8 @@ class Pricesettings {
 
     public function setCountry($country) 
     {
-        $this->country = $country;
+        $toNullFilter = new ToNull();
+        $this->country = $toNullFilter->filter($country);
     }     
 
     public function getTitle() 
@@ -179,7 +184,8 @@ class Pricesettings {
 
     public function setTitle($title) 
     {
-        $this->title = $title;
+        $toNullFilter = new ToNull();
+        $this->title = $toNullFilter->filter($title);
     }     
 
     public function getDescription() 
@@ -189,7 +195,8 @@ class Pricesettings {
 
     public function setDescription($description) 
     {
-        $this->description = $description;
+        $toNullFilter = new ToNull();
+        $this->description = $toNullFilter->filter($description);
     }     
 
     public function getImage() 
@@ -199,7 +206,8 @@ class Pricesettings {
 
     public function setImage($image) 
     {
-        $this->image = $image;
+        $toNullFilter = new ToNull();
+        $this->image = $toNullFilter->filter($image);
     }     
 
     public function getPrice() 
@@ -209,7 +217,8 @@ class Pricesettings {
 
     public function setPrice($price) 
     {
-        $this->price = $price;
+        $toNullFilter = new ToNull();
+        $this->price = $toNullFilter->filter($price);
     }     
 
     public function getCurrency() 
@@ -219,7 +228,8 @@ class Pricesettings {
 
     public function setCurrency($currency) 
     {
-        $this->currency = $currency;
+        $toNullFilter = new ToNull();
+        $this->currency = $toNullFilter->filter($currency);
     }     
 
     public function getRate() 
@@ -229,7 +239,8 @@ class Pricesettings {
 
     public function setRate($rate) 
     {
-        $this->rate = $rate;
+        $toNullFilter = new ToNull();
+        $this->rate = $toNullFilter->filter($rate);
     }     
 
     public function getRest() 
@@ -239,7 +250,8 @@ class Pricesettings {
 
     public function setRest($rest) 
     {
-        $this->rest = $rest;
+        $toNullFilter = new ToNull();
+        $this->rest = $toNullFilter->filter($rest);
     }     
 
     public function getUnit() 
@@ -249,7 +261,8 @@ class Pricesettings {
 
     public function setUnit($unit) 
     {
-        $this->unit = $unit;
+        $toNullFilter = new ToNull();
+        $this->unit = $toNullFilter->filter($unit);
     }     
 
     public function getDateCreated() 

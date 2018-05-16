@@ -17,6 +17,7 @@ use Application\Entity\Bid;
 use MvlabsPHPExcel\Service;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
+use Application\Filter\MorphyFilter;
 
 /**
  * Description of GoodsService
@@ -90,6 +91,9 @@ class GoodsManager
         
         $goods->setProducer($producer);
         
+        $morphyFilter = new MorphyFilter();
+        $goods->setTags($morphyFilter->filter($data['name'].' '.$data['description'].' '.$producer->getName().' '.$data['code']));
+        
         if (array_key_exists('tax', $data)){
             if (!$data['tax']) $data['tax'] = $this->getSettings()->defaultTax;
         } else {
@@ -143,6 +147,10 @@ class GoodsManager
         
         $goods->setProducer($producer);
         
+        $morphyFilter = new MorphyFilter();
+        $goods->setTags($morphyFilter->filter($data['name'].' '.$data['description'].' '.$producer->getName().' '.$data['code']));
+
+        
         if (array_key_exists('tax', $data)){
             if (!$data['tax']) $data['tax'] = $this->getSettings()->defaultTax;
         } else {
@@ -168,10 +176,37 @@ class GoodsManager
         }
         $goods->setGroup($group);
         
+        $this->entityManager->persist($goods);
+
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
         
         return $goods;
+    }
+    
+    public function updateTags($good, $flush = true)
+    {
+        $morphyFilter = new MorphyFilter();
+        $good->setTags($morphyFilter->filter($good->getName().' '.$good->getDescription().' '.$good->getProducer()->getName().' '.$good->getCode()));
+        
+        $this->entityManager->persist($good);
+        
+        if ($flush){
+            $this->entityManager->flush();            
+        }
+        
+    }
+
+    public function updateGoodsTags()
+    {
+        $goods = $this->entityManager->getRepository(Goods::class)
+                ->findAll();
+        
+        foreach ($goods as $good){
+            $this->updateTags($good, false);
+        }
+        
+        $this->entityManager->flush();                        
     }
     
     public function removeGood($good, $flushnow = true) 

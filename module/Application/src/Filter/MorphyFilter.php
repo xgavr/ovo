@@ -92,8 +92,9 @@ class MorphyFilter extends AbstractFilter
 
                 }
             } else {
-                if (!in_array($word, $this->stopword)){
-                    $result .= $word." ";                      
+                $slovo=mb_strtolower(trim($word), $this->options['encoding']);
+                if (!in_array($slovo, $this->stopword)){
+                    $result .= $slovo." ";                      
                 }                
             }   
         }    
@@ -116,8 +117,9 @@ class MorphyFilter extends AbstractFilter
 
                 }
             } else {
-                if (!in_array($word, $this->stopword)){
-                    $result .= $word." ";                      
+                $slovo=mb_strtolower(trim($word), $this->options['encoding']);
+                if (!in_array($slovo, $this->stopword)){
+                    $result .= $slovo." ";                      
                 }                
             }   
         }    
