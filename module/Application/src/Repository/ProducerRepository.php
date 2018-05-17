@@ -47,6 +47,20 @@ class ProducerRepository  extends EntityRepository{
         return $queryBuilder->getQuery();
     }    
     
+    public function findAllActiveProducer()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('p')
+            ->from(Producer::class, 'p')
+            ->orderBy('p.name')
+                ;
+
+        return $queryBuilder->getQuery();
+    }    
+    
     public function findAllUnknownProducer($params = null)
     {
         $entityManager = $this->getEntityManager();

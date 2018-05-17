@@ -17,38 +17,57 @@ $this->headScript()
             ;    
     
 ?>    
-<div id="toolbar">
-    <div class="form-inline" role="form">
-        <div class="form-group">
-            <input name="search" style="width: 400px" class="form-control" type="text" placeholder="Поиск">
+<div class="row">
+    <div class="col-sm-9">
+        <div id="toolbar">
+            <div class="form-inline" role="form">
+                <div class="form-group">
+                    <input name="search" style="width: 400px" class="form-control" type="text" placeholder="Поиск">
+                </div>
+                <button id="ok" type="submit" class="btn btn-default">OK</button>
+            </div>
         </div>
-        <button id="ok" type="submit" class="btn btn-default">OK</button>
+        <table id="table" 
+            data-toggle="table" 
+            data-url="/shop/shop-content"
+            data-side-pagination="server"
+            data-pagination="true" 
+            data-page-list="[5, 10, 20, 50]"
+            data-toolbar="#toolbar"
+            data-show-refresh="true"
+            data-show-toggle="true"
+            data-query-params="queryParams"
+            data-response-handler="responseHandler"
+            >
+            <thead>
+                <tr>
+                     <th data-field="id" data-type="numeric">ID</th>
+                     <th data-field="name">Наименование</th>
+                     <th data-field="code">Артикул</th>
+                     <th data-field="producer" data-formatter="producerFormatter">Производитель</th>
+                     <th data-field="price" data-align="right" data-formatter="priceFormatter" data-sortable="true">Цена</th>
+                     <th data-field="num" data-formatter="numFormatter" data-align='rigth'>Количество</th>
+                     <th data-field="incart" data-formatter="incartFormatter" data-align='center'>Купить</th>             
+                 </tr>                
+            </thead>
+        </table>
     </div>
-</div>
-<table id="table" 
-    data-toggle="table" 
-    data-url="/shop/shop-content"
-    data-side-pagination="server"
-    data-pagination="true" 
-    data-page-list="[5, 10, 20, 50]"
-    data-toolbar="#toolbar"
-    data-show-refresh="true"
-    data-show-toggle="true"
-    data-query-params="queryParams"
-    data-response-handler="responseHandler"
-    >
-    <thead>
-        <tr>
-             <th data-field="id" data-type="numeric">ID</th>
-             <th data-field="name">Наименование</th>
-             <th data-field="code">Артикул</th>
-             <th data-field="producer" data-formatter="producerFormatter">Производитель</th>
-             <th data-field="price" data-align="right" data-formatter="priceFormatter">Цена</th>
-             <th data-field="num" data-formatter="numFormatter" data-align='rigth'>Количество</th>
-             <th data-field="incart" data-formatter="incartFormatter" data-align='center'>Купить</th>             
-         </tr>                
-    </thead>
-</table>
+    <div class="col-sm-3" id="side-nav" >
+        <div class="panel panel-default">
+            <div class="panel-heading">Производители</div>
+            <div class="panel-body">
+                <?php foreach($producers as $producer):?>
+                    <div class="text-nowrap bg-warning" style="width: 24rem;">
+                        <input type="checkbox" id="p<?= $producer->getId() ?>" class="producer" value="<?= $producer->getId() ?>">
+                        <label for="p<?= $producer->getId() ?>">
+                            <?= $producer->getName() ?>                                                    
+                        </label>
+                    </div>
+                <?php endforeach ?>                    
+            </div>
+        </div>
+    </div>    
+</div>    
 
 <script type="text/javascript">
     var $table = $('#table'),
@@ -72,9 +91,19 @@ $this->headScript()
         offset = $('li.page-number.active a').html();
         if (offset){
             params.offset = params.limit * (offset - 1);
-        }    
+        }  
+        
+        var producer = new Array();
+        $('.producer:checkbox:checked').each(function () {
+            producer.push($(this).val());
+        });
+        
+        if (producer.length){
+            params.producer = producer;
+        }
         return params;
     }
+    
     function responseHandler(res) {
         return res;
     }

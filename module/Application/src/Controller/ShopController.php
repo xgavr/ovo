@@ -10,6 +10,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Goods;
+use Application\Entity\Producer;
 use Application\Entity\Cart;
 use Application\Entity\Client;
 use Zend\View\Model\JsonModel;
@@ -103,8 +104,12 @@ class ShopController extends AbstractActionController
             return $this->redirect()->toRoute('client', []);
         }        
         
+        $producers = $this->entityManager->getRepository(Producer::class)
+                ->findAllActiveProducer()->getResult();
+        
         return new ViewModel([
             'currentClient' => $currentClient,
+            'producers' => $producers,
         ]);          
     }
     
@@ -114,16 +119,19 @@ class ShopController extends AbstractActionController
         $currentClient = $this->shopManager->currentClient();
         
         $q = $this->params()->fromQuery('search', '');
+        $producer = $this->params()->fromQuery('producer', '');
+        $group = $this->params()->fromQuery('group', '');
         $offset = $this->params()->fromQuery('offset');
         $limit = $this->params()->fromQuery('limit');
         
-        if (strlen($q) > 1){
-            $query = $this->entityManager->getRepository(Goods::class)
-                        ->searchByName($q);            
-        } else {
-            $query = $this->entityManager->getRepository(Goods::class)
-                        ->findAllGoods();
-        }    
+        $params = [
+            'search' => $q,
+            'producer' => $producer,
+            'group' => $group,
+        ];
+        
+        $query = $this->entityManager->getRepository(Goods::class)
+                    ->paramsSearch($params);            
         
         $total = count($query->getResult(2));
         
@@ -138,7 +146,7 @@ class ShopController extends AbstractActionController
 
         return new JsonModel([
             'total' => $total,
-            'rows' => $result,
+            'rows' => $result,            
         ]);          
     }
     

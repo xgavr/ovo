@@ -74,7 +74,7 @@ class MorphyFilter extends AbstractFilter
         $result = '';
         
         $textRu = $this->cleanUpRu($value);
-        $testEn = $this->cleanUpEn($value);
+        $textEn = $this->cleanUpEn($value);
         $aTextRu = explode(' ', $textRu);
         
         $morphy = new Morphy('ru');
@@ -105,19 +105,19 @@ class MorphyFilter extends AbstractFilter
         $morphy = new Morphy('en');
         foreach ($aTextEn as $word){
             //$pseudo_root = $morphy->getPseudoRoot(mb_strtoupper(trim($word), $this->options['encoding']));
-            $pseudo_root = $morphy->getBaseForm(mb_strtoupper(trim($word), $this->options['encoding']));
+            $pseudo_root = $morphy->getBaseForm(strtoupper(trim($word)));
             
             if (is_array($pseudo_root)){
                 foreach ($pseudo_root as $roots){
 
-                    $slovo=mb_strtolower(trim($roots), $this->options['encoding']);
+                    $slovo=strtolower(trim($roots));
                     if (strlen( $slovo)>3 && !in_array($slovo, $this->stopword) && count($roots)==1 ){
                         $result .= $slovo." ";                      
                     }
 
                 }
             } else {
-                $slovo=mb_strtolower(trim($word), $this->options['encoding']);
+                $slovo=strtolower(trim($word));
                 if (!in_array($slovo, $this->stopword)){
                     $result .= $slovo." ";                      
                 }                

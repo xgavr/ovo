@@ -51,6 +51,35 @@ class GoodsRepository extends EntityRepository{
         return $queryBuilder->getQuery();
     }
     
+    public function paramsSearch($params)
+    {
+
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('g, p')
+            ->from(Goods::class, 'g')
+            ->join("g.producer", 'p', 'WITH') 
+            ->orderBy('g.name')
+                ;
+        
+        if ($params['search']){
+            $queryBuilder->where('g.name like :search')
+                    ->setParameter('search', '%' . $params['search'] . '%')
+                ;
+        }
+
+        if (is_array($params['producer'])){
+            $queryBuilder->andWhere('g.producer in :prod')
+                    ->setParameter('prod', '(' . implode('', $params['producer']) . ')')
+                ;
+        }
+//        var_dump($queryBuilder->getQuery()->getSQL()); exit;
+
+        return $queryBuilder->getQuery();
+    }
+    
     public function searchNameForSearchAssistant($search)
     {        
         return $this->searchByName($search)->getResult();
@@ -91,7 +120,7 @@ class GoodsRepository extends EntityRepository{
             ->orderBy('c.id')
             ->setParameter('1', $good->getId())    
                 ;
-        var_dump($queryBuilder->getQuery()->getSQL()); exit;
+        //var_dump($queryBuilder->getQuery()->getSQL()); exit;
 
         return $queryBuilder->getQuery()->getResult();
     }
@@ -113,5 +142,5 @@ class GoodsRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
         
     }
-       
+           
 }
