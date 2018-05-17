@@ -13,6 +13,7 @@ use Application\Entity\Goods;
 use Application\Entity\Rawprice;
 use Application\Entity\Image;
 use Application\Entity\Producer;
+use Application\Entity\GoodsGroup;
 /**
  * Description of GoodsRepository
  *
@@ -71,8 +72,14 @@ class GoodsRepository extends EntityRepository{
         }
 
         if (is_array($params['producer'])){
-            $queryBuilder->add('where', $queryBuilder->expr()->in('g.producer', ':producer'))
+            $queryBuilder->andWhere($queryBuilder->expr()->in('g.producer', ':producer'))
                             ->setParameter('producer', $params['producer'])
+                                    ;
+        }
+
+        if (is_array($params['group'])){
+            $queryBuilder->andWhere($queryBuilder->expr()->in('g.group', ':group'))
+                            ->setParameter('group', $params['group'])
                                     ;
         }
 //        var_dump($queryBuilder->getQuery()->getSQL()); exit;
@@ -142,5 +149,22 @@ class GoodsRepository extends EntityRepository{
         return $queryBuilder->getQuery()->getResult();
         
     }
+    
+    
+    public function findAllActiveGroup()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('g')
+            ->from(GoodsGroup::class, 'g')
+            ->orderBy('g.name')
+                ;
+
+        return $queryBuilder->getQuery();
+    }    
+    
+    
            
 }

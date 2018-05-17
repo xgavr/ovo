@@ -55,11 +55,24 @@ $this->headScript()
     <div class="col-sm-3" id="side-nav" >
         <div class="nav nav-stacked nav-list affix">
             <div class="panel panel-default">
+                <div class="panel-heading">Группы</div>
+                    <small>
+                    <div class="panel-body">
+                        <?php foreach($groups as $group):?>
+                            <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
+                                <input type="checkbox" id="p<?= $group->getId() ?>" onchange="refreshTable()" class="group" value="<?= $group->getId() ?>">
+                                <label class="font-weight-normal" for="p<?= $group->getId() ?>">
+                                    <?= $group->getName() ?>                                                    
+                                </label>
+                            </div>
+                        <?php endforeach ?>                    
+                    </small>
+                </div>                    
                 <div class="panel-heading">Производители</div>
                     <small>
                     <div class="panel-body">
                         <?php foreach($producers as $producer):?>
-                            <div class="text-nowrap text-muted" style="width: 24rem;">
+                            <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
                                 <input type="checkbox" id="p<?= $producer->getId() ?>" onchange="refreshTable()" class="producer" value="<?= $producer->getId() ?>">
                                 <label class="font-weight-normal" for="p<?= $producer->getId() ?>">
                                     <?= $producer->getName() ?>                                                    
@@ -104,6 +117,16 @@ $this->headScript()
         if (producer.length){
             params.producer = producer;
         }
+        
+        var group = new Array();
+        $('.group:checkbox:checked').each(function () {
+            group.push($(this).val());
+        });
+        
+        if (group.length){
+            params.group = group;
+        }
+
         return params;
     }
     

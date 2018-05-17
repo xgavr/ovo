@@ -63,3 +63,15 @@ div.container a.navbar-brand > img {
 .text-underline {
   text-decoration: underline;
 }
+
+.vtop {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.vcenter {
+  display: inline-block;
+  float: none;
+  vertical-align: middle;
+}

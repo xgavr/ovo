@@ -11,6 +11,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Goods;
 use Application\Entity\Producer;
+use Application\Entity\GoodsGroup;
 use Application\Entity\Cart;
 use Application\Entity\Client;
 use Zend\View\Model\JsonModel;
@@ -107,9 +108,13 @@ class ShopController extends AbstractActionController
         $producers = $this->entityManager->getRepository(Producer::class)
                 ->findAllActiveProducer()->getResult();
         
+        $groups = $this->entityManager->getRepository(Goods::class)
+                ->findAllActiveGroup()->getResult();
+        
         return new ViewModel([
             'currentClient' => $currentClient,
             'producers' => $producers,
+            'groups' => $groups,
         ]);          
     }
     
@@ -119,8 +124,8 @@ class ShopController extends AbstractActionController
         $currentClient = $this->shopManager->currentClient();
         
         $q = $this->params()->fromQuery('search', '');
-        $producer = $this->params()->fromQuery('producer', '');
-        $group = $this->params()->fromQuery('group', '');
+        $producer = $this->params()->fromQuery('producer');
+        $group = $this->params()->fromQuery('group');
         $offset = $this->params()->fromQuery('offset');
         $limit = $this->params()->fromQuery('limit');
         
