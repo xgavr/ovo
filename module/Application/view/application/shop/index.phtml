@@ -53,30 +53,33 @@ $this->headScript()
         </table>
     </div>
     <div class="col-sm-3" id="side-nav" >
-        <div class="panel panel-default">
-            <div class="panel-heading">Производители</div>
-            <div class="panel-body">
-                <?php foreach($producers as $producer):?>
-                    <div class="text-nowrap bg-warning" style="width: 24rem;">
-                        <input type="checkbox" id="p<?= $producer->getId() ?>" class="producer" value="<?= $producer->getId() ?>">
-                        <label for="p<?= $producer->getId() ?>">
-                            <?= $producer->getName() ?>                                                    
-                        </label>
-                    </div>
-                <?php endforeach ?>                    
-            </div>
+        <div class="nav nav-stacked nav-list affix">
+            <div class="panel panel-default">
+                <div class="panel-heading">Производители</div>
+                    <small>
+                    <div class="panel-body">
+                        <?php foreach($producers as $producer):?>
+                            <div class="text-nowrap text-muted" style="width: 24rem;">
+                                <input type="checkbox" id="p<?= $producer->getId() ?>" onchange="refreshTable()" class="producer" value="<?= $producer->getId() ?>">
+                                <label class="font-weight-normal" for="p<?= $producer->getId() ?>">
+                                    <?= $producer->getName() ?>                                                    
+                                </label>
+                            </div>
+                        <?php endforeach ?>                    
+                    </small>
+                </div>                    
+            </div>            
         </div>
     </div>    
 </div>    
 
 <script type="text/javascript">
-    var $table = $('#table'),
-        $ok = $('#ok');
+    function refreshTable(){
+        $('#table').bootstrapTable('refresh');
+    }
 
-    $(function () {
-        $ok.click(function () {
-            $table.bootstrapTable('refresh');
-        });
+    $('#ok').click(function () {
+        refreshTable();
     });
     
     function queryParams() {

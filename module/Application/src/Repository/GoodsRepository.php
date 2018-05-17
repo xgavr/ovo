@@ -71,9 +71,9 @@ class GoodsRepository extends EntityRepository{
         }
 
         if (is_array($params['producer'])){
-            $queryBuilder->andWhere('g.producer in :prod')
-                    ->setParameter('prod', '(' . implode('', $params['producer']) . ')')
-                ;
+            $queryBuilder->add('where', $queryBuilder->expr()->in('g.producer', ':producer'))
+                            ->setParameter('producer', $params['producer'])
+                                    ;
         }
 //        var_dump($queryBuilder->getQuery()->getSQL()); exit;
 
