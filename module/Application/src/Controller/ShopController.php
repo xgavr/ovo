@@ -118,10 +118,20 @@ class ShopController extends AbstractActionController
         ]);          
     }
     
+    public function checkLoginAction()
+    {
+        $currentClient = $this->shopManager->currentClient();
+        $result = 0;
+        if ($currentClient == null){
+            $result = 1;
+        }                
+        return new JsonModel([
+            'login' => $result,
+        ]);                      
+    }
+    
     public function shopContentAction()
     {
-        
-        $currentClient = $this->shopManager->currentClient();
         
         $q = $this->params()->fromQuery('search', '');
         $producer = $this->params()->fromQuery('producer');

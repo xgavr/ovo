@@ -111,6 +111,14 @@ return [
         ],
     ],
     'doctrine' => [        
+        // расширение функций DQL
+        'configuration' => [
+            'orm_default' => [
+                'string_functions' => [
+                    'MatchAgainst' => 'Application\Functions\MatchAgainstFunction',
+                ],
+            ],    
+        ],
         // настройка миграций
         'migrations_configuration' => [
             'orm_default' => [

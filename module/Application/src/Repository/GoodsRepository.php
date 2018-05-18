@@ -14,6 +14,7 @@ use Application\Entity\Rawprice;
 use Application\Entity\Image;
 use Application\Entity\Producer;
 use Application\Entity\GoodsGroup;
+use Application\Filter\MorphyFilter;
 /**
  * Description of GoodsRepository
  *
@@ -65,9 +66,13 @@ class GoodsRepository extends EntityRepository{
             ->orderBy('g.name')
                 ;
         
-        if ($params['search']){
-            $queryBuilder->where('g.name like :search')
-                    ->setParameter('search', '%' . $params['search'] . '%')
+        if ($params['search'] && strlen($params['search']) > 3){
+            
+            $morphyFilter = new MorphyFilter();
+            $search = $morphyFilter->filter($params['search']);
+            
+            $queryBuilder->andWhere('MATCH (g.tags) AGAINST (:search BOOLEAN) > 0')
+                            ->setParameter('search', $search)
                 ;
         }
 
