@@ -55,9 +55,12 @@ class GoodsRepository extends EntityRepository{
     
     public function paramsSearch($params)
     {
-
+        
         $entityManager = $this->getEntityManager();
 
+        $config = $entityManager->getConfiguration();
+        $config->addCustomStringFunction('match_against', 'DoctrineExtensions\Query\MySq\MatchAgainst');
+        
         $queryBuilder = $entityManager->createQueryBuilder();
 
         $queryBuilder->select('g, p')
