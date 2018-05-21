@@ -74,7 +74,7 @@ class GoodsRepository extends EntityRepository{
             $morphyFilter = new MorphyFilter();
             $search = $morphyFilter->filter($params['search']);
             
-            $queryBuilder->andWhere('MATCH (g.tags) AGAINST (:search) > 0')
+            $queryBuilder->andWhere('match (g.tags) against (:search) > 0')
                             ->setParameter('search', $search)
                 ;
         }
