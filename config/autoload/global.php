@@ -115,7 +115,7 @@ return [
         'configuration' => [
             'orm_default' => [
                 'string_functions' => [
-                    'match_against' => 'DoctrineExtensions\Query\Mysql\MatchAgainst',
+                    'match' => 'DoctrineExtensions\Query\Mysql\MatchAgainst',
                 ],
             ],
         ],

@@ -57,9 +57,6 @@ class GoodsRepository extends EntityRepository{
     {
         
         $entityManager = $this->getEntityManager();
-
-        $config = $entityManager->getConfiguration();
-        $config->addCustomStringFunction('match_against', 'DoctrineExtensions\Query\MySq\MatchAgainst');
         
         $queryBuilder = $entityManager->createQueryBuilder();
 
@@ -74,7 +71,7 @@ class GoodsRepository extends EntityRepository{
             $morphyFilter = new MorphyFilter();
             $search = $morphyFilter->filter($params['search']);
             
-            $queryBuilder->andWhere('match (g.tags) against (:search) > 0')
+            $queryBuilder->andWhere('match (g.tags) against (:search boolean) > 0')
                             ->setParameter('search', $search)
                 ;
         }
