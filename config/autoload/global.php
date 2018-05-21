@@ -115,9 +115,9 @@ return [
         'configuration' => [
             'orm_default' => [
                 'string_functions' => [
-                    'MatchAgainst' => 'Application\Functions\MatchAgainstFunction',
+                    'match_against' => 'DoctrineExtensions\Query\Mysql\MatchAgainst',
                 ],
-            ],    
+            ],
         ],
         // настройка миграций
         'migrations_configuration' => [
