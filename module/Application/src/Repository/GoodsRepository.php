@@ -63,8 +63,10 @@ class GoodsRepository extends EntityRepository{
         $queryBuilder->select('g, p')
             ->from(Goods::class, 'g')
             ->join("g.producer", 'p', 'WITH') 
-            ->orderBy('g.name')
+//            ->orderBy('g.name')
                 ;
+        
+        
         
         if ($params['search'] && strlen($params['search']) > 3){
             
@@ -73,18 +75,21 @@ class GoodsRepository extends EntityRepository{
             
             $queryBuilder->andWhere('match (g.tags) against (:search boolean) > 0')
                             ->setParameter('search', $search)
+                            ->orderBy('match (g.tags) against (:search boolean)', 'DESC')
                 ;
         }
 
         if (is_array($params['producer'])){
             $queryBuilder->andWhere($queryBuilder->expr()->in('g.producer', ':producer'))
                             ->setParameter('producer', $params['producer'])
+                            ->addOrderBy('g.name')
                                     ;
         }
 
         if (is_array($params['group'])){
             $queryBuilder->andWhere($queryBuilder->expr()->in('g.group', ':group'))
                             ->setParameter('group', $params['group'])
+                            ->addOrderBy('g.name')
                                     ;
         }
 //        var_dump($queryBuilder->getQuery()->getSQL()); exit;

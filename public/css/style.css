@@ -75,3 +75,7 @@ div.container a.navbar-brand > img {
   float: none;
   vertical-align: middle;
 }
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: searchfield-cancel-button;
+}
