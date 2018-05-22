@@ -60,13 +60,13 @@ $this->headScript()
                 <div class="panel-heading">Настройки</div>
                 <small>
                     <div class="panel-body">
-                        <div class="alert alert-info" role="alert">
+                        <div>
                             <a href="<?= $this->url('goods', ['action'=>'settings']); ?>" class="alert-link">Значения по умолчанию</a>
                         </div>
-                        <div class="alert alert-info" role="alert">
+                        <div>
                             <a href="<?= $this->url('goods', ['action'=>'add']); ?>" class="alert-link">Добавить новый товар</a>
                         </div>
-                        <div class="alert alert-danger" role="alert">
+                        <div>
                             <a href="#" class="alert-link refresh-button" value="/goods/delete-all">Удалить все</a>
                         </div>
                     </div>
