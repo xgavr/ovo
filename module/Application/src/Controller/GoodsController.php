@@ -12,6 +12,7 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 use Application\Entity\Goods;
 use Application\Entity\GoodsGroup;
+use Application\Entity\Producer;
 use Application\Form\GoodsForm;
 use Application\Form\GoodsGroupForm;
 use Application\Form\GoodSettingsForm;
@@ -82,20 +83,16 @@ class GoodsController extends AbstractActionController
     
     public function indexAction()
     {
-        $page = $this->params()->fromQuery('page', 1);
+        $producers = $this->entityManager->getRepository(Producer::class)
+                ->findAllActiveProducer()->getResult();
         
-        $query = $this->entityManager->getRepository(Goods::class)
-                    ->findAllGoods();
-                
-        $adapter = new DoctrineAdapter(new ORMPaginator($query, false));
-        $paginator = new Paginator($adapter);
-        $paginator->setDefaultItemCountPerPage(10);        
-        $paginator->setCurrentPageNumber($page);        
-        // Визуализируем шаблон представления.
+        $groups = $this->entityManager->getRepository(Goods::class)
+                ->findAllActiveGroup()->getResult();
+        
         return new ViewModel([
-            'goods' => $paginator,
-            'goodsManager' => $this->goodsManager
-        ]);  
+            'producers' => $producers,
+            'groups' => $groups,
+        ]);          
     }
     
     public function addAction() 
