@@ -63,6 +63,7 @@ class GoodsRepository extends EntityRepository{
         $queryBuilder->select('g, p')
             ->from(Goods::class, 'g')
             ->join("g.producer", 'p', 'WITH') 
+            ->distinct()    
 //            ->orderBy('g.name')
                 ;
         
@@ -92,7 +93,16 @@ class GoodsRepository extends EntityRepository{
                             ->addOrderBy('g.name')
                                     ;
         }
-//        var_dump($queryBuilder->getQuery()->getSQL()); exit;
+
+        if (is_array($params['supplier'])){
+            $queryBuilder
+                    ->innerJoin('g.rawprice', 'rp', 'WITH')
+                    ->join('rp.raw', 'r', 'WITH')
+                    ->andWhere($queryBuilder->expr()->in('r.supplier', ':supplier'))
+                            ->setParameter('supplier', $params['supplier'])
+                            ->addOrderBy('g.name')
+                                    ;
+        }
 
         return $queryBuilder->getQuery();
     }
@@ -173,8 +183,5 @@ class GoodsRepository extends EntityRepository{
                 ;
 
         return $queryBuilder->getQuery();
-    }    
-    
-    
-           
+    }               
 }

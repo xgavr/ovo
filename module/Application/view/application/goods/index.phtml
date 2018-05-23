@@ -31,7 +31,7 @@ $this->headScript()
         </div>
         <table id="table" 
             data-toggle="table" 
-            data-url="/shop/shop-content"
+            data-url="/goods/index-content"
             data-side-pagination="server"
             data-pagination="true" 
             data-page-list="[5, 10, 20, 50]"
@@ -98,6 +98,19 @@ $this->headScript()
                         <?php endforeach ?>                    
                     </div>                    
                 </small>
+                <div class="panel-heading">Поставщики</div>
+                <small>
+                    <div class="panel-body">
+                        <?php foreach($suppliers as $supplier):?>
+                            <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
+                                <input type="checkbox" id="p<?= $supplier->getId() ?>" onchange="refreshTable()" class="supplier" value="<?= $supplier->getId() ?>">
+                                <label class="font-weight-normal" for="p<?= $supplier->getId() ?>">
+                                    <?= $supplier->getName() ?>                                                    
+                                </label>
+                            </div>
+                        <?php endforeach ?>                    
+                    </div>                    
+                </small>
             </div>            
         </div>
     </div>    
@@ -142,6 +155,15 @@ $this->headScript()
         
         if (group.length){
             params.group = group;
+        }
+
+        var supplier = new Array();
+        $('.supplier:checkbox:checked').each(function () {
+            supplier.push($(this).val());
+        });
+        
+        if (supplier.length){
+            params.supplier = supplier;
         }
 
         return params;

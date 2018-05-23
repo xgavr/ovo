@@ -29,5 +29,20 @@ class SupplierRepository extends EntityRepository{
                 ;
 
         return $queryBuilder->getQuery();
-    }        
+    }    
+
+    public function findAllActiveSupplier()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $queryBuilder = $entityManager->createQueryBuilder();
+
+        $queryBuilder->select('g')
+            ->from(Supplier::class, 'g')
+            ->orderBy('g.name')
+                ;
+
+        return $queryBuilder->getQuery();
+    }    
+    
 }

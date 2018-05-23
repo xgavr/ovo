@@ -13,6 +13,7 @@ use Zend\View\Model\JsonModel;
 use Application\Entity\Goods;
 use Application\Entity\GoodsGroup;
 use Application\Entity\Producer;
+use Application\Entity\Supplier;
 use Application\Form\GoodsForm;
 use Application\Form\GoodsGroupForm;
 use Application\Form\GoodSettingsForm;
@@ -89,11 +90,49 @@ class GoodsController extends AbstractActionController
         $groups = $this->entityManager->getRepository(Goods::class)
                 ->findAllActiveGroup()->getResult();
         
+        $suppliers = $this->entityManager->getRepository(Supplier::class)
+                ->findAllActiveSupplier()->getResult();
+        
         return new ViewModel([
             'producers' => $producers,
             'groups' => $groups,
+            'suppliers' => $suppliers,
         ]);          
     }
+    
+    public function indexContentAction()
+    {
+        
+        $q = $this->params()->fromQuery('search', '');
+        $producer = $this->params()->fromQuery('producer');
+        $group = $this->params()->fromQuery('group');
+        $supplier = $this->params()->fromQuery('supplier');
+        $offset = $this->params()->fromQuery('offset');
+        $limit = $this->params()->fromQuery('limit');
+        
+        $params = [
+            'search' => $q,
+            'producer' => $producer,
+            'group' => $group,
+            'supplier' => $supplier,
+        ];
+        
+        $query = $this->entityManager->getRepository(Goods::class)
+                    ->paramsSearch($params);            
+        
+        $total = count($query->getResult(2));
+        
+        if ($offset) $query->setFirstResult( $offset );
+        if ($limit) $query->setMaxResults( $limit );
+        
+        $result = $query->getResult(2);
+        
+        return new JsonModel([
+            'total' => $total,
+            'rows' => $result,            
+        ]);          
+    }
+    
     
     public function addAction() 
     {     
