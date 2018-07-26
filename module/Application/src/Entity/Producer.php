@@ -32,12 +32,34 @@ class Producer {
     protected $name;
 
     /**
+     * @ORM\Column(name="goods_count")   
+     */
+    protected $goodsCount;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Application\Entity\Country", inversedBy="producer") 
      * @ORM\JoinColumn(name="country_id", referencedColumnName="id")
      */
     protected $country;
 
     
+   /**
+    * @ORM\OneToMany(targetEntity="\Application\Entity\Goods", mappedBy="producer")
+    * @ORM\JoinColumn(name="id", referencedColumnName="producer_id")
+   */
+   private $goods;
+
+   /**
+    * @ORM\OneToMany(targetEntity="\Application\Entity\UnknownProducer", mappedBy="producer")
+    * @ORM\JoinColumn(name="id", referencedColumnName="producer_id")
+   */
+   private $unknownProducer;
+
+   public function __construct() {
+      $this->goods = new ArrayCollection();
+      $this->unknownProducer = new ArrayCollection();
+   }
+
     public function getId() 
     {
         return $this->id;
@@ -58,6 +80,16 @@ class Producer {
         $this->name = trim($name);
     }     
 
+    public function getGoodsCount() 
+    {
+        return $this->goodsCount;
+    }
+
+    public function setGoodsCount($goodsCount) 
+    {
+        $this->goodsCount = (int) $goodsCount;
+    }     
+
     /*
      * Возвращает связанный country.
      * @return \Application\Entity\Country
@@ -76,23 +108,6 @@ class Producer {
         $this->country = $country;
         $country->addProducer($this);
     }     
-
-   /**
-    * @ORM\OneToMany(targetEntity="\Application\Entity\Goods", mappedBy="producer")
-    * @ORM\JoinColumn(name="id", referencedColumnName="producer_id")
-   */
-   private $goods;
-
-   /**
-    * @ORM\OneToMany(targetEntity="\Application\Entity\UnknownProducer", mappedBy="producer")
-    * @ORM\JoinColumn(name="id", referencedColumnName="producer_id")
-   */
-   private $unknownProducer;
-
-   public function __construct() {
-      $this->goods = new ArrayCollection();
-      $this->unknownProducer = new ArrayCollection();
-   }
 
     /**
      * Возвращает goods для этого producer.

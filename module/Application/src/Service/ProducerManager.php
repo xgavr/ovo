@@ -8,7 +8,7 @@
 namespace Application\Service;
 
 use Zend\ServiceManager\ServiceManager;
-use Application\Entity\Tax;
+use Application\Entity\Goods;
 use Application\Entity\Country;
 use Application\Entity\Producer;
 use Application\Entity\UnknownProducer;
@@ -66,9 +66,48 @@ class ProducerManager
         
         $producer->setCountry($country);
                
+        $this->entityManager->persist($producer);
         // Применяем изменения к базе данных.
-        $this->entityManager->flush();
+        $this->entityManager->flush($producer);
     }    
+
+    /*
+     * Обновить информацию о количестве товара этого производителя
+     * @vae Application\Entity\Producer $producer
+     */
+    public function updateGoodsCount($producer, $flush = true) 
+    {
+        $goods = $this->entityManager->getRepository(Goods::class)
+                ->findBy(['producer' => $producer->getId(), 'status' => Goods::AVAILABLE_TRUE]);
+        
+        $producer->setGoodsCount(count($goods));
+               
+        $this->entityManager->persist($producer);
+        // Применяем изменения к базе данных.
+        if ($flush){
+            $this->entityManager->flush($producer);
+        }    
+        
+        return;
+    }    
+    
+    
+    /*
+     * Обновить информацию о количестве товара у всех постащиков 
+     */
+    public function updateGoodsCounts()
+    {
+        $producers = $this->entityManager->getRepository(Producer::class)
+                ->findBy();
+        
+        foreach ($producers as $producer){
+            $this->updateGoodsCount($producer, false);
+        }
+        
+        $this->entityManager->flush();
+        
+        return;
+    }
     
     public function removeProducer($producer) 
     {   
