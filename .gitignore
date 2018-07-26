@@ -9,3 +9,4 @@ phpunit.xml
 /data/DoctrineORMModule/Proxy/
 /data/settings/
 /data/tmp/
+/nbproject/private/

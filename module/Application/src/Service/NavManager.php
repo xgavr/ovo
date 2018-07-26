@@ -289,7 +289,8 @@ class NavManager
             
             $items[] = [
                 'id' => 'logout',
-                'labelHTML' => '<span class="glyphicon glyphicon-user"></span>',
+//                'labelHTML' => '<span class="glyphicon glyphicon-user"></span>',
+                'labelHTML' => '<strong>'.$this->rbacManager->navUserName().'</strong>',
                 'float' => 'right',
                 'dropdown' => [
                     [

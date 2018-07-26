@@ -29,6 +29,15 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'factories' => [
+            Service\AdminManager::class => Service\Factory\AdminManagerFactory::class,
+            Service\FtpManager::class => Service\Factory\FtpManagerFactory::class,
+            Service\PostManager::class => Service\Factory\PostManagerFactory::class,
+            Service\SmsManager::class => Service\Factory\SmsManagerFactory::class,
+            Service\TelegrammManager::class => Service\Factory\TelegrammManagerFactory::class,
+        ],
+    ],    
     'view_manager' => [
         'template_path_stack' => [
             'Admin' => __DIR__ . '/../view',
