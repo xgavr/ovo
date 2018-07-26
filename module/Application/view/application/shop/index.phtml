@@ -17,6 +17,14 @@ $this->headScript()
             ;    
     
 ?>    
+<style>
+.fixed-panel {
+  min-height: 10;
+  max-height: 10;
+  overflow-y: scroll;
+}    
+</style>
+
 <div class="row">
     <div class="col-sm-9">
         <div id="toolbar">
@@ -70,7 +78,7 @@ $this->headScript()
                 </small>
                 <div class="panel-heading">Производители</div>
                 <small>
-                    <div class="panel-body">
+                    <div class="panel-body fixed-panel">
                         <?php foreach($producers as $producer):?>
                             <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
                                 <input type="checkbox" id="p<?= $producer->getId() ?>" onchange="refreshTable()" class="producer" value="<?= $producer->getId() ?>">
