@@ -55,6 +55,7 @@ class ProducerRepository  extends EntityRepository{
 
         $queryBuilder->select('p')
             ->from(Producer::class, 'p')
+            ->where('p.goodsCount > 0')    
             ->orderBy('p.name')
                 ;
 

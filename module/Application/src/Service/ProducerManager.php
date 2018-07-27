@@ -78,7 +78,7 @@ class ProducerManager
     public function updateGoodsCount($producer, $flush = true) 
     {
         $goods = $this->entityManager->getRepository(Goods::class)
-                ->findBy(['producer' => $producer->getId(), 'status' => Goods::AVAILABLE_TRUE]);
+                ->findBy(['producer' => $producer->getId(), 'available' => Goods::AVAILABLE_TRUE]);
         
         $producer->setGoodsCount(count($goods));
                
@@ -98,7 +98,7 @@ class ProducerManager
     public function updateGoodsCounts()
     {
         $producers = $this->entityManager->getRepository(Producer::class)
-                ->findBy();
+                ->findBy([]);
         
         foreach ($producers as $producer){
             $this->updateGoodsCount($producer, false);

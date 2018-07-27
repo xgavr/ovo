@@ -62,6 +62,7 @@
             /*
             * проверка на авторизацию
             */
+           var checkLoginTimeout;
 
             var checkLogin = function(){
                 $.ajax({
@@ -69,14 +70,15 @@
                     url: '/application/check-login'
                 })
                     .done(function (data) { 
-                        if (data){
+                        if (data && typeof data === 'object'){
                             if (!data.ident){
                                 window.location.reload();
                             }
                         }    
-                        setTimeout(checkLogin, 60000);
+                        checkLoginTimeout = setTimeout(checkLogin, 60000);
                     })
                     .fail(function (e) {
+                        clearTimeout(checkLoginTimeout);
                         console.log(e);
                     });                
             }

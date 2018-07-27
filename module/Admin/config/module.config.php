@@ -6,11 +6,6 @@ use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
-    'controllers' => [
-        'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
-        ],
-    ],
     'router' => [
         'routes' => [
             'admin' => [
@@ -27,6 +22,48 @@ return [
                     ],
                 ],
             ],
+            'proc' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/proc[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]*',
+                    ],
+                    'defaults' => [
+                        'controller'    => Controller\ProcessingController::class,
+                        'action'        => 'index',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'access_filter' => [
+        'controllers' => [
+            Controller\IndexController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+admin.manage'],
+                ['actions' => 'telegramm-hook', 'allow' => '*']
+            ],
+            Controller\PostController::class => [
+                // Allow access to authenticated users.
+                ['actions' => '*', 'allow' => '+admin.manage']
+            ],
+            Controller\ProcessingController::class => [
+                // Allow access to all users.
+                ['actions' => '*', 'allow' => '*']
+            ],
+            Controller\TelegrammController::class => [
+                // Allow access to authenticated users.
+                ['actions' => ['index', 'set', 'unset'], 'allow' => '+admin.manage'],
+                ['actions' => ['hook'], 'allow' => '*']
+            ],
+        ],
+    ],    
+    'controllers' => [
+        'factories' => [
+            Controller\IndexController::class => InvokableFactory::class,
+            Controller\ProcessingController::class => Controller\Factory\ProcessingControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -43,12 +80,4 @@ return [
             'Admin' => __DIR__ . '/../view',
         ],
     ],
-    'access_filter' => [
-        'controllers' => [
-            Controller\IndexController::class => [
-                // Allow access to authenticated users.
-                ['actions' => '*', 'allow' => '+admin.manage']
-            ],
-        ],
-    ],    
 ];
