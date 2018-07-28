@@ -12,9 +12,11 @@ use Doctrine\ORM\EntityRepository;
 use Application\Entity\Goods;
 use Application\Entity\Rawprice;
 use Application\Entity\Image;
-use Application\Entity\Producer;
+//use Application\Entity\Producer;
 use Application\Entity\GoodsGroup;
+use Application\Entity\Supplier;
 use Application\Filter\MorphyFilter;
+
 /**
  * Description of GoodsRepository
  *
@@ -55,7 +57,7 @@ class GoodsRepository extends EntityRepository{
     
     public function paramsSearch($params)
     {
-        
+//        var_dump($params);
         $entityManager = $this->getEntityManager();
         
         $queryBuilder = $entityManager->createQueryBuilder();
@@ -91,6 +93,16 @@ class GoodsRepository extends EntityRepository{
             $queryBuilder->andWhere($queryBuilder->expr()->in('g.group', ':group'))
                             ->setParameter('group', $params['group'])
                             ->addOrderBy('g.name')
+                                    ;
+        }
+
+        if ($params['contract']){
+            $queryBuilder
+                    ->join('g.rawprice', 'rp', 'WITH')
+                    ->join('rp.raw', 'r', 'WITH')
+                    ->join('r.supplier', 's', 'WITH')
+                    ->andWhere('s.contract = :contract')
+                            ->setParameter('contract', Supplier::CONTRACT_YES)
                                     ;
         }
 

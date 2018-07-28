@@ -62,22 +62,27 @@ $this->headScript()
     </div>
     <div class="col-sm-3" id="side-nav" >
         <div class="nav nav-stacked nav-list affix">
-            <div class="panel panel-default">
-                <div class="panel-heading">Группы</div>
-                <small>
+            <small>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Группы</div>
+                        <div class="panel-body">
+                            <?php foreach($groups as $group):?>
+                                <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
+                                    <input type="checkbox" id="p<?= $group->getId() ?>" onchange="refreshTable()" class="group" value="<?= $group->getId() ?>">
+                                    <label class="font-weight-normal" for="p<?= $group->getId() ?>">
+                                        <?= $group->getName() ?>                                                    
+                                    </label>
+                                </div>
+                            <?php endforeach ?>                    
+                        </div>                    
+                </div>    
+                <div class="panel panel-default">
                     <div class="panel-body">
-                        <?php foreach($groups as $group):?>
-                            <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
-                                <input type="checkbox" id="p<?= $group->getId() ?>" onchange="refreshTable()" class="group" value="<?= $group->getId() ?>">
-                                <label class="font-weight-normal" for="p<?= $group->getId() ?>">
-                                    <?= $group->getName() ?>                                                    
-                                </label>
-                            </div>
-                        <?php endforeach ?>                    
+                        <input type="checkbox" onchange="refreshTable()" id="contract"> Контрактные
                     </div>                    
-                </small>
-                <div class="panel-heading">Производители</div>
-                <small>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Производители</div>
                     <div class="panel-body fixed-panel">
                         <?php foreach($producers as $producer):?>
                             <div class="text-nowrap text-muted" style="width: 24rem; overflow: hidden; text-overflow:ellipsis">
@@ -88,8 +93,8 @@ $this->headScript()
                             </div>
                         <?php endforeach ?>                    
                     </div>                    
-                </small>
-            </div>                    
+                </div>                    
+            </small>
         </div>            
     </div>
 </div>    
@@ -135,6 +140,10 @@ $this->headScript()
         if (group.length){
             params.group = group;
         }
+        
+        if ($('#contract').prop('checked')){
+            params.contract = 1;
+        }    
 
         return params;
     }

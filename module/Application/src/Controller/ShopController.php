@@ -136,6 +136,7 @@ class ShopController extends AbstractActionController
         $q = $this->params()->fromQuery('search', '');
         $producer = $this->params()->fromQuery('producer');
         $group = $this->params()->fromQuery('group');
+        $contract = $this->params()->fromQuery('contract');
         $offset = $this->params()->fromQuery('offset');
         $limit = $this->params()->fromQuery('limit');
         
@@ -143,6 +144,7 @@ class ShopController extends AbstractActionController
             'search' => $q,
             'producer' => $producer,
             'group' => $group,
+            'contract' => $contract,
         ];
         
         $query = $this->entityManager->getRepository(Goods::class)
