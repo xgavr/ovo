@@ -141,6 +141,7 @@ class SupplierController extends AbstractActionController
                'address' => $supplier->getAddress(),
                'info' => $supplier->getInfo(),
                'status' => $supplier->getStatus(),
+               'contract' => $supplier->getContract(),
             ];
             
             $form->setData($data);
@@ -195,6 +196,7 @@ class SupplierController extends AbstractActionController
             $data = [
                'name' => $supplier->getName(),
                'status' => $supplier->getStatus(),
+               'contract' => $supplier->getContract(),
             ];
             
             $form->setData($data);

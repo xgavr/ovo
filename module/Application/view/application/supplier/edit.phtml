@@ -34,6 +34,10 @@ $form->get('status')->setAttributes([
     'class'=>'form-control'
     ]);
 
+$form->get('contract')->setAttributes([
+    'class'=>'form-control'
+    ]);
+
 $form->get('submit')->setAttributes(['class'=>'btn btn-primary']);
 $form->prepare();
 
@@ -67,6 +71,12 @@ $form->prepare();
             <?= $this->formElementErrors($form->get('info')); ?>                  
         </div>
                                 
+        <div class="form-group">
+            <?= $this->formLabel($form->get('contract')); ?>
+            <?= $this->formElement($form->get('contract')); ?>
+            <?= $this->formElementErrors($form->get('contract')); ?>                  
+        </div>
+                
         <div class="form-group">
             <?= $this->formLabel($form->get('status')); ?>
             <?= $this->formElement($form->get('status')); ?>

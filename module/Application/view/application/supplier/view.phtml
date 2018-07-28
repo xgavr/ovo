@@ -24,6 +24,7 @@ $this->headScript()
                 <tr>
                     <td>
                         <div class="pull-left">
+                            <?= $this->escapeHtml($supplier->getContractAsString()); ?>
                             <?= $this->escapeHtml($supplier->getStatusAsString()); ?>
                         </div>                                        
                         <div class="pull-right">

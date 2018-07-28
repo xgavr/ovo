@@ -94,6 +94,19 @@ class SupplierForm extends Form
             ],
         ]);
         
+        // Add "contract" field
+        $this->add([            
+            'type'  => 'select',
+            'name' => 'contract',
+            'options' => [
+                'label' => 'Контрактный поставщик',
+                'value_options' => [
+                    2 => 'Нет',                    
+                    1 => 'Да',
+                ]
+            ],
+        ]);
+        
                 
         // Добавляем кнопку отправки формы
         $this->add([
@@ -175,6 +188,18 @@ class SupplierForm extends Form
         // Add input for "status" field
         $inputFilter->add([
                 'name'     => 'status',
+                'required' => true,
+                'filters'  => [                    
+                    ['name' => 'ToInt'],
+                ],                
+                'validators' => [
+                    ['name'=>'InArray', 'options'=>['haystack'=>[1, 2]]]
+                ],
+            ]); 
+        
+        // Add input for "contract" field
+        $inputFilter->add([
+                'name'     => 'contract',
                 'required' => true,
                 'filters'  => [                    
                     ['name' => 'ToInt'],

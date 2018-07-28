@@ -24,8 +24,11 @@ use Doctrine\Common\Collections\Criteria;
 class Supplier {
         
      // Supplier status constants.
-    const STATUS_ACTIVE       = 1; // Active user.
-    const STATUS_RETIRED      = 2; // Retired user.
+    const STATUS_ACTIVE       = 1; // Active supplier.
+    const STATUS_RETIRED      = 2; // Retired supplier.
+    
+    const CONTRACT_YES = 1; //Контрактный поставщик
+    const CONTRACT_NO = 2; //Не контрактный поставщик
    
     /**
      * @ORM\Id
@@ -48,6 +51,11 @@ class Supplier {
      * @ORM\Column(name="status")  
      */
     protected $status;
+
+    /** 
+     * @ORM\Column(name="contract")  
+     */
+    protected $contract;
 
     /**
      * @ORM\Column(name="address")   
@@ -188,6 +196,49 @@ class Supplier {
     public function setStatus($status) 
     {
         $this->status = $status;
+    }   
+    
+    /**
+     * Returns contract.
+     * @return int     
+     */
+    public function getContract() 
+    {
+        return $this->contract;
+    }
+
+    /**
+     * Returns possible contracts as array.
+     * @return array
+     */
+    public static function getContractList() 
+    {
+        return [
+            self::CONTRACT_YES => 'Контрактный',
+            self::CONTRACT_NO => 'Не контрактный'
+        ];
+    }    
+    
+    /**
+     * Returns user contract as string.
+     * @return string
+     */
+    public function getContractAsString()
+    {
+        $list = self::getContractList();
+        if (isset($list[$this->contract]))
+            return $list[$this->contract];
+        
+        return 'Unknown';
+    }    
+
+    /**
+     * Sets contract.
+     * @param int $contract     
+     */
+    public function setContract($contract) 
+    {
+        $this->contract = $contract;
     }   
     
     /**

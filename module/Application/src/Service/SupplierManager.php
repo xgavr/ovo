@@ -94,6 +94,7 @@ class SupplierManager
         $supplier->setInfo($data['info']);
         $supplier->setAddress($data['address']);  
         $supplier->setStatus($data['status']);
+        $supplier->setContract($data['contract']);
         
         $currentDate = date('Y-m-d H:i:s');
         $supplier->setDateCreated($currentDate);        
@@ -114,6 +115,7 @@ class SupplierManager
         $supplier->setInfo($data['info']);
         $supplier->setAddress($data['address']);
         $supplier->setStatus($data['status']);
+        $supplier->setContract($data['contract']);
 
         $this->entityManager->persist($supplier);
         // Применяем изменения к базе данных.
