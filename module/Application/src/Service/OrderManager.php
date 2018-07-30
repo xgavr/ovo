@@ -43,6 +43,7 @@ class OrderManager
         $bid = new Bid();
         $bid->setNum($data['num']);
         $bid->setPrice($data['price']);
+        $bid->setReserved(0);
         $currentDate = date('Y-m-d H:i:s');        
         $bid->setDateCreated($currentDate);
         

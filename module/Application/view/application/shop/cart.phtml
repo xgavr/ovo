@@ -10,94 +10,89 @@ $this->pageBreadcrumbs()->setItems([
             ]);
 ?>    
 
-<div class="container">
-    <div class="row">
+<div class="row">
+    <div class="col-sm-9">
+        <table class="table table-striped">
 
-        <div class="col-sm-1">
-        Всего 
-        </div>
-        <div class="col-sm-1" id="headerNum">
-            <?= $num ?>
-        </div>
-        <div class="col-sm-1">
-        на сумму 
-        </div>
-        <div class="col-sm-1" id="headerTotal">
-            <?= round($total,2) ?>
-        </div>    
+           <tr>
+                <th>ID</th>
+                <th>Наименование</th>
+                <th>Артикул</th>
+                <th>Производитель</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Всего</th>
+                <th></th>
+            </tr>
+
+            <?php if (count($cart)): ?>
+                <?php foreach ($cart as $row): ?>
+                <tr>
+                    <td><?= $this->escapeHtml($row->getId()); ?></td>
+                    <td>
+                        <a href="<?= $this->url('goods', ['action'=>'view', 'id'=>$row->getGood()->getId()]); ?>">
+                            <?= $this->escapeHtml($row->getGood()->getName()); ?>
+                        </a> 
+                    </td>
+                    <td><?= $this->escapeHtml($row->getGood()->getCode()); ?></td>        
+                    <td><?= $this->escapeHtml($row->getGood()->getProducer()->getName()); ?></td>        
+                    <td><?= $this->escapeHtml($row->getPrice()); ?></td>        
+                    <td>        
+                        <input type="text" id="num<?= $row->getId()?>" value="<?= $this->escapeHtml($row->getNum()); ?>" 
+                               class="form-control"
+                               onchange="editCart({
+                                    id: <?= $row->getId()?>, 
+
+                               })"
+                               />
+                    </td>    
+                    <td id="rowTotal<?= $row->getId()?>"><?= $this->escapeHtml(round($row->getNum()*$row->getPrice(), 2)); ?></td>        
+                    <td align="center">
+                        <a class="btn btn-danger" href="<?= $this->url('shop',
+                                ['action'=>'delete-cart', 'id'=>$row->getId()]); ?>" title="Удалить">
+                            <span class="glyphicon glyphicon-remove"></span>
+                        </a>            
+                    </td>            
+                </tr>
+
+                <?php endforeach; ?>   
+            <?php endif; ?>    
+            <tr>
+                <td colspan="5" align="right">Итого:</td>
+                <td id="footerNum"><?= $this->escapeHtml($num); ?></td>
+                <td id="footerTotal"><?= $this->escapeHtml(round($total, 2)); ?></td>
+                <td align="right">
+                    <a class="btn btn-default" href="<?= $this->url('shop',
+                            ['action'=>'cart']); ?>">
+                        <span class="glyphicon glyphicon-refresh"></span> Пересчитать
+                    </a>            
+
+                </td>
+            </tr>                
+            <tr>
+                <td colspan="8" align="center">
+                    <?php if(count($cart)): ?>
+
+                        <a class="btn btn-default" href="<?= $this->url('shop',
+                                ['action'=>'checkout']); ?>">
+                            <span class="glyphicon"></span> Оформить заказ
+                        </a>            
+                    <?php endif; ?>
+                </td>
+            </tr>
+        </table>
     </div>
-</div>    
-
-<table class="table table-striped">
-
-   <tr>
-        <th>ID</th>
-        <th>Наименование</th>
-        <th>Артикул</th>
-        <th>Производитель</th>
-        <th>Цена</th>
-        <th>Количество</th>
-        <th>Всего</th>
-        <th></th>
-    </tr>
-    
-    <?php if (count($cart)): ?>
-        <?php foreach ($cart as $row): ?>
-        <tr>
-            <td><?= $this->escapeHtml($row->getId()); ?></td>
-            <td>
-                <a href="<?= $this->url('goods', ['action'=>'view', 'id'=>$row->getGood()->getId()]); ?>">
-                    <?= $this->escapeHtml($row->getGood()->getName()); ?>
-                </a> 
-            </td>
-            <td><?= $this->escapeHtml($row->getGood()->getCode()); ?></td>        
-            <td><?= $this->escapeHtml($row->getGood()->getProducer()->getName()); ?></td>        
-            <td><?= $this->escapeHtml($row->getPrice()); ?></td>        
-            <td>        
-                <input type="text" id="num<?= $row->getId()?>" value="<?= $this->escapeHtml($row->getNum()); ?>" 
-                       class="form-control"
-                       onchange="editCart({
-                            id: <?= $row->getId()?>, 
-
-                       })"
-                       />
-            </td>    
-            <td id="rowTotal<?= $row->getId()?>"><?= $this->escapeHtml(round($row->getNum()*$row->getPrice(), 2)); ?></td>        
-            <td>
-                <a class="btn btn-danger" href="<?= $this->url('shop',
-                        ['action'=>'delete-cart', 'id'=>$row->getId()]); ?>">
-                    <span class="glyphicon glyphicon-remove"></span> Удалить
-                </a>            
-            </td>            
-        </tr>
-
-        <?php endforeach; ?>   
-    <?php endif; ?>    
-    <tr>
-        <td colspan="5" align="right">Итого:</td>
-        <td id="footerNum"><?= $this->escapeHtml($num); ?></td>
-        <td id="footerTotal"><?= $this->escapeHtml(round($total, 2)); ?></td>
-        <td>
+    <div class="col-sm-3" id="side-nav" >
+        <div class="nav nav-stacked nav-list affix">
+            <div class="well">
+                Всего <?= $num ?><br/>
+                На сумму: <?= $numberFormat->filter($total) ?>
+            </div>
             <a class="btn btn-default" href="<?= $this->url('shop',
-                    ['action'=>'cart']); ?>">
-                <span class="glyphicon glyphicon-refresh"></span> Пересчитать
+                    ['action'=>'checkout']); ?>">
+                <span class="glyphicon"></span> Оформить заказ
             </a>            
-            
-        </td>
-    </tr>
-</table>
-
-<div class="container">
-    <div class="row">
-        <div class="col-sm-2 col-sm-offset-5">
-            <?php if(count($cart)): ?>
-
-                <a class="btn btn-default" href="<?= $this->url('shop',
-                        ['action'=>'checkout']); ?>">
-                    <span class="glyphicon"></span> Оформить заказ
-                </a>            
-            <?php endif; ?>
-        </div>
+        </div>            
     </div>
 </div>    
 

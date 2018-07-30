@@ -26,7 +26,7 @@ class OrderRepository extends EntityRepository{
 
         $queryBuilder->select('o')
             ->from(Order::class, 'o')
-            ->orderBy('o.id')
+            ->orderBy('o.id', 'DESC')
                 ;
         
         if ($user){

@@ -163,7 +163,7 @@ class ShopController extends AbstractActionController
 
         return new JsonModel([
             'total' => $total,
-            'rows' => $result,            
+            'rows' => $result,  
         ]);          
     }
     
@@ -204,12 +204,16 @@ class ShopController extends AbstractActionController
                 }
             }
         }    
+
+        $numberFormat = new \Zend\I18n\Filter\NumberFormat('ru-RU', \NumberFormatter::CURRENCY);
+        
         // Визуализируем шаблон представления.
         return new ViewModel([
             'cart' => $cart,
             'currentClient' => $currentClient,
             'num' => $num,
             'total' => $total,
+            'numberFormat' => $numberFormat,
         ]);  
         
     }

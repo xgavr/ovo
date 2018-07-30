@@ -115,7 +115,7 @@ class Bid {
 
     public function setReserved($reserved) 
     {
-        $this->reserved = $reserved;
+        $this->reserved = (float) $reserved;
     }     
     
     /**
