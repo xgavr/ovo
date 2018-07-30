@@ -28,7 +28,7 @@ final class Version20180726190328 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $table = $schema->getTable('producer');
-        $table->dropIndex('goods_count');
+        $table->dropColumn('goods_count');
 
     }
 }
