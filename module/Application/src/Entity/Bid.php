@@ -208,13 +208,32 @@ class Bid {
         $this->bidReserves[] = $bidReserve;
     }       
     
-    // Удаляет связь между этим bidReserve и заданным bid.
+    /* 
+     * Удаляет связь между этим bidReserve и заданным bid.
+     * @param \Application\Entity\BidReserve
+     */
+    
     public function removeBidReserveAssociation($bidReserve) 
     {
-        if (count($this->bidReseves)){
-            $this->bidReseves->removeElement($bidReserve);
+        if (count($this->bidReserves)){
             $this->setReserved($this->getReserved() - $bidReserve->getNum());
+            $this->bidReserves->removeElement($bidReserve);
         }    
     }    
+    
+    /*
+     * Проверка количества заказанного
+     */
+    public function checkReserved()
+    {
+        $reserved = 0;
+        if (count($this->bidReserves)){
+            foreach ($this->bidReserves as $bidReserve){
+                $reserved += $bidReserve->getNum();
+            }
+        }    
+        $this->setReserved($reserved);
+    }
+            
     
 }

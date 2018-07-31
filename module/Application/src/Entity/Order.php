@@ -67,7 +67,7 @@ class Order {
     private $user;
         
     /**
-    * @ORM\OneToMany(targetEntity="Application\Entity\Bid", mappedBy="orders")
+    * @ORM\OneToMany(targetEntity="Application\Entity\Bid", mappedBy="order")
     * @ORM\JoinColumn(name="id", referencedColumnName="order_id")
      */
     private $bid;
@@ -222,10 +222,28 @@ class Order {
     /**
      * Assigns.
      * @param Application\Entity\Bid $bid
+     * @return null
      */
     public function addBid($bid)
     {
         $this->bid[] = $bid;
+    }
+    
+    /*
+     * Статус заказа у поставщика
+     * @return int
+     */
+    public function getReservedStatus()
+    {
+        $need = $reserved = 0;
+        foreach ($this->bid as $bid){
+            $need += $bid->getNum();
+            $reserved += $bid->getReserved();
+        }
+        
+        if (!$need) return;
+        
+        return round($reserved*100/$need);
     }
             
 }

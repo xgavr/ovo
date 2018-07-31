@@ -112,7 +112,7 @@ class Reserve {
 
     public function setTotal($total) 
     {
-        $this->total = $total;
+        $this->total = (float) $total;
     }     
     
     public function getComment() 

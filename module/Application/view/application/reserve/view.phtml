@@ -12,85 +12,83 @@ $this->pageBreadcrumbs()->setItems([
 ?>
 
 <h1>
-    <?= $this->escapeHtml($reserve->getSupplier()->getName()); ?>
+    <a href="<?= $this->url('supplier', ['action' => 'view', 'id' => $reserve->getSupplier()->getId()])?>">
+        <?= $this->escapeHtml($reserve->getSupplier()->getName()); ?>
+    </a>
     <br/>
     <?= $this->escapeHtml('Заявка №'.$reserve->getId().' от '. date('d-m-Y H:i:s', strtotime($reserve->getDateCreated()))); ?>    
 </h1>
 
-<?php if ($reserve->getSupplier()->getLegalContact()->getActiveLegal()):?>
-    <div class="row">
-        <div class="col-md-offset-10">
-            <a class="btn btn-info btn-xs" href="<?= $this->url('reserve', 
-                    ['action'=>'print', 'id'=>$reserve->getId()]); ?>">
-                <span class="glyphicon glyphicon-download" ></span> Бланк заявки
-            </a>        
-        </div>    
-    </div>
-<?php else: ?>
-    <div class="row">
-        <div class="col-md-offset-9">
-            <a class="btn btn-warning btn-xs" href="<?= $this->url('legals', 
-                    ['action'=>'legal', 'id'=>$reserve->getSupplier()->getLegalContact()->getId()]); ?>">
-                <span class="glyphicon glyphicon-piggy-bank" ></span>
-                Заполните реквизиты юридического лица
-            </a>        
-        </div>    
-    </div>
-<?php endif;?>
+<div class="row">
+    <div class="col-sm-9">
+        <table class="table table-striped table-bordered">
 
-<table class="table table-striped table-bordered">
+           <tr>
+                <th>ID</th>
+                <th>Товар</th>
+                <th>Количество</th>
+                <th>Цена</th>
+                <th>Сумма</th>
+            </tr>
 
-   <tr>
-        <th>ID</th>
-        <th>Товар</th>
-        <th>Количество</th>
-        <th>Цена</th>
-        <th>Сумма</th>
-        <th>Действие</th>
-    </tr>
-    
-    <?php foreach ($bids as $row): ?>
-    
-    <tr>
-        <td>
-            <?= $this->escapeHtml($row->getId()); ?>
-        </td>
-        <td>
-            <?= $this->escapeHtml($row->getGood()->getName()); ?>
-        </td>
-        <td align="right">
-            <?= $this->escapeHtml($row->getNum()); ?>
-        </td>
-        <td align="right">
-            <?= $this->escapeHtml(number_format($row->getPrice(), 2, ',', ' ')); ?>
-        </td>
-        <td align="right">
-            <?= $this->escapeHtml(number_format($row->getNum()*$row->getPrice(), 2, ',', ' ')); ?>
-        </td>
-        <td>
-        </td>    
-    </tr>
-        
-    <?php endforeach; ?>   
-    <tr>
-        <th></th>
-        <th align="right">
-            Всего:
-        </th>
-        <th align="right">
-            
-        </th>
-        <th align="right">
-            
-        </th>
-        <td align="right">
-            <b>
-                <?= $this->escapeHtml(number_format($reserve->getTotal(), 2, ',', ' ')); ?>
-            </b>
-        </td>
-        <th>
-            
-        </th>
-    </tr>
-    
-</table>
+            <?php foreach ($bids as $row): ?>
+
+            <tr>
+                <td>
+                    <?= $this->escapeHtml($row->getId()); ?>
+                </td>
+                <td>
+                    <?= $this->escapeHtml($row->getGood()->getName()); ?>
+                </td>
+                <td align="right">
+                    <?= $this->escapeHtml($row->getNum()); ?>
+                </td>
+                <td align="right">
+                    <?= $this->escapeHtml(number_format($row->getPrice(), 2, ',', ' ')); ?>
+                </td>
+                <td align="right">
+                    <?= $this->escapeHtml(number_format($row->getNum()*$row->getPrice(), 2, ',', ' ')); ?>
+                </td>
+            </tr>
+
+            <?php endforeach; ?>   
+            <tr>
+                <th></th>
+                <th align="right">
+                    Всего:
+                </th>
+                <th align="right">
+
+                </th>
+                <th align="right">
+
+                </th>
+                <td align="right">
+                    <b>
+                        <?= $this->escapeHtml(number_format($reserve->getTotal(), 2, ',', ' ')); ?>
+                    </b>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <div class="col-sm-3" id="side-nav" >
+        <div class="nav nav-stacked nav-list affix">
+            <?php if ($reserve->getSupplier()->getLegalContact()->getActiveLegal()):?>
+                <div class="alert alert-info">
+                    <a href="<?= $this->url('reserve', 
+                            ['action'=>'print', 'id'=>$reserve->getId()]); ?>">
+                        Бланк заявки
+                    </a>        
+                </div>        
+            <?php else: ?>
+                <div class="alert alert-warning">
+                    <a href="<?= $this->url('legals', 
+                            ['action'=>'legal', 'id'=>$reserve->getSupplier()->getLegalContact()->getId()]); ?>">
+                        Чтобы получить заявку, заполните <br/>реквизиты юридического лица
+                    </a>        
+                </div>    
+            <?php endif;?>
+        </div>            
+    </div>
+</div>    

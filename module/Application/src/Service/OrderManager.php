@@ -175,4 +175,18 @@ class OrderManager
         return $order;
     }
     
+    /*
+     * Проверка количества заказанного у поставщика 
+     * @param Application\Entity\Order
+     */
+    public function checkReserved($order)
+    {
+        $bids = $order->getBid();
+        foreach ($bids as $bid){
+            $bid->checkReserved();            
+        }
+        $this->entityManager->flush();
+        
+        return;
+    }
 }

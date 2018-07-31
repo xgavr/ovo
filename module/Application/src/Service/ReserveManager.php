@@ -10,7 +10,6 @@ namespace Application\Service;
 use Zend\ServiceManager\ServiceManager;
 use Application\Entity\BidReserve;
 use Application\Entity\Bid;
-use Application\Entity\Order;
 use Application\Entity\Reserve;
 use Application\Entity\Goods;
 use Application\Entity\Rawprice;
@@ -82,21 +81,21 @@ class ReserveManager
         // Создаем новую сущность.
         $reserve = new Reserve();
         $reserve->setComment($data['comment']);
-        $reserve->setTotal(round(0, 2));
+        $reserve->setTotal(0);
         
         if ($data['supplier'] instanceof Supplier){
             $reserve->setSupplier($data['supplier']);            
         } else {
             $reserve = $this->entityManager->getRepository(Supplier::class)
                         ->findOneById($data['supplier']);        
-            $reserve->setClient($supplier);
+            $reserve->setSupplier($supplier);
         }    
         
         $currentUser = $this->entityManager->getRepository(User::class)
                 ->findOneByEmail($this->authService->getIdentity());
         $reserve->setUser($currentUser);
         
-        $reserve->setStatus(Order::STATUS_NEW);
+        $reserve->setStatus(Reserve::STATUS_NEW);
         
         $currentDate = date('Y-m-d H:i:s');        
         $reserve->setDateCreated($currentDate);
@@ -106,7 +105,7 @@ class ReserveManager
         $this->entityManager->persist($reserve);
         
         // Применяем изменения к базе данных.
-        $this->entityManager->flush();
+        $this->entityManager->flush($reserve);
             
         
         return $reserve;
@@ -124,17 +123,17 @@ class ReserveManager
         return $this->addNewReserve(['supplier' => $supplier]);
     }
     
-    public function updateReserveTotal($reserve, $flush = true)
+    public function updateReserveTotal($reserve)
     {
-        $result = $this->entityManager->getRepository(BidReserve::class)
-                ->getReserveNum($reserve);
-        
-        $reserve->setTotal($result[0]['total']);
-        
-        $this->entityManager->persist($reserve);
-        // Применяем изменения к базе данных.
-        if ($flush){
-            $this->entityManager->flush();
+        if ($reserve){
+            $result = $this->entityManager->getRepository(BidReserve::class)
+                    ->getReserveNum($reserve);
+
+            $reserve->setTotal($result[0]['total']);
+
+            $this->entityManager->persist($reserve);
+            // Применяем изменения к базе данных.
+            $this->entityManager->flush($reserve);
         }    
     }
     
@@ -149,7 +148,7 @@ class ReserveManager
 
         $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
-        $this->entityManager->flush();
+        $this->entityManager->flush($reserve);
     }    
     
     public function removeReserve($reserve) 
@@ -188,11 +187,9 @@ class ReserveManager
                         ], 
                         $flush
                    );
-                
-                if (!$flush){
-                    $this->updateReserveTotal($reserve, $flush);
-                }
             }
+            
+            return $reserve;
         }
         
         return;
@@ -209,7 +206,7 @@ class ReserveManager
                     ->findToReserve($order)->getResult();
         
         if (count($bids)){         
-
+            $reserves = [];
             foreach ($bids as $bid){
                 
                 if ($bid->getNum() > $bid->getReserved()){
@@ -217,7 +214,7 @@ class ReserveManager
                         ->findMinPriceRawprice($bid->getGood());
 
                     if ($rawprice){
-                        $this->addWork([
+                        $reserves[] = $this->addWork([
                             'supplier' => $rawprice->getRaw()->getSupplier(),
                             'reserve' => $bid->getNum() - $bid->getReserved(),
                             'good' => $bid->getGood(),
@@ -231,6 +228,9 @@ class ReserveManager
 
             $this->entityManager->flush();
             
+            foreach ($reserves as $reserve){                                
+                $this->updateReserveTotal($reserve);
+            }
         }
         
         return;

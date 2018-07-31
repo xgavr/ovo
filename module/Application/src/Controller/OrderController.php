@@ -9,6 +9,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Application\Entity\Order;
 use User\Entity\User;
 use Company\Entity\Office;
@@ -177,6 +178,30 @@ class OrderController extends AbstractActionController
         ]);
     } 
     
+    public function checkReservedAction()
+    {
+        $orderId = (int)$this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($orderId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $order = $this->entityManager->getRepository(Order::class)
+                ->findOneById($orderId);
+        
+        if ($order == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->orderManager->checkReserved($order);
+        
+        return $this->redirect()->toRoute('order', ['action' => 'view', 'id' => $order->getId()]);
+    }
+
+
     public function printAction()
     {
         $orderId = (int)$this->params()->fromRoute('id', -1);
@@ -187,7 +212,6 @@ class OrderController extends AbstractActionController
             return;
         }
         
-        // Find the tax order ID
         $order = $this->entityManager->getRepository(Order::class)
                 ->findOneById($orderId);
         

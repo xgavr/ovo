@@ -88,12 +88,24 @@ $this->pageBreadcrumbs()->setItems([
                     </a>        
                 <?php endif;?>
             </div>    
-            <div class="alert alert-info">
-                <a href="<?= $this->url('reserve', 
-                        ['action'=>'checkout', 'id'=>$order->getId()]); ?>">
-                    Заказать у поставщиков
-                </a>
-            </div>                
+            <?php if ($order->getReservedStatus() < 100): ?>
+                <div class="alert alert-info">
+                    <a href="<?= $this->url('reserve', 
+                            ['action'=>'checkout', 'id'=>$order->getId()]); ?>">
+                        Заказать у поставщиков
+                    </a>
+                </div>                
+            <?php endif;?>
+            <?php if ($order->getReservedStatus() > 0): ?>
+                <div class="alert alert-success">
+                    Заказано у поставщиков на <?= $order->getReservedStatus(); ?>%.
+                    <br/>
+                    <a href="<?= $this->url('order', 
+                            ['action'=>'check-reserved', 'id'=>$order->getId()]); ?>">
+                        Проверить
+                    </a>
+                </div>
+            <?php endif;?>
         </div>            
     </div>
 </div>
