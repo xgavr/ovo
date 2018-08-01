@@ -20,6 +20,8 @@ use RecursiveIteratorIterator;
 use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
 use Admin\Filter\HtmlFilter;
+use Application\Filter\Basename;
+use Admin\Filter\MimeType;
 
 /**
  * Description of PostManager
@@ -81,17 +83,20 @@ class PostManager {
         if ($options['attachment']){
             $tmpfile = $options['attachment']['tmpfile'];
             $filename = $options['attachment']['filename'];
+            
             if (file_exists($tmpfile)){
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
+                $basenameFilter = new Basename();
+                $mimeTypeFilter = new MimeType();
 
                 $content = new MimeMessage();
                 $contentPart = new MimePart($content->generateMessage());
             
-                $image  = new MimePart(fopen($tmpfile, 'r'));
-                $image->type        = 'image/jpeg';
-                $image->filename    = $filename;
-                $image->disposition = Mime::DISPOSITION_ATTACHMENT;
-                $image->encoding    = Mime::ENCODING_BASE64;            
+                $attachment  = new MimePart(fopen($tmpfile, 'r'));
+                $attachment->type        = $mimeTypeFilter->filter($extension);
+                $attachment->filename    = $basenameFilter->filter($filename);
+                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
+                $attachment->encoding    = Mime::ENCODING_BASE64;            
             }
         }
         // Setup SMTP transport using LOGIN authentication

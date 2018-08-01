@@ -83,8 +83,8 @@ $this->pageBreadcrumbs()->setItems([
                 </div>        
             <?php else: ?>
                 <div class="alert alert-warning">
-                    <a href="<?= $this->url('legals', 
-                            ['action'=>'legal', 'id'=>$reserve->getSupplier()->getLegalContact()->getId()]); ?>">
+                    <a href="<?= $this->url('supplier', 
+                            ['action'=>'view', 'id'=>$reserve->getSupplier()->getId()]); ?>">
                         Чтобы получить заявку, заполните <br/>реквизиты юридического лица
                     </a>        
                 </div>    

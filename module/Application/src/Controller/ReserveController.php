@@ -151,6 +151,25 @@ class ReserveController extends AbstractActionController
         ]);  
     }
     
+    public function contentAction()
+    {
+        $params = [];        
+        
+        $supplierId = $this->params()->fromQuery('supplier');
+        if ($supplierId){
+            $params['supplier'] = $supplierId;
+        }
+        
+        $reserves = $this->entityManager->getRepository(Reserve::class)
+                ->findBy([], ['id' => 'desc'])
+                ;
+        
+        return new JsonModel([
+            'rows' => $reserves,
+        ]);          
+        
+    }
+    
     public function addAction() 
     {     
         // Создаем форму.
