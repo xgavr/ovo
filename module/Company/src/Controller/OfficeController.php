@@ -9,10 +9,10 @@ namespace Company\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 use Company\Entity\Office;
 use Company\Form\OfficeForm;
 use Application\Entity\Contact;
-use Zend\View\Model\JsonModel;
 
 class OfficeController extends AbstractActionController
 {
@@ -186,7 +186,7 @@ class OfficeController extends AbstractActionController
             ]);
     }
     
-    /**
+        /**
      * This action displays a page allowing to edit an existing office.
      */
     public function editFormAction()
@@ -274,6 +274,4 @@ class OfficeController extends AbstractActionController
         // Redirect to "index" region
         return $this->redirect()->toRoute('offices', ['action'=>'index']); 
     } 
-    
-    
 }

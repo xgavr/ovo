@@ -11,9 +11,6 @@ namespace Company\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Criteria;
-
-use Company\Entity\BankAccount;
 
 /**
  * Description of Legal
@@ -318,28 +315,7 @@ class Legal {
     {
         return $this->bankAccounts;
     }
-
-    
-    /**
-     * Returns the array of for active bank accounts assigned to this.
-     * @return array
-     */
-    public function getActiveBankAccounts()
-    {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("status", BankAccount::STATUS_ACTIVE));
-        return $this->getBankAccounts()->matching($criteria);
-    }
-    
-    /**
-     * Returns the one of active bank accounts assigned to this.
-     * @return array
-     */
-    public function getActiveBankAccount()
-    {
-        $bankAccounts = $this->getActiveBankAccounts();
-        return $bankAccounts[0];
-    }
-    
+        
     /**
      * Assigns.
      */

@@ -8,7 +8,7 @@
 
 namespace Application\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
-
+use Application\Filter\Basename;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,8 +21,11 @@ use Doctrine\ORM\Mapping as ORM;
 class Raw {
     
      // Supplier status constants.
-    const STATUS_ACTIVE       = 1; // Active user.
-    const STATUS_RETIRED      = 2; // Retired user.
+    const STATUS_LOAD       = 4; //В процессе загрузки
+    const STATUS_ACTIVE       = 1; // Active raw.
+    const STATUS_RETIRED      = 2; // Retired raw.
+    const STATUS_PARSE       = 5; //Разбирается
+    const STATUS_PARSED       = 3; //Разобран
     
            
     /**
@@ -33,10 +36,20 @@ class Raw {
     protected $id;
     
     /**
+     * @ORM\Column(name="name")   
+     */
+    protected $name;
+
+    /**
      * @ORM\Column(name="filename")   
      */
     protected $filename;
-    
+
+    /**
+     * @ORM\Column(name="rows")   
+     */
+    protected $rows;
+
     /** 
      * @ORM\Column(name="status")  
      */
@@ -77,16 +90,42 @@ class Raw {
     public function setId($id) 
     {
         $this->id = $id;
-    }     
+    }         
 
     public function getFilename() 
     {
         return $this->filename;
     }
 
+    public function getBasename() 
+    {
+        $basenameFilter = new Basename();
+        return $basenameFilter->filter($this->getFilename());
+    }
+
     public function setFilename($filename) 
     {
         $this->filename = $filename;
+    }     
+
+    public function getName() 
+    {
+        return $this->name;
+    }
+
+    public function setName($name) 
+    {
+        $this->name = $name;
+    }     
+
+    public function getRows() 
+    {
+        return $this->rows;
+    }
+
+    public function setRows($rows) 
+    {
+        $this->rows = $rows;
     }     
 
     
@@ -106,8 +145,11 @@ class Raw {
     public static function getStatusList() 
     {
         return [
-            self::STATUS_ACTIVE => 'Active',
-            self::STATUS_RETIRED => 'Retired'
+            self::STATUS_ACTIVE => 'Новый',
+            self::STATUS_RETIRED => 'Удалить',
+            self::STATUS_PARSED => 'Разобран',
+            self::STATUS_PARSE => 'Разбирается',
+            self::STATUS_LOAD => 'Загружается',
         ];
     }    
     
@@ -124,6 +166,15 @@ class Raw {
         return 'Unknown';
     }    
     
+    public function getStatusName($status)
+    {
+        $list = self::getStatusList();
+        if (isset($list[$status]))
+            return $list[$status];
+        
+        return 'Unknown';        
+    }
+        
     public function getStatusActive()
     {
         return self::STATUS_ACTIVE;

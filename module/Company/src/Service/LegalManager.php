@@ -66,11 +66,11 @@ class LegalManager
             $legal->setDateStart($data['dateStart']);
         }   
 
+        $this->entityManager->persist($legal);
+        
         $contact->removeLegalAssociation($legal);
         $legal->addContact($contact);
             
-        $this->entityManager->persist($legal);
-        
         if ($flushnow){
             $this->entityManager->flush();                
         }

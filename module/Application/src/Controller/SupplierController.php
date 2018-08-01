@@ -274,11 +274,19 @@ class SupplierController extends AbstractActionController
             $data['status'] = Contact::STATUS_LEGAL;
             $this->contactManager->addNewContact($supplier, $data);
         }
+        
+        $raws = $this->entityManager->getRepository(\Application\Entity\Raw::class)
+            ->findAllRaw(null, $supplier)
+            ->getResult();        
                 
         // Render the view template.
         return new ViewModel([
             'supplier' => $supplier,
+            'legalContact' => $supplier->getLegalContact(),
             'supplierManager' => $this->supplierManager,
+            'lastPrice' => $this->supplierManager->getLastPriceFile($supplier),
+            'arxPrice' => $this->supplierManager->getArxPriceFile($supplier),
+            'raws' => $raws,
         ]);
     }    
     
@@ -386,4 +394,119 @@ class SupplierController extends AbstractActionController
             'form' => $form,
         ]);
     }
+    
+    public function managerFormAction()
+    {
+        $supplierId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($supplierId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);
+        
+        if ($supplier == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $managerId = (int)$this->params()->fromQuery('manager', -1);
+        
+        // Validate input parameter
+        if ($managerId>0) {
+            $manager = $this->entityManager->getRepository(Contact::class)
+                    ->findOneById($managerId);
+        } else {
+            $manager = null;
+        }
+        
+        $form = new ContactForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($manager){
+                    $this->contactManager->updateContact($manager, $data);                    
+                } else{
+                    $this->contactManager->addNewContact($supplier, $data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($manager){
+                $data = [
+                    'name' => $manager->getName(),  
+                    'description' => $manager->getDescription(),  
+                    'status' => $manager->getStatus(),  
+                ];
+                $form->setData($data);
+            }    
+        }        
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'manager' => $manager,
+            'supplier' => $supplier,
+        ]);                
+    }
+    
+    public function deleteManagerAction()
+    {
+        $contactId = (int) $this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $supplier = $contact->getSupplier();
+
+        $this->contactManager->removeContact($contact);
+        
+        // Перенаправляем пользователя на страницу "legal".
+        return $this->redirect()->toRoute('supplier', ['action' => 'view', 'id' => $supplier->getId()]);
+    }
+    
+    public function deleteManagerFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->removeContact($contact);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }    
+    
+    
 }

@@ -86,6 +86,60 @@ class SupplierManager
         return $price_data_folder_name.'/'.$supplier->getId();
     }
     
+    public function getPriceArxFolder($supplier)
+    {
+        $this->addPriceFolder($supplier);
+        $arx_price_data_folder_name = $this->priceManager->getPriceArxFolder();
+        return $arx_price_data_folder_name.'/'.$supplier->getId();
+    }  
+    
+    /*
+     * Показать файлы в папке с прайсами
+     * @var Application\Entity\Supplier $supplier
+     * 
+     * return array
+     */
+    public function getLastPriceFile($supplier)
+    {
+        $path = $this->getPriceFolder($supplier);
+
+        $result = [];
+        foreach (new \DirectoryIterator($path) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            $result[$fileInfo->getFilename()] = [
+                'path' => $fileInfo->getPathname(), 
+                'date' => $fileInfo->getMTime(),
+                'size' => $fileInfo->getSize(),
+            ];
+        }        
+
+        return $result;
+    }    
+    
+    /*
+     * Показать файлы в архивной папке с прайсами
+     * @var Application\Entity\Supplier $supplier
+     * 
+     * return array
+     */
+    public function getArxPriceFile($supplier)
+    {
+        $arxPath = $this->getPriceArxFolder($supplier);
+        $result = [];
+        $i = 0;
+        foreach (new \DirectoryIterator($arxPath) as $fileInfo) {
+            if($fileInfo->isDot()) continue;
+            $result[$fileInfo->getFilename()] = [
+                'path' => $fileInfo->getPathname(), 
+                'date' => $fileInfo->getMTime(),
+                'size' => $fileInfo->getSize(),
+            ];
+            $i++;
+            if ($i > 10) break;
+        }    
+        return $result;
+    }    
+    
     public function addNewSupplier($data) 
     {
         // Создаем новую сущность.

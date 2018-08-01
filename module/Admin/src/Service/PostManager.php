@@ -78,9 +78,25 @@ class PostManager {
         $contentTypeHeader = $message->getHeaders()->get('Content-Type');
         $contentTypeHeader->setType('multipart/alternative');
 
+        if ($options['attachment']){
+            $tmpfile = $options['attachment']['tmpfile'];
+            $filename = $options['attachment']['filename'];
+            if (file_exists($tmpfile)){
+                $extension = pathinfo($filename, PATHINFO_EXTENSION);
+
+                $content = new MimeMessage();
+                $contentPart = new MimePart($content->generateMessage());
+            
+                $image  = new MimePart(fopen($tmpfile, 'r'));
+                $image->type        = 'image/jpeg';
+                $image->filename    = $filename;
+                $image->disposition = Mime::DISPOSITION_ATTACHMENT;
+                $image->encoding    = Mime::ENCODING_BASE64;            
+            }
+        }
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
-        $options   = new SmtpOptions([
+        $transportOptions   = new SmtpOptions([
             'name'              => 'localhost.localdomain',
             'host'              => '127.0.0.1',
 //            'connection_class'  => 'login',
@@ -90,7 +106,7 @@ class PostManager {
 //            ],
         ]);
         
-        $transport->setOptions($options);
+        $transport->setOptions($transportOptions);
         $transport->send($message);
 
     }

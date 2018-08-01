@@ -5,6 +5,11 @@ $form->get('name')->setAttributes([
     'placeholder'=>'Наименование'
     ]);
 
+$form->get('aplId')->setAttributes([
+    'class'=>'form-control', 
+    'placeholder'=>'apl ID'
+    ]);
+
 $form->get('region')->setAttributes([
     'class'=>'form-control', 
     'placeholder'=>'Регион'
@@ -39,6 +44,12 @@ $form->prepare();
                         <?= $this->formLabel($form->get('name')); ?>
                         <?= $this->formElement($form->get('name')); ?>
                         <?= $this->formElementErrors($form->get('name')); ?>                  
+                    </div>
+
+                    <div class="form-group">
+                        <?= $this->formLabel($form->get('aplId')); ?>
+                        <?= $this->formElement($form->get('aplId')); ?>
+                        <?= $this->formElementErrors($form->get('aplId')); ?>                  
                     </div>
 
                     <div class="form-group">

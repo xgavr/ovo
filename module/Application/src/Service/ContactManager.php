@@ -11,9 +11,9 @@ use Zend\ServiceManager\ServiceManager;
 use Application\Entity\Contact;
 use Application\Entity\Phone;
 use Application\Entity\Email;
-use Application\Entity\Supplier;
-use Application\Entity\Client;
 use Application\Entity\Address;
+use Application\Entity\Messenger;
+use Company\Entity\Office;
 use User\Entity\User;
 use User\Filter\PhoneFilter;
 
@@ -64,10 +64,10 @@ class ContactManager
             $result['pageTitle'] = $user->getName();
             $result['route'] = 'users';
             $result['id'] = $user->getId();
-        } elseIf($client = $contact->getClient()){
+        } elseIf($client = $contact->getUser()){
             $result['headTitle'] = 'Покупатели'; 
             $result['pageTitle'] = $client->getName();
-            $result['route'] = 'client';
+            $result['route'] = 'clients';
             $result['id'] = $client->getId();            
         } elseif($supplier = $contact->getSupplier()){
             $result['headTitle'] = 'Поставщики'; 
@@ -118,22 +118,6 @@ class ContactManager
         }    
     }
     
-    public function updatePhone($phone, $data)
-    {                
-        $phone->setName($data['phone']);
-        $phone->setComment($data['comment']);
-
-        $this->entityManager->persist($phone);
-        $this->entityManager->flush();                
-    }
-    
-    public function removePhone($phone)
-    {
-        $this->entityManager->remove($phone);
-        $this->entityManager->flush();
-        
-    }
-    
     public function addEmail($contact, $emailstr, $flushnow = false)
     {                
         if ($emailstr){
@@ -159,21 +143,6 @@ class ContactManager
             }    
         } 
     }
-
-    public function updateEmail($email, $data)
-    {                
-        $email->setName($data['email']);
-
-        $this->entityManager->persist($email);
-        $this->entityManager->flush();                
-    }
-    
-    public function removeEmail($email)
-    {
-        $this->entityManager->remove($email);
-        $this->entityManager->flush();
-        
-    }
     
     public function addNewContact($parent, $data) 
     {
@@ -181,11 +150,8 @@ class ContactManager
         $contact = new Contact();
         $contact->setName($data['name']);
         
-        $description = "";
-        if (isset($data['description'])){
-            $description = $data['description'];
-        }
-        
+        $description = $data['description'];
+        if (!$description) $description = "";
         $contact->setDescription($description);
         
         $contact->setStatus($data['status']);
@@ -208,9 +174,6 @@ class ContactManager
             throw new \Exception('Неверный тип родительской сущности');
         }
 
-        // Добавляем сущность в менеджер сущностей.
-        $this->entityManager->persist($contact);
-
         if (isset($data['phone'])){
             $this->addPhone($contact, ['phone' => $data['phone']]);
         }    
@@ -229,7 +192,10 @@ class ContactManager
                 $contact->setUser($user);
             }   
        }
-                
+        
+        // Добавляем сущность в менеджер сущностей.
+        $this->entityManager->persist($contact);
+        
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
         
@@ -262,29 +228,20 @@ class ContactManager
         $this->entityManager->flush();
     }    
     
-    public function removeContact($contact) 
-    {   
+    public function updateUserOffice($contact, $data) 
+    {
+        $office = $this->entityManager->getRepository(Office::class)
+                ->findOneById($data['office']);
         
-        $phones = $contact->getPhones();
-        foreach ($phones as $phone) {
-            $this->entityManager->remove($phone);
-        }        
-        
-        $emails = $contact->getEmails();
-        foreach ($emails as $email) {
-            $this->entityManager->remove($email);
-        }        
-
-        $addresses = $contact->getAddresses();
-        foreach ($addresses as $address) {
-            $this->entityManager->remove($address);
-        }        
-
-        $this->entityManager->remove($contact);
-        
-        $this->entityManager->flush();
+        if ($office){
+            $contact->setOffice($office);
+                
+            $this->entityManager->persist($contact);
+            // Применяем изменения к базе данных.
+            $this->entityManager->flush();
+        }    
     }    
-    
+
     public function updateMessengers($contact, $data) 
     {
         $contact->setIcq($data['icq']);
@@ -302,6 +259,70 @@ class ContactManager
                 
         $this->entityManager->persist($contact);
         // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }    
+    
+    public function updatePhone($phone, $data)
+    {                
+        $phone->setName($data['phone']);
+        $phone->setComment($data['comment']);
+
+        $this->entityManager->persist($phone);
+        $this->entityManager->flush();                
+    }
+    
+    public function removePhone($phone)
+    {
+        $this->entityManager->remove($phone);
+        $this->entityManager->flush();
+        
+    }
+    
+    public function updateEmail($email, $data)
+    {                
+        $email->setName($data['email']);
+
+        $this->entityManager->persist($email);
+        $this->entityManager->flush();                
+    }
+    
+    public function removeEmail($email)
+    {
+        $this->entityManager->remove($email);
+        $this->entityManager->flush();
+        
+    }
+    
+    public function removeContact($contact) 
+    {   
+        
+        $phones = $contact->getPhones();
+        foreach ($phones as $phone) {
+            $this->entityManager->remove($phone);
+        }        
+        
+        $emails = $contact->getEmails();
+        foreach ($emails as $email) {
+            $this->entityManager->remove($email);
+        }        
+        
+        $addresses = $contact->getAddresses();
+        foreach ($addresses as $address) {
+            $this->entityManager->remove($address);
+        }        
+        
+        $messengers = $contact->getMessengers();
+        foreach ($messengers as $messenger) {
+            $this->entityManager->remove($messenger);
+        }        
+        
+        $legals = $contact->getLegals();
+        foreach ($legals as $legal) {
+            $this->entityManager->removeLegalAssociation($legal);
+        }        
+        
+        $this->entityManager->remove($contact);
+        
         $this->entityManager->flush();
     }    
     
@@ -342,4 +363,42 @@ class ContactManager
         
         $this->entityManager->flush();
     }    
+    
+    
+    public function addNewMessenger($contact, $data, $flushnow = false)
+    {                
+        $messenger = new Messenger();            
+        $messenger->setIdent($data['ident']);
+        $messenger->setStatus($data['status']);
+        $messenger->setType($data['type']);
+
+        $this->entityManager->persist($messenger);
+
+        $messenger->setContact($contact);
+
+        if ($flushnow){
+            $this->entityManager->flush();                
+        }
+    }
+        
+    public function updateMessenger($messenger, $data) 
+    {
+        $messenger->setType($data['type']);
+        $messenger->setStatus($data['status']);
+        $messenger->setIdent($data['ident']);
+                
+        $this->entityManager->persist($messenger);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }        
+    
+    public function removeMessenger($messenger) 
+    {   
+        
+        $this->entityManager->remove($messenger);
+        
+        $this->entityManager->flush();
+    }    
+    
+    
 }

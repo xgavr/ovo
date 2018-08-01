@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Company\Entity\Legal;
 use Doctrine\Common\Collections\Criteria;
+
+
 /**
  * Description of Contact
  * @ORM\Entity(repositoryClass="\Application\Repository\ContactRepository")
@@ -24,6 +26,7 @@ class Contact {
     const STATUS_ACTIVE       = 1; // Active user.
     const STATUS_RETIRED      = 2; // Retired user.
     const STATUS_LEGAL      = 3; // legal record.
+
     
     /**
      * @ORM\Id
@@ -112,12 +115,18 @@ class Contact {
     * @ORM\JoinColumn(name="id", referencedColumnName="contact_id")
    */
    private $emails;
-
-   /**
+   
+    /**
     * @ORM\OneToMany(targetEntity="Application\Entity\Address", mappedBy="contact")
     * @ORM\JoinColumn(name="id", referencedColumnName="contact_id")
    */
    private $addresses;
+
+    /**
+    * @ORM\OneToMany(targetEntity="Application\Entity\Messenger", mappedBy="contact")
+    * @ORM\JoinColumn(name="id", referencedColumnName="contact_id")
+   */
+//   private $messengers;
 
     /**
      * @ORM\ManyToMany(targetEntity="\Company\Entity\Legal", inversedBy="contacts")
@@ -133,6 +142,8 @@ class Contact {
       $this->emails = new ArrayCollection();
       $this->legals = new ArrayCollection();
       $this->addresses = new ArrayCollection();
+//      $this->messengers = new ArrayCollection();
+      
    }
    
     public function getId() 
@@ -228,8 +239,7 @@ class Contact {
     {
         return [
             self::STATUS_ACTIVE => 'Доступен',
-            self::STATUS_RETIRED => 'В отставке',
-            self::STATUS_LEGAL => 'Юридические лица',
+            self::STATUS_RETIRED => 'В отставке'
         ];
     }    
     
@@ -362,7 +372,7 @@ class Contact {
       return $this->phones;
    }    
    
-    /**
+       /**
      * Returns the string of assigned phones.
      */
     public function getPhonesAsString()
@@ -407,25 +417,6 @@ class Contact {
    }    
    
     /**
-     * Returns the string of assigned phones.
-     */
-    public function getEmailsAsString()
-    {
-        $emailList = '';
-        
-        $count = count($this->emails);
-        $i = 0;
-        foreach ($this->emails as $email) {
-            $emailList .= $email->getName();
-            if ($i<$count-1)
-                $emailList .= ', ';
-            $i++;
-        }
-        
-        return $emailList;
-    }
-
-    /**
      * Добавляет новый email к этому contact.
      * @param $email
      */   
@@ -433,7 +424,11 @@ class Contact {
     {
         $this->emails[] = $email;
     }       
-
+    /**
+     * Возвращает email для этого contact.
+     * @return array
+     */   
+    
     /**
      * Возвращает адреса для этого contact.
      * @return array
@@ -452,30 +447,43 @@ class Contact {
     }       
     
     /**
-     * Возвращает юрлицо для этого contact.
+     * Возвращает мессенджер для этого contact.
      * @return array
      */   
-
-    public function getLegals() 
+    public function getMessengers() {
+      return $this->messengers;
+   }    
+   
+    /**
+     * Добавляет новый мессенджер к этому contact.
+     * @param $address
+     */   
+    public function addMessenger($messenger) 
     {
+        $this->messengers[] = $messenger;
+    }       
+    
+    
+
+    public function getLegals() {
       return $this->legals;
-    }
-
-    public function getActiveLegal()
-    {
-        $criteria = Criteria::create()->where(Criteria::expr()->eq("status", Legal::STATUS_ACTIVE));
-        $legals = $this->getLegals()->matching($criteria); 
-        return $legals[0];
-    }
+   }    
    
     /**
      * Добавляет новый email к этому contact.
-     * @param $legal
+     * @param $email
      */   
     public function addLegal($legal) 
     {
         $this->legals[] = $legal;
     }       
+    
+    public function getActiveLegal()
+    {
+        $criteria = Criteria::create()->where(Criteria::expr()->eq("status", Legal::STATUS_ACTIVE));
+        $legals = $this->getLegals()->matching($criteria); 
+        return $legals[0];
+    }    
     
     // Удаляет связь между этим контактом и заданным юрлицом.
     public function removeLegalAssociation($legal) 
