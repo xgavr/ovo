@@ -86,6 +86,12 @@ class Supplier {
     private $pricesettings;    
     
     /**
+    * @ORM\OneToMany(targetEntity="Application\Entity\RequestSetting", mappedBy="supplier")
+    * @ORM\JoinColumn(name="id", referencedColumnName="supplier_id")
+     */
+    private $requestSettings;    
+
+    /**
     * @ORM\OneToMany(targetEntity="Application\Entity\Reserve", mappedBy="supplier")
     * @ORM\JoinColumn(name="id", referencedColumnName="supplier_id")
      */
@@ -101,6 +107,7 @@ class Supplier {
         $this->raw = new ArrayCollection();
         $this->pricesettings = new ArrayCollection();
         $this->reserves = new ArrayCollection();
+        $this->requestSettings = new ArrayCollection();
         
     }
     
@@ -321,6 +328,23 @@ class Supplier {
     public function addRaw($raw)
     {
         $this->raw[] = $raw;
+    }
+    
+    /**
+     * Returns the array of request assigned to this.
+     * @return array
+     */
+    public function getRequestSettings()
+    {
+        return $this->requestSettings;
+    }
+        
+    /**
+     * Assigns.
+     */
+    public function addRequestSetting($requestSetting)
+    {
+        $this->requestSettings[] = $requestSetting;
     }
     
     /**

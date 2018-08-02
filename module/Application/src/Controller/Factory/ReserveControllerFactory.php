@@ -11,7 +11,6 @@ use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Application\Controller\ReserveController;
 use Application\Service\ReserveManager;
-use Blank\Service\BlankManager;
 
 
 /**
@@ -26,9 +25,8 @@ class ReserveControllerFactory implements FactoryInterface {
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
         $reserveManager = $container->get(ReserveManager::class);
-        $blankManager = $container->get(BlankManager::class);
         
         // Инстанцируем контроллер и внедряем зависимости.
-        return new ReserveController($entityManager, $reserveManager, $blankManager);
+        return new ReserveController($entityManager, $reserveManager);
     }
 }

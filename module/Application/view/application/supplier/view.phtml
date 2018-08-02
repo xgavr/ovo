@@ -43,6 +43,53 @@ $this->headScript()
                 </div>
             </div>
         </div>
+        
+        <div class="panel panel-default" id="section2">
+            <div class="panel-heading">
+                <h3 class="panel-title pull-left">Как заказать?</h3>
+                <div class="pull-right">
+                    <button value="/supplier/request-setting-form/<?= $supplier->getId() ?>" class="btn btn-default btn-xs"
+                            data-toggle="modal" data-target="#modal-dialog" title="Добавить">
+                        <span class="glyphicon glyphicon-plus" ></span>
+                    </button>                                                                        
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="panel-body">
+                <?php if ($supplier->getRequestSettings()): ?>                    
+                    <div class="panel-group">
+                        <?php foreach ($supplier->getRequestSettings() as $requestSetting): ?>                
+                            <div class="panel panel-info">
+                                <div class="panel-body">
+                                    <div class="pull-left">
+                                        <?= $requestSetting->getName() ?><br/>
+                                        Способ заказа: <span><?= $requestSetting->getModeAsString() ?></span><br/>
+                                        <!--<span><?= $requestSetting->getStatusAsString() ?></span>-->
+                                        <!--<br/>-->
+                                        Email для приема заказов: <?= $requestSetting->getEmail() ?><br/>
+                                        Сайт: <a href="<?= $requestSetting->getSiteNormalize()?>" target="block"><?= $requestSetting->getSite() ?></a>
+                                        <br/>
+                                        Логин: <?= $requestSetting->getLogin() ?><br/>
+                                        Пароль: <?= $requestSetting->getPassword() ?><br/>
+                                        <?= nl2br($requestSetting->getDescription()) ?>
+                                    </div>        
+                                    <div class="pull-right">                                
+                                        <button value="/supplier/request-setting-form/<?= $supplier->getId() ?>?requestSetting=<?= $requestSetting->getId() ?>" class="btn btn-default btn-xs"
+                                                data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                                            <span class="glyphicon glyphicon-edit" ></span>
+                                        </button>                                                    
+                                        <button value="/supplier/delete-request-setting-form/<?= $requestSetting->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                                title="Удалить">
+                                            <span class="glyphicon glyphicon-remove" ></span>
+                                        </button>                                                           
+                                    </div>                                                                        
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
 
         <div class="panel panel-default" id="section3">
             <div class="panel-heading">
@@ -264,7 +311,7 @@ $this->headScript()
     <div class="col-sm-3" id="side-nav" >
         <ul class="nav nav-stacked nav-list affix">
             <li class="active"><a href="#section1">Контакты</a></li>
-            <li><a href="#section2">Адреса</a></li>
+            <li><a href="#section2">Как заказать?</a></li>
             <li><a href="#section3">Юридические лица</a></li>
             <li><a href="#section5">Заявки</a></li>
         </ul>

@@ -13,6 +13,7 @@ use Application\Entity\Contact;
 use Application\Entity\Phone;
 use Application\Entity\Email;
 use Application\Entity\Pricesettings;
+use Application\Entity\RequestSetting;
 
 /**
  * Description of SupplierService
@@ -191,6 +192,11 @@ class SupplierManager
             $this->removePricesettings($pricesetting);
         }
 
+        $requestSettings = $supplier->getRequestSettings();
+        foreach ($requestSettings as $requestSetting) {
+            $this->removeRequestSetting($requestSetting);
+        }
+
         $raws = $supplier->getRaw();
         foreach ($raws as $raw) {
             $this->rawManager->removeRaw($raw);
@@ -206,6 +212,55 @@ class SupplierManager
     {
        $this->contactManager->addNewContact($supplier, $data);
     }   
+    
+    public function addNewRequestSetting($supplier, $data)
+    {
+        $requestSetting = new RequestSetting();
+        $requestSetting->setName($data['name']);
+        $requestSetting->setDescription($data['description']);
+        $requestSetting->setSite($data['site']);
+        $requestSetting->setLogin($data['login']);
+        $requestSetting->setPassword($data['password']);
+        $requestSetting->setMode($data['mode']);
+        $requestSetting->setEmail($data['email']);
+        $requestSetting->setStatus($data['status']);
+        
+        $currentDate = date('Y-m-d H:i:s');
+        $requestSetting->setDateCreated($currentDate);        
+        
+        $requestSetting->setSupplier($supplier);
+        
+        // Добавляем сущность в менеджер сущностей.
+        $this->entityManager->persist($requestSetting);
+        
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }
+    
+    public function updateRequestSetting($requestSetting, $data)
+    {
+        $requestSetting->setName($data['name']);
+        $requestSetting->setDescription($data['description']);
+        $requestSetting->setSite($data['site']);
+        $requestSetting->setLogin($data['login']);
+        $requestSetting->setPassword($data['password']);
+        $requestSetting->setMode($data['mode']);
+        $requestSetting->setEmail($data['email']);
+        $requestSetting->setStatus($data['status']);
+        
+        // Добавляем сущность в менеджер сущностей.
+        $this->entityManager->persist($requestSetting);
+        
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush();
+    }
+    
+    public function removeRequestSetting($requestSetting)
+    {
+        $this->entityManager->remove($requestSetting);
+        $this->entityManager->flush();
+    }
+        
     
     public function addNewPricesettings($supplier, $data)
     {

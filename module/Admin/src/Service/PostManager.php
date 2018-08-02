@@ -49,6 +49,10 @@ class PostManager {
         
     }
     
+    /*
+     * Отправить почтовое сообщение
+     * @param array $options
+     */    
     public function send($options)
     {
         if ($_SERVER['SERVER_ADDR'] == '127.0.0.1') return; //если отладка на локальной машине, либо использовать sendmail
@@ -65,40 +69,57 @@ class PostManager {
         $html->type = Mime::TYPE_HTML;
         $html->charset = 'utf-8';
         $html->encoding = Mime::ENCODING_QUOTEDPRINTABLE;        
-        
+                
         $message = new Message();
         $message->setEncoding('UTF-8');
         $message->addTo($options['to']);
         $message->addFrom($options['from']);
         $message->setSubject($options['subject']);
         
+        $contentTypeHeader = $message->getHeaders()->get('Content-Type');
+
         $body = new MimeMessage();
-        $body->setParts([$text, $html]);
+        
+        if (!$options['attachments']){ //без вложений
+
+            $body->setParts([$text, $html]);
+
+            $contentTypeHeader->setType('multipart/alternative');
+            
+        } else {
+            
+            $content = new MimeMessage();
+            $content->setParts([$text, $html]);
+
+            $contentPart = new MimePart($content->generateMessage());
+            $parts[] = $contentPart;
+
+            $basenameFilter = new Basename();
+            $mimeTypeFilter = new MimeType();
+
+            foreach ($options['attachments'] as $attachment){
+                $tmpfile = $attachment['tmpfile'];
+                $filename = $attachment['filename'];
+
+                if (file_exists($tmpfile)){
+
+                    $attachmentPart  = new MimePart(fopen($tmpfile, 'r'));
+                    $attachmentPart->type        = $mimeTypeFilter->filter(pathinfo($filename, PATHINFO_EXTENSION));
+                    $attachmentPart->filename    = $basenameFilter->filter($filename);
+                    $attachmentPart->disposition = Mime::DISPOSITION_ATTACHMENT;
+                    $attachmentPart->encoding    = Mime::ENCODING_BASE64;        
+
+                    $parts[] = $attachmentPart;
+                }    
+            }
+
+            $body->setParts($parts);                
+
+            $contentTypeHeader->setType('multipart/related');                        
+        }
         
         $message->setBody($body);
-        
-        $contentTypeHeader = $message->getHeaders()->get('Content-Type');
-        $contentTypeHeader->setType('multipart/alternative');
 
-        if ($options['attachment']){
-            $tmpfile = $options['attachment']['tmpfile'];
-            $filename = $options['attachment']['filename'];
-            
-            if (file_exists($tmpfile)){
-                $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $basenameFilter = new Basename();
-                $mimeTypeFilter = new MimeType();
-
-                $content = new MimeMessage();
-                $contentPart = new MimePart($content->generateMessage());
-            
-                $attachment  = new MimePart(fopen($tmpfile, 'r'));
-                $attachment->type        = $mimeTypeFilter->filter($extension);
-                $attachment->filename    = $basenameFilter->filter($filename);
-                $attachment->disposition = Mime::DISPOSITION_ATTACHMENT;
-                $attachment->encoding    = Mime::ENCODING_BASE64;            
-            }
-        }
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
         $transportOptions   = new SmtpOptions([
@@ -112,7 +133,7 @@ class PostManager {
         ]);
         
         $transport->setOptions($transportOptions);
-        $transport->send($message);
+        return $transport->send($message);
 
     }
     

@@ -15,6 +15,8 @@ use Application\Form\SupplierForm;
 use Application\Form\ContactForm;
 use Application\Form\UploadPriceForm;
 use Zend\View\Model\JsonModel;
+use Application\Entity\RequestSetting;
+use Application\Form\RequestSettingForm;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -507,6 +509,124 @@ class SupplierController extends AbstractActionController
         
         exit;
     }    
+    
+    public function requestSettingFormAction()
+    {
+        $supplierId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($supplierId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $supplier = $this->entityManager->getRepository(Supplier::class)
+                ->findOneById($supplierId);
+        
+        if ($supplier == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $requestSettingId = (int)$this->params()->fromQuery('requestSetting', -1);
+        
+        // Validate input parameter
+        if ($requestSettingId>0) {
+            $requestSetting = $this->entityManager->getRepository(RequestSetting::class)
+                    ->findOneById($requestSettingId);
+        } else {
+            $requestSetting = null;
+        }
+        
+        $form = new RequestSettingForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($requestSetting){
+                    $this->supplierManager->updateRequestSetting($requestSetting, $data, true);                    
+                } else{
+                    $this->supplierManager->addNewRequestSetting($supplier, $data, true);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($requestSetting){
+                $data = [
+                    'name' => $requestSetting->getName(),  
+                    'description' => $requestSetting->getDescription(),  
+                    'site' => $requestSetting->getSite(),  
+                    'login' => $requestSetting->getLogin(),  
+                    'password' => $requestSetting->getPassword(),  
+                    'mode' => $requestSetting->getMode(),  
+                    'email' => $requestSetting->getEmail(),  
+                    'status' => $requestSetting->getStatus(),  
+                ];
+                $form->setData($data);
+            }    
+        }        
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'requestSetting' => $requestSetting,
+            'supplier' => $supplier,
+        ]);                
+    }
+    
+    public function deleteRequestSettingAction()
+    {
+        $requestSettingId = (int) $this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($requestSettingId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $requestSetting = $this->entityManager->getRepository(RequestSetting::class)
+                ->findOneById($requestSettingId);
+        
+        if ($requestSetting == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $supplier = $requestSetting->getSupplier();
+
+        $this->supplierManager->removeRequestSetting($requestSetting);
+        
+        // Перенаправляем пользователя на страницу "legal".
+        return $this->redirect()->toRoute('supplier', ['action' => 'view', 'id' => $supplier->getId()]);
+    }
+    
+    public function deleteRequestSettingFormAction()
+    {
+        $requestSettingId = $this->params()->fromRoute('id', -1);
+        
+        $requestSetting = $this->entityManager->getRepository(RequestSetting::class)
+                ->findOneById($requestSettingId);
+        
+        if ($requestSetting == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->supplierManager->removeRequestSetting($requestSetting);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }
     
     
 }

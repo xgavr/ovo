@@ -165,6 +165,15 @@ class MemberController extends AbstractActionController
             $this->getResponse()->setStatusCode(404);
             return;
         }
+
+        $forLegals = $user->getLegalContacts();
+
+        if (!count($forLegals)){
+            $data['full_name'] = $data['name'] = $user->getName();
+            $data['status'] = Contact::STATUS_LEGAL;
+            $this->contactManager->addNewContact($user, $data);
+        }
+        
                 
         return new ViewModel([
             'user' => $user

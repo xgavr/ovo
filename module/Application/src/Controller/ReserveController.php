@@ -17,6 +17,7 @@ use Application\Entity\Rawprice;
 use Application\Entity\Supplier;
 use Company\Entity\Office;
 use Zend\View\Model\JsonModel;
+use Admin\Filter\MimeType;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -37,19 +38,12 @@ class ReserveController extends AbstractActionController
      */
     private $reserveManager;    
     
-    /**
-     * Менеджер бланков.
-     * @var Blank\Service\BlankManager 
-     */
-    private $blankManager;    
-    
         
     // Метод конструктора, используемый для внедрения зависимостей в контроллер.
-    public function __construct($entityManager, $reserveManager, $blankManager) 
+    public function __construct($entityManager, $reserveManager) 
     {
         $this->entityManager = $entityManager;
         $this->reserveManager = $reserveManager;
-        $this->blankManager = $blankManager;
     }    
     
     public function workAction()
@@ -276,6 +270,9 @@ class ReserveController extends AbstractActionController
         
     }
     
+    /*
+     * Скачать бланк заявки
+     */
     public function printAction()
     {
         $reserveId = (int)$this->params()->fromRoute('id', -1);
@@ -295,49 +292,21 @@ class ReserveController extends AbstractActionController
             return;                        
         }        
       
-        $bids = $this->entityManager->getRepository(Reserve::class)
-                    ->findBidReserve($reserve)->getResult();
-        
-        $offices = $this->entityManager->getRepository(Office::class)
-                    ->findAll([]);
-        
-        $office = $offices[0];
-        
-        $data = [
-            'firmName' => $office->getLegalContact()->getActiveLegal()->getName(),
-            'firmAddress' => $office->getLegalContact()->getActiveLegal()->getAddress(),
-            'invoiceId' => $reserve->getId(),
-            'invoiceDate' => $reserve->getDateCreated(),
-            'supplierName' => $reserve->getSupplier()->getLegalContact()->getActiveLegal()->getName(),
-            'itemsTotal' => count($bids),
-            'total' => $reserve->getTotal(),
-            'items' =>[],
-        ];
-        
-        foreach ($bids as $bid){
-            $data['items'][] = [
-                'goodName' => $bid->getGood()->getName(),
-                'unit' => '',
-                'quantity' => $bid->getNum(),
-                'price' => $bid->getPrice(),
-                'total' => $bid->getPrice()*$bid->getNum(),
-            ];
-        }
-        
-        $filename = $this->blankManager->reserve($data);
-        $output_filename = 'Заказ №'.$reserve->getId().'.xls';
-        
-        if (file_exists($filename)){
-         
+        $data = $this->reserveManager->reserveXls($reserve);
+                
+        if (file_exists($data['tmpfile'])){
+            
+            $mimeTypeFilter = new MimeType();
+            
             $response = new \Zend\Http\Response\Stream();
-            $response->setStream(fopen($filename, 'r'));
+            $response->setStream(fopen($data['tmpfile'], 'r'));
             $response->setStatusCode(200);
-            $response->setStreamName($output_filename);
+            $response->setStreamName($data['filename']);
             $headers = new \Zend\Http\Headers();
             $headers->addHeaders(array(
-                'Content-Disposition' => 'attachment; filename="'.$output_filename.'"',
-                'Content-Type' => 'application/octet-stream',
-                'Content-Length' => filesize($filename),
+                'Content-Disposition' => 'attachment; filename="'.$data['filename'].'"',
+                'Content-Type' => $mimeTypeFilter->filter(pathinfo($data['filename'], PATHINFO_EXTENSION)),
+                'Content-Length' => filesize($data['tmpfile']),
                 'Expires' => '@0', // @0, because zf2 parses date as string to \DateTime() object
                 'Cache-Control' => 'must-revalidate',
                 'Pragma' => 'public'
@@ -351,4 +320,37 @@ class ReserveController extends AbstractActionController
         return $this->redirect()->toRoute('reserve', ['action' => 'view', 'id' => $reserve->getId()]);
     }
     
+    /*
+     * Отправить заявку поп почте
+     */
+    public function mailAction()
+    {
+        $reserveId = (int)$this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($reserveId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        // Find the reserve ID
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneById($reserveId);
+        
+        if ($reserve == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+      
+        $data = $this->reserveManager->printData($reserve);
+        
+        $filename = $this->blankManager->reserve($data);
+        $output_filename = 'Заявка №'.$reserve->getId().'.xls';
+        
+        if (file_exists($filename)){
+            
+            
+        }    
+        return $this->redirect()->toRoute('reserve', ['action' => 'view', 'id' => $reserve->getId()]);
+    }
 }

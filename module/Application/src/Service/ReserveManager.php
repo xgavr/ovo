@@ -13,6 +13,7 @@ use Application\Entity\Bid;
 use Application\Entity\Reserve;
 use Application\Entity\Goods;
 use Application\Entity\Rawprice;
+use Company\Entity\Office;
 use User\Entity\User;
 use Application\Entity\Supplier;
 
@@ -32,11 +33,27 @@ class ReserveManager
   
     private $authService;
     
+    /**
+     * Менеджер бланков.
+     * @var Blank\Service\BlankManager 
+     */
+    private $blankManager;    
+    
+    /**
+     * Менеджер почты.
+     * @var Admin\Service\PostManager 
+     */
+    private $postManager;    
+    
+    
+    
     // Конструктор, используемый для внедрения зависимостей в сервис.
-    public function __construct($entityManager, $authService)
+    public function __construct($entityManager, $authService, $blankManager, $postManager)
     {
         $this->entityManager = $entityManager;
         $this->authService = $authService;
+        $this->blankManager = $blankManager;
+        $this->postManager = $postManager;
     }
     
     public function addNewBid($reserve, $data, $flushnow=true)
@@ -236,4 +253,88 @@ class ReserveManager
         return;
     }
     
+    /*
+     * Данные заяавки для печатной формы
+     * @param Application\Entity\Reserve $reserve
+     */
+    public function printData($reserve)
+    {
+        $bids = $this->entityManager->getRepository(Reserve::class)
+                    ->findBidReserve($reserve)->getResult();
+        
+        $offices = $this->entityManager->getRepository(Office::class)
+                    ->findAll([]);
+        
+        $office = $offices[0];
+        
+        $data = [
+            'firmName' => $office->getLegalContact()->getActiveLegal()->getName(),
+            'firmAddress' => $office->getLegalContact()->getActiveLegal()->getAddress(),
+            'invoiceId' => $reserve->getId(),
+            'invoiceDate' => $reserve->getDateCreated(),
+            'supplierName' => $reserve->getSupplier()->getLegalContact()->getActiveLegal()->getName(),
+            'itemsTotal' => count($bids),
+            'total' => $reserve->getTotal(),
+            'items' =>[],
+        ];
+        
+        foreach ($bids as $bid){
+            $data['items'][] = [
+                'goodName' => $bid->getGood()->getName(),
+                'unit' => '',
+                'quantity' => $bid->getNum(),
+                'price' => $bid->getPrice(),
+                'total' => $bid->getPrice()*$bid->getNum(),
+            ];
+        }
+        
+        return $data;
+        
+    }
+    
+    /*
+     * Бланк заявки XLS
+     * @param Application\Entity\Reserve $reserve
+     */
+    public function reserveXls($reserve)
+    {
+        $data = $this->printData($reserve);
+        $tmpfile = $this->blankManager->reserve($data);
+        $filename = 'Заявка №'.$reserve->getId().'.xls';
+        
+        return ['tmpfile' => $tmpfile, 'filename' => $filename];
+       
+    }
+    
+    /*
+     * Отправить заявку по почте
+     * @param Application\Entity\Reserve $reserve
+     * 
+     */
+    public function mail($reserve)
+    {
+        $data = $this->printData($reserve);
+        $tmpfile = $this->blankManager->reserve($data);
+        $filename = 'Заявка №'.$reserve->getId().'.xls';
+        $offices = $this->entityManager->getRepository(Office::class)
+                    ->findAll([]);
+        
+        $office = $offices[0];
+        
+        $legalContact = $office->getLegalContact();
+        $firmName = $legalContact->getActiveLegal()->getName();
+
+        $params = [
+            'to' => '',
+            'from' => $this->identity(),
+            'subject' => 'Заявка №'.$reserve->getId().' на поставку',
+            'body' => "Здравствуйте!<br/><br/><p>Просим принять заявку на поставку. Данные находятся во вложении. <br/><br/>С Уважением!<br/>$firmName",
+            'attachments' => [
+                'tmpname' => $tmpfile,
+                'filename' => $filename,
+            ],
+        ];
+        
+        return $this->postManager->send($params);
+    }
 }
