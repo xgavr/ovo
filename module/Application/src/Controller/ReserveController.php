@@ -342,15 +342,8 @@ class ReserveController extends AbstractActionController
             return;                        
         }        
       
-        $data = $this->reserveManager->printData($reserve);
+        $this->reserveManager->mail($reserve, $this->identity());
         
-        $filename = $this->blankManager->reserve($data);
-        $output_filename = 'Заявка №'.$reserve->getId().'.xls';
-        
-        if (file_exists($filename)){
-            
-            
-        }    
         return $this->redirect()->toRoute('reserve', ['action' => 'view', 'id' => $reserve->getId()]);
     }
 }

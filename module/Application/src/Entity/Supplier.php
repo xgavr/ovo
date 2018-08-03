@@ -12,6 +12,7 @@ namespace Application\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Application\Entity\Contact;
+use Application\Entity\RequestSetting;
 use Doctrine\Common\Collections\Criteria;
 
 
@@ -337,6 +338,25 @@ class Supplier {
     public function getRequestSettings()
     {
         return $this->requestSettings;
+    }
+    
+    /*
+     * Получть email для отправки заявки
+     * @return string 
+     */
+    public function getRequestSettingEmail()
+    {
+        $criteria = Criteria::create()
+                ->where(Criteria::expr()->eq("mode", RequestSetting::MODE_EMAIL))
+                ->andWhere(Criteria::expr()->eq("status", RequestSetting::STATUS_ACTIVE))
+                ;
+
+        $requestSettings = $this->getRequestSettings()->matching($criteria);
+        if (count($requestSettings)){
+            return $requestSettings[0]; 
+        }
+        
+        return;
     }
         
     /**

@@ -22,10 +22,10 @@ class Reserve {
     
     // Константы.
     const STATUS_NEW    = 10; // Новый.
-    const STATUS_CONFIRMED   = 20; // Подтвержден.
-    const STATUS_PAID   = 30; // Оплачен.
-    const STATUS_SHIPPED   = 40; // Отгружен.
-    const STATUS_CANCELED  = -10; // Отменен.
+    const STATUS_SENT   = 20; // Заявка отправлена.
+    const STATUS_CONFIRMED   = 30; // Заявка подтверждена.
+    const STATUS_SHIPPED   = 40; // Товар по заявке получен.
+    const STATUS_CANCELED  = -10; // Отмена.
         
     /**
      * @ORM\Id
@@ -141,10 +141,10 @@ class Reserve {
     public static function getStatusList() 
     {
         return [
-            self::STATUS_NEW => 'Новый',
-            self::STATUS_CANCELED => 'Отменен',
-            self::STATUS_CONFIRMED => 'Подтвержден',
-            self::STATUS_PAID => 'Оплачен',
+            self::STATUS_NEW => 'Новая',
+            self::STATUS_SENT => 'Отправлена',
+            self::STATUS_CONFIRMED => 'Подтверждена',
+            self::STATUS_CANCELED => 'Отменена',
             self::STATUS_SHIPPED => 'Отгружен',
         ];
     }    

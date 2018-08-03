@@ -74,8 +74,30 @@ $this->pageBreadcrumbs()->setItems([
     </div>
     <div class="col-sm-3" id="side-nav" >
         <div class="nav nav-stacked nav-list affix">
+            <div class="alert alert-info">
+                <?= $reserve->getStatusAsString(); ?>
+            </div>
+            <?php if ($requestSetting = $reserve->getSupplier()->getRequestSettingEmail()):?>
+                <?php if ($requestSetting->getEmail()): ?>
+                    <div class="alert alert-success">
+                        <a href="<?= $this->url('reserve', 
+                                ['action'=>'mail', 'id'=>$reserve->getId()]); ?>">
+                            Отправить заявку на <br/>
+                            <?= $requestSetting->getEmail(); ?>
+                        </a>
+                    </div>
+                <?php endif; ?>    
+            <?php else: ?>
+                <div class="alert alert-warning">
+                    <button value="/supplier/request-setting-form/<?= $reserve->getSupplier()->getId() ?>?requestSetting=<?= $requestSetting->getId() ?>" class="btn btn-default btn-xs"
+                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                        Уточнить способ отправки заявки
+                        <span class="glyphicon glyphicon-edit" ></span>
+                    </button>                                                                                
+                </div>    
+            <?php endif;?>
             <?php if ($reserve->getSupplier()->getLegalContact()->getActiveLegal()):?>
-                <div class="alert alert-info">
+                <div class="alert alert-success">
                     <a href="<?= $this->url('reserve', 
                             ['action'=>'print', 'id'=>$reserve->getId()]); ?>">
                         Бланк заявки

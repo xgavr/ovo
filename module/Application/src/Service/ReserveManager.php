@@ -308,10 +308,11 @@ class ReserveManager
     
     /*
      * Отправить заявку по почте
-     * @param Application\Entity\Reserve $reserve
+     * @param Application\Entity\Reserve $reserve, string $fromEmail
+     * 
      * 
      */
-    public function mail($reserve)
+    public function mail($reserve, $fromEmail)
     {
         $data = $this->printData($reserve);
         $tmpfile = $this->blankManager->reserve($data);
@@ -325,8 +326,8 @@ class ReserveManager
         $firmName = $legalContact->getActiveLegal()->getName();
 
         $params = [
-            'to' => '',
-            'from' => $this->identity(),
+            'to' => $reserve->getSupplier()->getRequestSettingEmail()->getEmail(),
+            'from' => $fromEmail,
             'subject' => 'Заявка №'.$reserve->getId().' на поставку',
             'body' => "Здравствуйте!<br/><br/><p>Просим принять заявку на поставку. Данные находятся во вложении. <br/><br/>С Уважением!<br/>$firmName",
             'attachments' => [
@@ -334,7 +335,16 @@ class ReserveManager
                 'filename' => $filename,
             ],
         ];
+
+        if ($this->postManager->send($params)){
         
-        return $this->postManager->send($params);
+            $reserve->setStatus(Reserve::STATUS_SENT);
+            $this->entityManager->persist($reserve);
+            $this->entityManager->flush($reserve);
+            
+            return true;
+        }    
+        
+        return false;
     }
 }
