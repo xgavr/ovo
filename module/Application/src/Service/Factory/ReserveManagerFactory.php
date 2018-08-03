@@ -10,7 +10,7 @@ namespace Application\Service\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Application\Service\reserveManager;
+use Application\Service\ReserveManager;
 use Blank\Service\BlankManager;
 use Admin\Service\PostManager;
 
