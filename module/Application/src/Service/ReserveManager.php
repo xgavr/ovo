@@ -45,15 +45,22 @@ class ReserveManager
      */
     private $postManager;    
     
+    /**
+     * Менеджер лога.
+     * @var Application\Service\LogManager 
+     */
+    private $logManager;    
+    
     
     
     // Конструктор, используемый для внедрения зависимостей в сервис.
-    public function __construct($entityManager, $authService, $blankManager, $postManager)
+    public function __construct($entityManager, $authService, $blankManager, $postManager, $logManager)
     {
         $this->entityManager = $entityManager;
         $this->authService = $authService;
         $this->blankManager = $blankManager;
         $this->postManager = $postManager;
+        $this->logManager = $logManager;
     }
     
     public function addNewBid($reserve, $data, $flushnow=true)
@@ -156,7 +163,7 @@ class ReserveManager
     
     public function updateReserve($reserve, $data) 
     {
-        $order->setComment($data['comment']);
+        $reserve->setComment($data['comment']);
 
         $result = $this->entityManager->getRepository(BidReserve::class)
                 ->getReserveNum($reserve);
@@ -166,6 +173,8 @@ class ReserveManager
         $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
         $this->entityManager->flush($reserve);
+        
+        $this->logManager->update([], $reserve);
     }    
     
     /*
@@ -180,6 +189,8 @@ class ReserveManager
         $this->entityManager->persist($reserve);
         // Применяем изменения к базе данных.
         $this->entityManager->flush($reserve);
+
+        $this->logManager->update([], $reserve);
     }    
         
     

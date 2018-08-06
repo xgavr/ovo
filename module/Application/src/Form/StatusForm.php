@@ -49,7 +49,7 @@ class StatusForm extends Form
             'type'  => 'select',
             'name' => 'status',
             'options' => [
-                'label' => 'Status',
+                'label' => 'Статус',
                 'value_options' => $this->entity->getStatusList(),
             ],
         ]);

@@ -41,14 +41,20 @@ class LogManager {
      */
     protected function toJson($entity)
     {
-        $values = get_object_vars($entity);
-        foreach ($values as $value){
-            if (is_object($value)){
-                $value = $this->getStrData($value);
-            }            
+        $query = $this->entityManager->getRepository(get_class($entity))
+                ->createQueryBuilder('e')
+                ->where('e.id = ?1')
+                ->setParameter('1', $entity->getId())
+                ->getQuery()
+                ;
+
+        $data = $query->getResult(2);
+        
+        if ($data){
+            return Json::encode($data);
         }
         
-        return Json::encode($values);
+        return;
     }
     
     /*
@@ -152,4 +158,29 @@ class LogManager {
         $data['status'] = Log::STATUS_DELETE;
         $this->log($data, $entity);
     }
+
+    /*
+     * Лог отправлено почтовое сообщение 
+     * @param array $data
+     * @param stdClass $entity
+     * 
+     */
+    public function email($data, $entity)
+    {
+        $data['status'] = Log::STATUS_EMAIL;
+        $this->log($data, $entity);
+    }
+
+    /*
+     * Лог отправлено sms сообщение 
+     * @param array $data
+     * @param stdClass $entity
+     * 
+     */
+    public function sms($data, $entity)
+    {
+        $data['status'] = Log::STATUS_SMS;
+        $this->log($data, $entity);
+    }
+
 }

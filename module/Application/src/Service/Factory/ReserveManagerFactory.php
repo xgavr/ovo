@@ -13,6 +13,7 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 use Application\Service\ReserveManager;
 use Blank\Service\BlankManager;
 use Admin\Service\PostManager;
+use Application\Service\LogManager;
 
 /**
  * Description of OrderManagerFactory
@@ -29,8 +30,9 @@ class ReserveManagerFactory  implements FactoryInterface
         $authService = $container->get(\Zend\Authentication\AuthenticationService::class);        
         $blankManager = $container->get(BlankManager::class);
         $postManager = $container->get(PostManager::class);
+        $logManager = $container->get(LogManager::class);
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new ReserveManager($entityManager, $authService, $blankManager, $postManager);
+        return new ReserveManager($entityManager, $authService, $blankManager, $postManager, $logManager);
     }
 }
