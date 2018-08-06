@@ -23,7 +23,6 @@ class Order {
     // Константы.
     const STATUS_NEW    = 10; // Новый.
     const STATUS_CONFIRMED   = 20; // Подтвержден.
-    const STATUS_PAID   = 30; // Оплачен.
     const STATUS_SHIPPED   = 40; // Отгружен.
     const STATUS_CANCELED  = -10; // Отменен.
         
@@ -144,7 +143,6 @@ class Order {
             self::STATUS_NEW => 'Новый',
             self::STATUS_CANCELED => 'Отменен',
             self::STATUS_CONFIRMED => 'Подтвержден',
-            self::STATUS_PAID => 'Оплачен',
             self::STATUS_SHIPPED => 'Отгружен',
         ];
     }    

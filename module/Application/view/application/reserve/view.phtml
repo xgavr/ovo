@@ -75,7 +75,16 @@ $this->pageBreadcrumbs()->setItems([
     <div class="col-sm-3" id="side-nav" >
         <div class="nav nav-stacked nav-list affix">
             <div class="alert alert-info">
-                <?= $reserve->getStatusAsString(); ?>
+                <div class="pull-left">
+                    <?= $reserve->getStatusAsString(); ?>
+                </div>    
+                <div class="pull-right">
+                    <button value="/reserve/status-form/<?= $reserve->getId() ?>" class="btn btn-default btn-xs"
+                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                        <span class="glyphicon glyphicon-edit" ></span>
+                    </button>
+                </div>    
+                <div class="clearfix"></div>
             </div>
             <?php if ($reserve->getSupplier()->getLegalContact()->getActiveLegal()):?>
                 <?php if ($requestSetting = $reserve->getSupplier()->getRequestSettingEmail()):?>

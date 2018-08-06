@@ -15,9 +15,9 @@ use Application\Entity\BidReserve;
 use Application\Entity\Bid;
 use Application\Entity\Rawprice;
 use Application\Entity\Supplier;
-use Company\Entity\Office;
 use Zend\View\Model\JsonModel;
 use Admin\Filter\MimeType;
+use Application\Form\StatusForm;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -82,6 +82,57 @@ class ReserveController extends AbstractActionController
         
     }
 
+    public function statusFormAction()
+    {
+        $reserveId = (int) $this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($reserveId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $reserve = $this->entityManager->getRepository(Reserve::class)
+                ->findOneById($reserveId);
+        
+        if ($reserve == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $form = new StatusForm($reserve);
+        
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+                
+                if ($data['status'] != $reserve->getStatus()){ 
+                    $this->reserveManager->updateStatus($reserve, $data['status']);
+                }    
+                        
+                return new JsonModel(
+                   ['ok']
+                );           
+            } else {
+                var_dump($form->getMessages());
+            }
+        }    
+
+        $form->setData([
+            'status' => $reserve->getStatus(), 
+        ]);
+
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'reserve' => $reserve,
+        ]);                        
+    }
+    
     public function workContentAction()
     {
         

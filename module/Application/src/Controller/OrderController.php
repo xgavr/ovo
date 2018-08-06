@@ -13,6 +13,7 @@ use Zend\View\Model\JsonModel;
 use Application\Entity\Order;
 use User\Entity\User;
 use Company\Entity\Office;
+use Application\Form\StatusForm;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -199,6 +200,57 @@ class OrderController extends AbstractActionController
         $this->orderManager->checkReserved($order);
         
         return $this->redirect()->toRoute('order', ['action' => 'view', 'id' => $order->getId()]);
+    }
+    
+    public function statusFormAction()
+    {
+        $orderId = (int) $this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($orderId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $order = $this->entityManager->getRepository(Order::class)
+                ->findOneById($orderId);
+        
+        if ($order == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $form = new StatusForm($order);
+        
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+                
+                if ($data['status'] != $order->getStatus()){ 
+                    $this->orderManager->updateStatus($order, $data['status']);
+                }    
+                        
+                return new JsonModel(
+                   ['ok']
+                );           
+            } else {
+                var_dump($form->getMessages());
+            }
+        }    
+
+        $form->setData([
+            'status' => $order->getStatus(), 
+        ]);
+
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'order' => $order,
+        ]);                        
     }
 
 

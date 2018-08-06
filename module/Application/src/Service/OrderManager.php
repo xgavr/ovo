@@ -116,6 +116,12 @@ class OrderManager
         $this->entityManager->flush();
     }
     
+    /*
+     * Обновить заказ
+     * @param Application\Entity\Order
+     * @param array
+     * 
+     */
     public function updateOrder($order, $data) 
     {
         $order->setComment($data['comment']);
@@ -124,7 +130,26 @@ class OrderManager
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
     }    
+
+    /*
+     * Обновить статус заказа
+     * @param Application\Entity\Order
+     * @param integer
+     */
+    public function updateStatus($order, $status) 
+    {
+        $order->setStatus($status);
+
+        $this->entityManager->persist($order);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush($order);
+    }    
     
+    /*
+     * Удалить заказ
+     * @param Application\Entity\Order
+     * 
+     */
     public function removeOrder($order) 
     {   
         $bids = $this->entityManager->getRepository(Order::class)

@@ -10,6 +10,9 @@ $this->pageBreadcrumbs()->setItems([
                 ]);
   
 ?>
+<style>
+
+</style>
 
 <h1>
     <?= $this->escapeHtml($order->getClient()->getName()); ?>
@@ -75,6 +78,18 @@ $this->pageBreadcrumbs()->setItems([
     </div>    
     <div class="col-sm-3" id="side-nav" >
         <div class="nav nav-stacked nav-list affix">
+            <div class="alert alert-info">
+                <div class="pull-left">
+                    <?= $order->getStatusAsString(); ?>
+                </div>    
+                <div class="pull-right">
+                    <button value="/order/status-form/<?= $order->getId() ?>" class="btn btn-default btn-xs"
+                            data-toggle="modal" data-target="#modal-dialog" title="Изменить">
+                        <span class="glyphicon glyphicon-edit" ></span>
+                    </button>
+                </div>    
+                <div class="clearfix"></div>
+            </div>
             <div class="alert alert-warning">
                 <?php if ($order->getClient()->getLegalContact()->getActiveLegal()):?>
                         <a href="<?= $this->url('order', 

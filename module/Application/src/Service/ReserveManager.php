@@ -168,6 +168,21 @@ class ReserveManager
         $this->entityManager->flush($reserve);
     }    
     
+    /*
+     * Обновить статус заказа
+     * @param Application\Entity\Order
+     * @param integer
+     */
+    public function updateStatus($reserve, $status) 
+    {
+        $reserve->setStatus($status);
+
+        $this->entityManager->persist($reserve);
+        // Применяем изменения к базе данных.
+        $this->entityManager->flush($reserve);
+    }    
+        
+    
     public function removeReserve($reserve) 
     {   
         $bids = $this->entityManager->getRepository(Reserve::class)
