@@ -214,7 +214,7 @@ class PriceController extends AbstractActionController
             }
             // заставляем браузер показать окно сохранения файла
             header('Content-Description: File Transfer');
-            header('Content-Type: '.$mimeTypeFilter->filter($filename));
+            header('Content-Type: '.$mimeTypeFilter->filter(pathinfo($filename, PATHINFO_EXTENSION)));
             header('Content-Disposition: attachment; filename=' . $basenameFilter->filter($filename));
             header('Content-Transfer-Encoding: binary');
             header('Expires: 0');
