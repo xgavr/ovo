@@ -23,7 +23,6 @@ final class Version20180806075540 extends AbstractMigration
         $table->addColumn('parent_model_id', 'integer', ['notnull'=>false]);
         $table->addColumn('model_data', 'json', ['notnull'=>false]);
         $table->addColumn('message', 'string', ['notnull'=>false, 'length' => 512]);
-        $table->addColumn('attachment', 'json', ['notnull'=>false]);
         $table->addColumn('extra_ip', 'string', ['notnull'=>true, 'lenght' => 64]);
         $table->addColumn('user_id', 'integer', ['notnull'=>false]);
         $table->setPrimaryKey(['id']);

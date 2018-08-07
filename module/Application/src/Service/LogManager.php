@@ -34,35 +34,48 @@ class LogManager {
         $this->authService = $authService;
     }
     
+    protected function objectData($object)
+    {
+        if (get_class($object) == 'Doctrine\ORM\PersistentCollection' ||
+                get_class($object) == 'Doctrine\Common\Collections\ArrayCollection'){
+            
+        } else {
+            return [get_class($object) => $object->getId()];
+        }   
+        
+        return;
+    }
+    
+    protected function reflectionData($entity, $func)
+    {
+        $reflection = new \ReflectionMethod($entity, $func);
+        if (count($reflection->getParameters())){
+            return;
+        } else {
+            if (is_object($entity->$func())){
+                return $this->objectData($entity->$func());
+            } else {
+                return $entity->$func();
+            }    
+        }            
+    }
+    
     /*
      * Преобразование данных объекта в строку
      * @param stdClass $entity
-     * @return string
+     * @return array
      */
-    protected function toJson($entity)
+    protected function data($entity)
     {
         $data = [];
         $methods = get_class_methods($entity);
         foreach ($methods as $func){
             if (substr($func, 0, 3) == 'get'){
-                $data[lcfirst(substr($func, 3))] = $entity->$func();
+                $data[lcfirst(substr($func, 3))] = $this->reflectionData($entity, $func);
             }
         }
         
-//        $query = $this->entityManager->getRepository(get_class($entity))
-//                ->createQueryBuilder('e')
-//                ->where('e.id = ?1')
-//                ->setParameter('1', $entity->getId())
-//                ->getQuery()
-//                ;
-//
-//        $data = $query->getResult(2);
-        
-        if (count($data)){
-            return Json::encode($data);
-        }
-        
-        return;
+        return $data;
     }
     
     /*
@@ -75,7 +88,8 @@ class LogManager {
     {
         switch ($data['status']){
             case Log::STATUS_NEW:
-            case Log::STATUS_UPDATE: return $this->toJson($entity); 
+            case Log::STATUS_UPDATE: return Json::encode($this->data($entity));
+            case Log::STATUS_EMAIL: return Json::encode($entity);    
             default: return;    
         }
         
@@ -108,7 +122,6 @@ class LogManager {
 
         $log->setStatus($data['status']);
         $log->setMessage($data['message']);
-        $log->setAttachment($this->attachment($data['attachment']));
         
         $log->setModel(get_class($entity));
         $log->setModelId($entity->getId());
@@ -178,10 +191,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function email($data, $entity, $parentEntity = null)
+    public function email($data, $params)
     {
         $data['status'] = Log::STATUS_EMAIL;
-        $this->log($data, $entity, $parentEntity);
+        $this->log($data, $params);
     }
 
     /*

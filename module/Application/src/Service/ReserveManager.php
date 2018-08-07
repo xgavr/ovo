@@ -374,7 +374,8 @@ class ReserveManager
             $this->entityManager->persist($reserve);
             $this->entityManager->flush($reserve);
             
-            $this->logManager->email(['message' => $params['body'], 'attachment' => $params['attachments']], $reserve);
+            $this->logManager->update([], $reserve);
+            $this->logManager->email([], $params);
             
             return true;
         }    

@@ -76,11 +76,6 @@ class Log {
     protected $message;
 
     /**
-     * @ORM\Column(name="attachment")   
-     */
-    protected $attachment;
-
-    /**
      * @ORM\Column(name="extra_ip")   
      */
     protected $extraIp;
@@ -177,19 +172,6 @@ class Log {
     public function setExtraIp($extraIp) 
     {
         $this->extraIp = $extraIp;
-    }     
-
-    /*
-     * @return array
-     */
-    public function getAttachment() 
-    {
-        return $this->attachment;
-    }
-
-    public function setAttachment($attachment) 
-    {
-        $this->attachment = $attachment;
     }     
 
     /**

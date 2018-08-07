@@ -31,11 +31,18 @@ class OrderManager
   
     private $authService;
     
+    /**
+     * Менеджер лога.
+     * @var Application\Service\LogManager 
+     */
+    private $logManager;    
+    
     // Конструктор, используемый для внедрения зависимостей в сервис.
-    public function __construct($entityManager, $authService)
+    public function __construct($entityManager, $authService, $logManager)
     {
         $this->entityManager = $entityManager;
         $this->authService = $authService;
+        $this->logManager = $logManager;
     }
     
     public function addNewBid($order, $data, $flushnow=true)
@@ -68,6 +75,7 @@ class OrderManager
         if ($flushnow){
             $this->entityManager->flush(); 
         }    
+        $this->logManager->creation([], $bid, $order);
     }
     
     public function addNewOrder($data) 
@@ -100,6 +108,8 @@ class OrderManager
         
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
+
+        $this->logManager->creation([], $order);
         
         return $order;
     }   
@@ -114,6 +124,8 @@ class OrderManager
         $this->entityManager->persist($order);
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
+
+        $this->logManager->update([], $order);
     }
     
     /*
@@ -129,6 +141,8 @@ class OrderManager
         $this->entityManager->persist($order);
         // Применяем изменения к базе данных.
         $this->entityManager->flush();
+
+        $this->logManager->update([], $order);
     }    
 
     /*
@@ -143,6 +157,8 @@ class OrderManager
         $this->entityManager->persist($order);
         // Применяем изменения к базе данных.
         $this->entityManager->flush($order);
+
+        $this->logManager->update([], $order);
     }    
     
     /*
@@ -162,6 +178,8 @@ class OrderManager
         $this->entityManager->remove($order);
         
         $this->entityManager->flush();
+
+        $this->logManager->remove([], $order);
     }    
 
     /*

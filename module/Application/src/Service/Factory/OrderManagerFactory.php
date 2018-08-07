@@ -11,6 +11,7 @@ namespace Application\Service\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Application\Service\OrderManager;
+use Application\Service\LogManager;
 /**
  * Description of OrderManagerFactory
  *
@@ -23,9 +24,10 @@ class OrderManagerFactory  implements FactoryInterface
                     $requestedName, array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
-        $authService = $container->get(\Zend\Authentication\AuthenticationService::class);        
+        $authService = $container->get(\Zend\Authentication\AuthenticationService::class); 
+        $logManager = $container->get(LogManager::class);
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new OrderManager($entityManager, $authService);
+        return new OrderManager($entityManager, $authService, $logManager);
     }
 }
