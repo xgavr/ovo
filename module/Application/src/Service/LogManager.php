@@ -121,7 +121,9 @@ class LogManager {
         $log = new Log();
 
         $log->setStatus($data['status']);
-        $log->setMessage($data['message']);
+        if (isset($data['message'])){
+            $log->setMessage($data['message']);
+        }    
         
         $log->setModel(get_class($entity));
         $log->setModelId($entity->getId());

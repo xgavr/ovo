@@ -106,15 +106,17 @@ class GoodsRepository extends EntityRepository{
                                     ;
         }
 
-        if (is_array($params['supplier'])){
-            $queryBuilder
-                    ->innerJoin('g.rawprice', 'rp', 'WITH')
-                    ->join('rp.raw', 'r', 'WITH')
-                    ->andWhere($queryBuilder->expr()->in('r.supplier', ':supplier'))
-                            ->setParameter('supplier', $params['supplier'])
-                            ->addOrderBy('g.name')
-                                    ;
-        }
+        if (isset($params['supplier'])){
+            if (is_array($params['supplier'])){
+                $queryBuilder
+                        ->innerJoin('g.rawprice', 'rp', 'WITH')
+                        ->join('rp.raw', 'r', 'WITH')
+                        ->andWhere($queryBuilder->expr()->in('r.supplier', ':supplier'))
+                                ->setParameter('supplier', $params['supplier'])
+                                ->addOrderBy('g.name')
+                                        ;
+            }
+        }    
 
         return $queryBuilder->getQuery();
     }

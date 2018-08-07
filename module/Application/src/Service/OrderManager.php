@@ -82,7 +82,9 @@ class OrderManager
     {
         // Создаем новую сущность.
         $order = new Order();
-        $order->setComment($data['comment']);
+        if (isset($data['comment'])){
+            $order->setComment($data['comment']);
+        }    
         $order->setTotal(round(0, 2));
         
         if ($data['client'] instanceof Client){

@@ -417,7 +417,12 @@ class MimeType extends AbstractFilter
     
     public function filter($value)
     {
-        return $this->mimetypes[strtolower(trim($value))];
+        $ext = strtolower(trim($value));
+        if (array_key_exists($ext, $this->mimetypes)){
+            return $this->mimetypes[$ext];
+        }    
+        
+        return 'application/octet-stream';
         
     }
     
