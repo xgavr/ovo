@@ -70,21 +70,13 @@ class PostManager {
         $html->charset = 'utf-8';
         $html->encoding = Mime::ENCODING_QUOTEDPRINTABLE;        
                 
-        $message = new Message();
-        $message->setEncoding('UTF-8');
-        $message->addTo($options['to']);
-        $message->addFrom($options['from']);
-        $message->setSubject($options['subject']);
-        
-        $contentTypeHeader = $message->getHeaders()->get('Content-Type');
-
         $body = new MimeMessage();
         
         if (!$options['attachments']){ //без вложений
 
             $body->setParts([$text, $html]);
 
-            $contentTypeHeader->setType('multipart/alternative');
+            $headerType = 'multipart/alternative';
             
         } else {
             
@@ -114,12 +106,20 @@ class PostManager {
             }
 
             $body->setParts($parts);                
-
-            $contentTypeHeader->setType('multipart/related');                        
+            $headerType = 'multipart/related';
         }
+        
+        $message = new Message();
+        $message->setEncoding('UTF-8');
+        $message->addTo($options['to']);
+        $message->addFrom($options['from']);
+        $message->setSubject($options['subject']);
         
         $message->setBody($body);
 
+        $contentTypeHeader = $message->getHeaders()->get('Content-Type');
+        $contentTypeHeader->setType($headerType);  
+        
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
         $transportOptions   = new SmtpOptions([
