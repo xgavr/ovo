@@ -89,9 +89,9 @@ class PostManager {
             $basenameFilter = new Basename();
             $mimeTypeFilter = new MimeType();
 
-            var_dump($options); exit;
+            var_dump($options['attachments']); exit;
             foreach ($options['attachments'] as $attachment){
-                $tmpfile = $attachment['tmpfile'];
+                $tmpfile = $attachment['tmpname'];
                 $filename = $attachment['filename'];
 
                 if (file_exists($tmpfile)){
