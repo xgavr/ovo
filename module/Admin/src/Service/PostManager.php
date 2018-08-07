@@ -133,7 +133,13 @@ class PostManager {
         ]);
         
         $transport->setOptions($transportOptions);
-        return $transport->send($message);
+        
+        try{
+            $transport->send($message);
+            return TRUE;
+        } catch (Exception $e){
+            return FALSE;
+        }    
 
     }
     
