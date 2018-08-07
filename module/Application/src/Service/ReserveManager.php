@@ -97,6 +97,8 @@ class ReserveManager
             $this->updateReserveTotal($reserve);
         }   
         
+        $this->logManager->creation([], $bidReserve, $reserve);
+        
         return $bidReserve;
     }
     
@@ -131,6 +133,7 @@ class ReserveManager
         // Применяем изменения к базе данных.
         $this->entityManager->flush($reserve);
             
+        $this->logManager->creation([], $reserve);
         
         return $reserve;
     }   
@@ -203,9 +206,12 @@ class ReserveManager
             $this->entityManager->remove($bid);
         }
         
+        $this->logManager->remove([], $reserve);
+        
         $this->entityManager->remove($reserve);
         
         $this->entityManager->flush();
+
     }    
 
     /*
@@ -367,6 +373,8 @@ class ReserveManager
             $reserve->setStatus(Reserve::STATUS_SENT);
             $this->entityManager->persist($reserve);
             $this->entityManager->flush($reserve);
+            
+            $this->logManager->email(['message' => $params['body'], 'attachment' => $params['attachments']], $reserve);
             
             return true;
         }    

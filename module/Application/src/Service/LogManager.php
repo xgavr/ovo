@@ -41,16 +41,24 @@ class LogManager {
      */
     protected function toJson($entity)
     {
-        $query = $this->entityManager->getRepository(get_class($entity))
-                ->createQueryBuilder('e')
-                ->where('e.id = ?1')
-                ->setParameter('1', $entity->getId())
-                ->getQuery()
-                ;
-
-        $data = $query->getResult(2);
+        $data = [];
+        $methods = get_class_methods($entity);
+        foreach ($methods as $func){
+            if (substr($func, 0, 3) == 'get'){
+                $data[lcfirst(substr($func, 3))] = $entity->$func();
+            }
+        }
         
-        if ($data){
+//        $query = $this->entityManager->getRepository(get_class($entity))
+//                ->createQueryBuilder('e')
+//                ->where('e.id = ?1')
+//                ->setParameter('1', $entity->getId())
+//                ->getQuery()
+//                ;
+//
+//        $data = $query->getResult(2);
+        
+        if (count($data)){
             return Json::encode($data);
         }
         
@@ -94,7 +102,7 @@ class LogManager {
      * 
      */
     
-    public function log($data, $entity)
+    public function log($data, $entity, $parentEntity = null)
     {
         $log = new Log();
 
@@ -104,6 +112,11 @@ class LogManager {
         
         $log->setModel(get_class($entity));
         $log->setModelId($entity->getId());
+        
+        if ($parentEntity){
+            $log->setParentModel(get_class($parentEntity));
+            $log->setParentModelId($parentEntity->getId());            
+        }
         
         $log->setModelData($this->statusData($data, $entity));
         
@@ -129,10 +142,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function createure($data, $entity)
+    public function creation($data, $entity, $parentEntity = null)
     {
         $data['status'] = Log::STATUS_NEW;
-        $this->log($data, $entity);
+        $this->log($data, $entity, $parentEntity);
     }
 
     /*
@@ -141,10 +154,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function update($data, $entity)
+    public function update($data, $entity, $parentEntity = null)
     {
         $data['status'] = Log::STATUS_UPDATE;
-        $this->log($data, $entity);
+        $this->log($data, $entity, $parentEntity);
     }
 
     /*
@@ -153,10 +166,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function remove($data, $entity)
+    public function remove($data, $entity, $parentEntity = null)
     {
         $data['status'] = Log::STATUS_DELETE;
-        $this->log($data, $entity);
+        $this->log($data, $entity, $parentEntity);
     }
 
     /*
@@ -165,10 +178,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function email($data, $entity)
+    public function email($data, $entity, $parentEntity = null)
     {
         $data['status'] = Log::STATUS_EMAIL;
-        $this->log($data, $entity);
+        $this->log($data, $entity, $parentEntity);
     }
 
     /*
@@ -177,10 +190,10 @@ class LogManager {
      * @param stdClass $entity
      * 
      */
-    public function sms($data, $entity)
+    public function sms($data, $entity, $parentEntity = null)
     {
         $data['status'] = Log::STATUS_SMS;
-        $this->log($data, $entity);
+        $this->log($data, $entity, $parentEntity);
     }
 
 }

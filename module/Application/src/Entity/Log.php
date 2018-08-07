@@ -51,9 +51,19 @@ class Log {
     protected $model;
 
     /**
+     * @ORM\Column(name="parent_model")   
+     */
+    protected $parentModel;
+
+    /**
      * @ORM\Column(name="model_id")   
      */
     protected $modelId;
+
+    /**
+     * @ORM\Column(name="parent_model_id")   
+     */
+    protected $parentModelId;
 
     /**
      * @ORM\Column(name="model_data")   
@@ -109,6 +119,16 @@ class Log {
         $this->model = $model;
     }     
 
+    public function getParentModel() 
+    {
+        return $this->parentModel;
+    }
+
+    public function setParentModel($parentModel) 
+    {
+        $this->parentModel = $parentModel;
+    }     
+
     public function getModelId() 
     {
         return $this->modelId;
@@ -117,6 +137,16 @@ class Log {
     public function setModelId($modelId) 
     {
         $this->modelId = $modelId;
+    }     
+
+    public function getParentModelId() 
+    {
+        return $this->parentModelId;
+    }
+
+    public function setParentModelId($parentModelId) 
+    {
+        $this->parentModelId = $parentModelId;
     }     
 
     public function getModelData() 
