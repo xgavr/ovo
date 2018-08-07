@@ -125,13 +125,17 @@ class LogManager {
             $log->setMessage($data['message']);
         }    
         
-        $log->setModel(get_class($entity));
-        $log->setModelId($entity->getId());
+        if (is_object($entity)){
+            $log->setModel(get_class($entity));
+            $log->setModelId($entity->getId());
+        }    
         
-        if ($parentEntity){
-            $log->setParentModel(get_class($parentEntity));
-            $log->setParentModelId($parentEntity->getId());            
-        }
+        if (is_object($parentEntity)){
+            if ($parentEntity){
+                $log->setParentModel(get_class($parentEntity));
+                $log->setParentModelId($parentEntity->getId());            
+            }
+        }    
         
         $log->setModelData($this->statusData($data, $entity));
         
