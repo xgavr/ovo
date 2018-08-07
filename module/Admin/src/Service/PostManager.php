@@ -91,7 +91,7 @@ class PostManager {
 
             var_dump($options['attachments']); exit;
             foreach ($options['attachments'] as $attachment){
-                $tmpfile = $attachment['tmpname'];
+                $tmpfile = $attachment['tmpfile'];
                 $filename = $attachment['filename'];
 
                 if (file_exists($tmpfile)){
