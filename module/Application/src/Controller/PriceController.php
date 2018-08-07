@@ -10,6 +10,8 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Raw;
+use Application\Filter\Basename;
+use Admin\Filter\MimeType;
 
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
@@ -197,4 +199,32 @@ class PriceController extends AbstractActionController
             'supplierManager' => $this->supplierManager,
         ]);
     }      
+    
+    public function downloadPriceFileFormAction()
+    {
+        $filename = $this->params()->fromQuery('filename');
+        $basenameFilter = new Basename();
+        $mimeTypeFilter = new MimeType();
+        
+        $file = realpath($filename);
+        
+        if (file_exists($file)){
+            if (ob_get_level()) {
+              ob_end_clean();
+            }
+            // заставляем браузер показать окно сохранения файла
+            header('Content-Description: File Transfer');
+            header('Content-Type: '.$mimeTypeFilter->filter($filename));
+            header('Content-Disposition: attachment; filename=' . $basenameFilter->filter($filename));
+            header('Content-Transfer-Encoding: binary');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate');
+            header('Pragma: public');
+            header('Content-Length: ' . filesize($file));
+            // читаем файл и отправляем его пользователю
+            readfile($file);
+        }
+        exit;          
+    }  
+    
 }
