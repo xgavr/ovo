@@ -83,7 +83,7 @@ class PostManager {
             $content->setParts([$text, $html]);
 
             $contentPart = new MimePart($content->generateMessage());
-            //$contentPart->type = "multipart/alternative;\n boundary=\"" . $content->getMime()->boundary() . '"';
+            $contentPart->type = "multipart/alternative;\n boundary=\"" . $content->getMime()->boundary() . '"';
             
             $body->addPart($contentPart);
             $messageType = 'multipart/related';
