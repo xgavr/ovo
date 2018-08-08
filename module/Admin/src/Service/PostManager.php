@@ -77,7 +77,7 @@ class PostManager {
                 
         $body = new MimeMessage();
         
-        if ($options['attachments']){ //без вложений
+        if (isset($options['attachments'])){ //есть вложения
 
             $content = new MimeMessage();
             $content->setParts([$text, $html]);
@@ -107,7 +107,7 @@ class PostManager {
                 }    
             }
 
-        } else {
+        } else { //нет вложений
             
             $body->setParts([$text, $html]);
 
