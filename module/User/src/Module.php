@@ -73,7 +73,7 @@ class Module
         if ($controllerName!=AuthController::class) {
             
             $result = $authManager->filterAccess($controllerName, $actionName);
-            
+            var_dump($result); exit;
             if ($result==AuthManager::AUTH_REQUIRED) {
                 // Запоминаем URL страницы, на которую пытался перейти пользователь. Мы
                 // перенаправим пользователя на этот URL после его успешного входа на сайт.
