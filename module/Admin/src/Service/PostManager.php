@@ -58,7 +58,6 @@ class PostManager {
         if ($_SERVER['SERVER_ADDR'] == '127.0.0.1') return; //если отладка на локальной машине, либо использовать sendmail
 
         $message = new Message();
-        $message->setEncoding('UTF-8');
         $message->addTo($options['to']);
         $message->addFrom($options['from']);
         $message->setSubject($options['subject']);
@@ -85,7 +84,7 @@ class PostManager {
             $content->addPart($html);
 
             $contentPart = new MimePart($content->generateMessage());
-            $contentPart->type = 'multipart/alternative;' .PHP_EOL. 'boundary="' . $content->getMime()->boundary() . '"';
+            $contentPart->type = "multipart/alternative;\n boundary=\"" . $content->getMime()->boundary() . '"';
             
             $body->addPart($contentPart);
             $messageType = 'multipart/related';
@@ -109,8 +108,6 @@ class PostManager {
                 }    
             }
 
-            $headerType = 'multipart/related;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
-            
         } else {
             
             $body->setParts([$text, $html]);
@@ -121,6 +118,7 @@ class PostManager {
         
         $message->setBody($body);
         $message->getHeaders()->get('content-type')->setType($messageType);
+        $message->setEncoding('UTF-8');
 
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
