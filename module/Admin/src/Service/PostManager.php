@@ -106,7 +106,7 @@ class PostManager {
             }
 
             $body->setParts($parts);                
-            $headerType = 'multipart/related' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
+            $headerType = 'multipart/related;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
         }
         
         $message = new Message();
