@@ -362,9 +362,9 @@ class ReserveManager
             'from' => $fromEmail,
             'subject' => 'Заявка №'.$reserve->getId().' на поставку',
             'body' => "Здравствуйте!<br/><br/><p>Просим принять заявку на поставку. Данные находятся во вложении. <br/><br/>С Уважением!<br/>$firmName",
-//            'attachments' => [
-//                ['tmpfile' => $tmpfile, 'filename' => $filename],
-//            ],
+            'attachments' => [
+                ['tmpfile' => $tmpfile, 'filename' => $filename],
+            ],
         ];
 
         if ($this->postManager->send($params)){
