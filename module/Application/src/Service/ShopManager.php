@@ -54,6 +54,8 @@ class ShopManager
     {
         $currentUser = $this->entityManager->getRepository(User::class)
                         ->findOneByEmail($this->authService->getIdentity());
+        
+        if (!$currentUser) return;
                 
         if ($currentUser->getContacts()){
             foreach ($currentUser->getContacts() as $contact){
