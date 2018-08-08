@@ -109,7 +109,6 @@ class PostManager {
                 }    
             }
 
-            $body->setParts($parts);                
             $headerType = 'multipart/related;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
             
         } else {
