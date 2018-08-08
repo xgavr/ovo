@@ -80,11 +80,10 @@ class PostManager {
         if ($options['attachments']){ //без вложений
 
             $content = new MimeMessage();
-            $content->addPart($text);
-            $content->addPart($html);
+            $content->setParts([$text, $html]);
 
             $contentPart = new MimePart($content->generateMessage());
-            $contentPart->type = "multipart/alternative;\n boundary=\"" . $content->getMime()->boundary() . '"';
+            //$contentPart->type = "multipart/alternative;\n boundary=\"" . $content->getMime()->boundary() . '"';
             
             $body->addPart($contentPart);
             $messageType = 'multipart/related';
