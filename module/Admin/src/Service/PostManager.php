@@ -57,34 +57,38 @@ class PostManager {
     {
         if ($_SERVER['SERVER_ADDR'] == '127.0.0.1') return; //если отладка на локальной машине, либо использовать sendmail
 
+        $message = new Message();
+        $message->setEncoding('UTF-8');
+        $message->addTo($options['to']);
+        $message->addFrom($options['from']);
+        $message->setSubject($options['subject']);
+        
         $breaks = array("<br />","<br>","<br/>");  
         $text = strip_tags(str_ireplace($breaks, PHP_EOL, $options['body']));
         
         $text = new MimePart($text);
         $text->type = Mime::TYPE_TEXT;
-        $text->charset = 'utf-8';
+        $text->charset = 'UTF-8';
         $text->encoding = Mime::ENCODING_QUOTEDPRINTABLE;        
     
         $html = new MimePart($options['body']);
         $html->type = Mime::TYPE_HTML;
-        $html->charset = 'utf-8';
+        $html->charset = 'UTF-8';
         $html->encoding = Mime::ENCODING_QUOTEDPRINTABLE;        
                 
         $body = new MimeMessage();
         
-        if (!$options['attachments']){ //без вложений
+        if ($options['attachments']){ //без вложений
 
-            $body->setParts([$text, $html]);
-
-            $headerType = 'multipart/alternative';
-            
-        } else {
-            
             $content = new MimeMessage();
-            $content->setParts([$text, $html]);
+            $content->addPart($text);
+            $content->addPart($html);
 
             $contentPart = new MimePart($content->generateMessage());
-            $parts[] = $contentPart;
+            $contentPart->type = 'multipart/alternative;' .PHP_EOL. 'boundary="' . $content->getMime()->boundary() . '"';
+            
+            $body->addPart($contentPart);
+            $messageType = 'multipart/related';
 
             $basenameFilter = new Basename();
             $mimeTypeFilter = new MimeType();
@@ -101,25 +105,24 @@ class PostManager {
                     $attachmentPart->disposition = Mime::DISPOSITION_ATTACHMENT;
                     $attachmentPart->encoding    = Mime::ENCODING_BASE64;        
 
-                    $parts[] = $attachmentPart;
+                    $body->addPart($attachmentPart);
                 }    
             }
 
             $body->setParts($parts);                
             $headerType = 'multipart/related;' . PHP_EOL . ' boundary="' . $content->getMime()->boundary() . '"';
+            
+        } else {
+            
+            $body->setParts([$text, $html]);
+
+            $messageType = 'multipart/alternative';
+                        
         }
         
-        $message = new Message();
-        $message->setEncoding('UTF-8');
-        $message->addTo($options['to']);
-        $message->addFrom($options['from']);
-        $message->setSubject($options['subject']);
-        
         $message->setBody($body);
+        $message->getHeaders()->get('content-type')->setType($messageType);
 
-        $contentTypeHeader = $message->getHeaders()->get('Content-Type');
-        $contentTypeHeader->setType($headerType);  
-        
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
         $transportOptions   = new SmtpOptions([
