@@ -67,6 +67,7 @@ class PostManager {
         $message = new Message();
         $message->addTo($options['to']);
         $message->addFrom($options['from']);
+        $message->addReplyTo($options['from']);
         $message->setSubject($options['subject']);
         
         $breaks = array("<br />","<br>","<br/>");  
