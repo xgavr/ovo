@@ -39,9 +39,16 @@ class PostManager {
      */
     private $entityManager;
     
-    public function __construct($entityManager)
+    /*
+     * Mail transport options
+     * @var Zend\Mail\Transport\SmtpOptions
+     */
+    private $smtpTarnsportOptions;
+    
+    public function __construct($entityManager, $smtpTransportOptions)
     {
         $this->entityManager = $entityManager;
+        $this->smtpTarnsportOptions = $smtpTransportOptions;
         
         if (!is_dir($this::LOG_FOLDER)){
             mkdir($this::LOG_FOLDER);
@@ -121,17 +128,17 @@ class PostManager {
 
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
-        $transportOptions   = new SmtpOptions([
-            'name'              => 'localhost.localdomain',
-            'host'              => '127.0.0.1',
-//            'connection_class'  => 'login',
-//            'connection_config' => [
-//                'username' => 'user',
-//                'password' => 'pass',
-//            ],
-        ]);
+//        $transportOptions   = new SmtpOptions([
+//            'name'              => 'localhost.localdomain',
+//            'host'              => '127.0.0.1',
+////            'connection_class'  => 'login',
+////            'connection_config' => [
+////                'username' => 'user',
+////                'password' => 'pass',
+////            ],
+//        ]);
         
-        $transport->setOptions($transportOptions);
+        $transport->setOptions($this->smtpTarnsportOptions);
         
         try{
             $transport->send($message);

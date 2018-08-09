@@ -11,6 +11,7 @@ namespace Admin\Service\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Admin\Service\PostManager;
+use Zend\Mail\Transport\SmtpOptions;
 
 /**
  * Description of ShopManagerFactory
@@ -24,8 +25,11 @@ class PostManagerFactory  implements FactoryInterface
                     $requestedName, array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
+
+        $config = $container->get('config');
+        $smtpTransportOptions = new SmtpOptions($config['mail']['transport']['options']);
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new PostManager($entityManager);
+        return new PostManager($entityManager, $smtpTransportOptions);
     }
 }
