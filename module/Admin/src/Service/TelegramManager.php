@@ -58,6 +58,16 @@ class TelegramManager {
 
         try {
             $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
+
+            if ($this->telegramOptions['options']['proxy']){
+                Request::setClient(new Client([
+                    'proxy' => $this->telegramOptions['options']['proxy'],
+                    'base_uri' => 'https://api.telegram.org', 
+                    'timeout' => 10.0,
+                    'cookie' => true,
+                ]));
+            }    
+
             $telegram->addCommandsPaths($this::COMMANDS_PATH);
             $telegram->enableAdmins($this->telegramOptions['options']['admin_uid']);
 
@@ -93,6 +103,16 @@ class TelegramManager {
 
         try {
             $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
+
+            if ($this->telegramOptions['options']['proxy']){
+                Request::setClient(new Client([
+                    'proxy' => $this->telegramOptions['options']['proxy'],
+                    'base_uri' => 'https://api.telegram.org', 
+                    'timeout' => 10.0,
+                    'cookie' => true,
+                ]));
+            }    
+
             $result = $telegram->setWebhook($this->telegramOptions['options']['hook_url'], ['certificate' => $this->telegramOptions['options']['certificate']]);
             if ($result->isOk()) {
                 echo $result->getDescription();
@@ -115,6 +135,16 @@ class TelegramManager {
 
         try {
             $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
+
+            if ($this->telegramOptions['options']['proxy']){
+                Request::setClient(new Client([
+                    'proxy' => $this->telegramOptions['options']['proxy'],
+                    'base_uri' => 'https://api.telegram.org', 
+                    'timeout' => 10.0,
+                    'cookie' => true,
+                ]));
+            }    
+
             $result = $telegram->deleteWebhook();
             if ($result->isOk()) {
                 echo $result->getDescription();

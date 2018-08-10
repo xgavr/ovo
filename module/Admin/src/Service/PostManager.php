@@ -13,7 +13,6 @@ use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Mime;
 use Zend\Mime\Part as MimePart;
 use Zend\Mail\Transport\Smtp as SmtpTransport;
-use Zend\Mail\Transport\SmtpOptions;
 use Zend\Mail\Storage\Imap;
 use Zend\Mail\Exception;
 use RecursiveIteratorIterator;
