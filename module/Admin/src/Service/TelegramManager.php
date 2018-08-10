@@ -80,7 +80,7 @@ class TelegramManager {
 
             $telegram->enableLimiter();
 
-            $telegram->handle();
+            $result = $telegram->handle();
 
         } catch (Longman\TelegramBot\Exception\TelegramException $e){
             Longman\TelegramBot\TelegramLog::error($e);
@@ -90,7 +90,7 @@ class TelegramManager {
 
         $logger = null;
 
-        return;
+        return $result;
     }
     
     public function setHook()
