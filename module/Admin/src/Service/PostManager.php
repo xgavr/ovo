@@ -64,9 +64,12 @@ class PostManager {
     {
         if ($_SERVER['SERVER_ADDR'] == '127.0.0.1') return; //если отладка на локальной машине, либо использовать sendmail
 
+        $connectionConfig = $this->smtpTarnsportOptions->getConnectionConfig();
+        
         $message = new Message();
         $message->addTo($options['to']);
-        $message->addFrom($options['from']);
+//        $message->addFrom($options['from']);
+        $message->addFrom($connectionConfig['username']);
         $message->addReplyTo($options['from']);
         $message->setSubject($options['subject']);
         
