@@ -39,13 +39,13 @@ return [
             'telegram' => [
                 'type'    => Segment::class,
                 'options' => [
-                    'route'    => '/telegramm[/:action[/:id]]',
+                    'route'    => '/telegram[/:action[/:id]]',
                     'constraints' => [
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]*',
                     ],
                     'defaults' => [
-                        'controller'    => Controller\TelegrammController::class,
+                        'controller'    => Controller\TelegramController::class,
                         'action'        => 'index',
                     ],
                 ],
@@ -69,7 +69,7 @@ return [
             ],
             Controller\TelegramController::class => [
                 // Allow access to authenticated users.
-                ['actions' => ['index', 'set', 'unset'], 'allow' => '+admin.manage'],
+                ['actions' => ['index', 'set', 'unset', 'test'], 'allow' => '+admin.manage'],
                 ['actions' => ['hook'], 'allow' => '*']
             ],
         ],

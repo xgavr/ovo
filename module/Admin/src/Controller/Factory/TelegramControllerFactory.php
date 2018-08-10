@@ -9,7 +9,7 @@ namespace Admin\Controller\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Admin\Controller\TelegrammController;
+use Admin\Controller\TelegramController;
 use Admin\Service\TelegramManager;
 
 
@@ -18,7 +18,7 @@ use Admin\Service\TelegramManager;
  *
  * @author Daddy
  */
-class TelegrammControllerFactory implements FactoryInterface {
+class TelegramControllerFactory implements FactoryInterface {
     
     public function __invoke(ContainerInterface $container, 
                      $requestedName, array $options = null)
@@ -26,6 +26,6 @@ class TelegrammControllerFactory implements FactoryInterface {
         $telegramManager = $container->get(TelegramManager::class);
         
         // Инстанцируем контроллер и внедряем зависимости.
-        return new TelegrammController($telegramManager);
+        return new TelegramController($telegramManager);
     }
 }

@@ -157,4 +157,13 @@ class TelegramManager {
 
         return $result;
     }
+
+    public function sendTestMessage()
+    {
+        $params = [
+            'chat_id' => $this->telegramOptions['options']['admin_uid'],
+            'text' => 'Привет!',
+        ];
+        return $this->sendMessage($params);
+    }
 }

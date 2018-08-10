@@ -49,5 +49,11 @@ class TelegramController extends AbstractActionController
     {
         $this->telegramManager->unsetHook();
         exit;
-    }    
+    }   
+    
+    public function testAction()
+    {
+        $this->telegramManager->sendTestMessage();
+        exit;
+    }
 }

@@ -30,6 +30,6 @@ class TelegramManagerFactory  implements FactoryInterface
 
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new TelegramManager($entityManager, $adminManager, $telegramOptions);
+        return new TelegramManager($entityManager, $telegramOptions);
     }
 }
