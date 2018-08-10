@@ -26,7 +26,7 @@ class TelegrammManagerFactory  implements FactoryInterface
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
 
         $config = $container->get('config');
-        $telegramOptions = $config['telegram']['options'];
+        $telegramOptions = $config['telegram'];
 
         
         // Инстанцируем сервис и внедряем зависимости.

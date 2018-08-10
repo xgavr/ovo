@@ -10,3 +10,4 @@ phpunit.xml
 /data/settings/
 /data/tmp/
 /nbproject/private/
+/data/cert/

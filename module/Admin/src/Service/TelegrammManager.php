@@ -57,16 +57,11 @@ class TelegrammManager {
         Logger::registerErrorHandler($logger);
 
         try {
-            $telegram = new Telegram($this->telegramOptions['access_token'], $this->telegramOptions['username']);
+            $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
             $telegram->addCommandsPaths($this::COMMANDS_PATH);
-            $telegram->enableAdmins($this->telegramOptions['admin_uid']);
+            $telegram->enableAdmins($this->telegramOptions['options']['admin_uid']);
 
-            $mysql_credentials = [
-                'host'     => 'localhost',
-                'user'     => 'telegramm',
-                'password' => 'Ghjnt3t',
-                'database' => 'telegramm',
-             ];
+            $mysql_credentials = $this->telegramOptions['mysql'];
             $telegram->enableMySql($mysql_credentials, $this::USERNAME . '_');
 
 //            Logging (Error, Debug and Raw Updates)
@@ -97,8 +92,8 @@ class TelegrammManager {
         Logger::registerErrorHandler($logger);
 
         try {
-            $telegram = new Telegram($this->telegramOptions['access_token'], $this->telegramOptions['username']);
-            $result = $telegram->setWebhook($this->telegramOptions['hook_url'], ['certificate' => '/var/www/apl/data/www/adminapl/adminapl.key']);
+            $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
+            $result = $telegram->setWebhook($this->telegramOptions['options']['hook_url'], ['certificate' => $this->telegramOptions['options']['certificate']]);
             if ($result->isOk()) {
                 echo $result->getDescription();
             }                    
@@ -113,26 +108,22 @@ class TelegrammManager {
     
     public function unsetHook()
     {
-        $settings = $this->adminManager->getSettings();
-        if ($settings['telegram_api_key'] && $settings['telegram_bot_name']){
-            
-            $writer = new Stream($this::LOG_FILE);
-            $logger = new Logger();
-            $logger->addWriter($writer);
-            Logger::registerErrorHandler($logger);
+        $writer = new Stream($this::LOG_FILE);
+        $logger = new Logger();
+        $logger->addWriter($writer);
+        Logger::registerErrorHandler($logger);
 
-            try {
-                $telegram = new Telegram($settings['telegram_api_key'], $settings['telegram_bot_name']);
-                $result = $telegram->deleteWebhook();
-                if ($result->isOk()) {
-                    echo $result->getDescription();
-                }             
-            } catch (Longman\TelegramBot\Exception\TelegramException $e){
-                $logger->error($e->getMessage());
-            }    
-
-            $logger = null;
+        try {
+            $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
+            $result = $telegram->deleteWebhook();
+            if ($result->isOk()) {
+                echo $result->getDescription();
+            }             
+        } catch (Longman\TelegramBot\Exception\TelegramException $e){
+            $logger->error($e->getMessage());
         }    
+
+        $logger = null;
         
         return;
     }
@@ -146,11 +137,11 @@ class TelegrammManager {
         \Longman\TelegramBot\TelegramLog::initDebugLog($this::LOG_FILE);
 
         try {
-            $telegram = new Telegram($this->telegramOptions['access_token'], $this->telegramOptions['username']);
+            $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
 
-            if ($this->telegramOptions['proxy']){
+            if ($this->telegramOptions['options']['proxy']){
                 Request::setClient(new Client([
-                    'proxy' => $this->telegramOptions['proxy'],
+                    'proxy' => $this->telegramOptions['options']['proxy'],
                     'base_uri' => 'https://api.telegram.org', 
                     'timeout' => 10.0,
                     'cookie' => true,
