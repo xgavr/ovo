@@ -19,7 +19,7 @@ use GuzzleHttp\Client;
  *
  * @author Daddy
  */
-class TelegrammManager {
+class TelegramManager {
 
     const COMMANDS_PATH = './vendor/longman/src/Commands/';
 

@@ -10,14 +10,14 @@ namespace Admin\Service\Factory;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Admin\Service\TelegrammManager;
+use Admin\Service\TelegramManager;
 
 /**
  * Description of ShopManagerFactory
  *
  * @author Daddy
  */
-class TelegrammManagerFactory  implements FactoryInterface
+class TelegramManagerFactory  implements FactoryInterface
 {
                    
     public function __invoke(ContainerInterface $container, 
@@ -30,6 +30,6 @@ class TelegrammManagerFactory  implements FactoryInterface
 
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new TelegrammManager($entityManager, $adminManager, $telegramOptions);
+        return new TelegramManager($entityManager, $adminManager, $telegramOptions);
     }
 }

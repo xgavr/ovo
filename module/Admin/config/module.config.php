@@ -36,6 +36,20 @@ return [
                     ],
                 ],
             ],
+            'telegram' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route'    => '/telegramm[/:action[/:id]]',
+                    'constraints' => [
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]*',
+                    ],
+                    'defaults' => [
+                        'controller'    => Controller\TelegrammController::class,
+                        'action'        => 'index',
+                    ],
+                ],
+            ],
         ],
     ],
     'access_filter' => [
@@ -53,7 +67,7 @@ return [
                 // Allow access to all users.
                 ['actions' => '*', 'allow' => '*']
             ],
-            Controller\TelegrammController::class => [
+            Controller\TelegramController::class => [
                 // Allow access to authenticated users.
                 ['actions' => ['index', 'set', 'unset'], 'allow' => '+admin.manage'],
                 ['actions' => ['hook'], 'allow' => '*']
@@ -64,6 +78,7 @@ return [
         'factories' => [
             Controller\IndexController::class => InvokableFactory::class,
             Controller\ProcessingController::class => Controller\Factory\ProcessingControllerFactory::class,
+            Controller\TelegramController::class => Controller\Factory\TelegramControllerFactory::class,
         ],
     ],
     'service_manager' => [
@@ -72,7 +87,7 @@ return [
             Service\FtpManager::class => Service\Factory\FtpManagerFactory::class,
             Service\PostManager::class => Service\Factory\PostManagerFactory::class,
             Service\SmsManager::class => Service\Factory\SmsManagerFactory::class,
-            Service\TelegrammManager::class => Service\Factory\TelegrammManagerFactory::class,
+            Service\TelegramManager::class => Service\Factory\TelegramManagerFactory::class,
         ],
     ],    
     'view_manager' => [
