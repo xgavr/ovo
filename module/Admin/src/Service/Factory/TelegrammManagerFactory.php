@@ -11,7 +11,6 @@ namespace Admin\Service\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Admin\Service\TelegrammManager;
-use Admin\Service\AdminManager;
 
 /**
  * Description of ShopManagerFactory
@@ -25,9 +24,12 @@ class TelegrammManagerFactory  implements FactoryInterface
                     $requestedName, array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
-        $adminManager = $container->get(AdminManager::class);
+
+        $config = $container->get('config');
+        $telegramOptions = $config['telegram']['options'];
+
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new TelegrammManager($entityManager, $adminManager);
+        return new TelegrammManager($entityManager, $adminManager, $telegramOptions);
     }
 }
