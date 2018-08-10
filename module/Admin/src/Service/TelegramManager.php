@@ -71,13 +71,12 @@ class TelegramManager {
             $telegram->addCommandsPaths($this::COMMANDS_PATH);
             $telegram->enableAdmins($this->telegramOptions['options']['admin_uid']);
 
-            $mysql_credentials = $this->telegramOptions['mysql'];
-            $telegram->enableMySql($mysql_credentials, $this::USERNAME . '_');
+            $telegram->enableMySql($this->telegramOptions['mysql'], $this->telegramOptions['options']['username'] . '_');
 
 //            Logging (Error, Debug and Raw Updates)
-            Longman\TelegramBot\TelegramLog::initErrorLog($this::LOG_FOLDER . "/".$this::USERNAME."_error.log");
-            Longman\TelegramBot\TelegramLog::initDebugLog($this::LOG_FOLDER . "/".$this::USERNAME."_debug.log");
-            Longman\TelegramBot\TelegramLog::initUpdateLog($this::LOG_FOLDER . "/".$this::USERNAME."_update.log");
+            Longman\TelegramBot\TelegramLog::initErrorLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_error.log");
+            Longman\TelegramBot\TelegramLog::initDebugLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_debug.log");
+            Longman\TelegramBot\TelegramLog::initUpdateLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_update.log");
 
             $telegram->enableLimiter();
 
