@@ -136,13 +136,11 @@ class PostManager {
         try{
             $transport->send($message);
             return TRUE;
-        } catch (Zend\Mail\Transport\Exception $e){            
+        } catch (\Zend\Mail\Transport\Exception $e){            
             return FALSE;
-        } catch (Zend\Mail\Exception $e){            
+        } catch (\Zend\Mail\Exception $e){            
             return FALSE;
-        } catch (Zend\Mail\Protocol\Exception $e){            
-            return FALSE;
-        } catch (Zend\Mail $e){            
+        } catch (\Zend\Mail\Protocol\Exception $e){            
             return FALSE;
         }    
 
