@@ -67,15 +67,14 @@ class PostManager {
         
         $message = new Message();
         $message->addTo($options['to']);
-//        $message->addFrom($options['from']);
-        $message->addFrom($connectionConfig['username']);
+        $message->addFrom($options['from']);
+        //$message->addFrom($connectionConfig['username']);
         $message->addReplyTo($options['from']);
         $message->setSubject($options['subject']);
         
         $breaks = array("<br />","<br>","<br/>");  
-        $text = strip_tags(str_ireplace($breaks, PHP_EOL, $options['body']));
         
-        $text = new MimePart($text);
+        $text = new MimePart(strip_tags(str_ireplace($breaks, PHP_EOL, $options['body'])));
         $text->type = Mime::TYPE_TEXT;
         $text->charset = 'UTF-8';
         $text->encoding = Mime::ENCODING_QUOTEDPRINTABLE;        
@@ -131,15 +130,6 @@ class PostManager {
 
         // Setup SMTP transport using LOGIN authentication
         $transport = new SmtpTransport();
-//        $transportOptions   = new SmtpOptions([
-//            'name'              => 'localhost.localdomain',
-//            'host'              => '127.0.0.1',
-////            'connection_class'  => 'login',
-////            'connection_config' => [
-////                'username' => 'user',
-////                'password' => 'pass',
-////            ],
-//        ]);
         
         $transport->setOptions($this->smtpTarnsportOptions);
         
