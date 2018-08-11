@@ -10,6 +10,9 @@ namespace Admin\Service;
 
 use Longman\TelegramBot\Telegram;
 use Longman\TelegramBot\Request;
+use Longman\TelegramBot\TelegramLog;
+use Longman\TelegramBot\Exception\TelegramException;
+use Longman\TelegramBot\Exception\TelegramLogException;
 use Zend\Log\Writer\Stream;
 use Zend\Log\Logger;
 use GuzzleHttp\Client;
@@ -74,17 +77,17 @@ class TelegramManager {
             $telegram->enableMySql($this->telegramOptions['mysql'], $this->telegramOptions['options']['username'] . '_');
 
 //            Logging (Error, Debug and Raw Updates)
-            Longman\TelegramBot\TelegramLog::initErrorLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_error.log");
-            Longman\TelegramBot\TelegramLog::initDebugLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_debug.log");
-            Longman\TelegramBot\TelegramLog::initUpdateLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_update.log");
+            TelegramLog::initErrorLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_error.log");
+            TelegramLog::initDebugLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_debug.log");
+            TelegramLog::initUpdateLog($this::LOG_FOLDER . "/".$this->telegramOptions['options']['username']."_update.log");
 
             $telegram->enableLimiter();
 
             $result = $telegram->handle();
 
-        } catch (Longman\TelegramBot\Exception\TelegramException $e){
-            Longman\TelegramBot\TelegramLog::error($e);
-        } catch (Longman\TelegramBot\Exception\TelegramLogException $e){
+        } catch (TelegramException $e){
+            TelegramLog::error($e);
+        } catch (TelegramLogException $e){
             $logger->error($e->getMessage());            
         }    
 
@@ -116,7 +119,7 @@ class TelegramManager {
             if ($result->isOk()) {
                 echo $result->getDescription();
             }                    
-        } catch (Longman\TelegramBot\Exception\TelegramException $e){
+        } catch (TelegramException $e){
             $logger->error($e->getMessage());
         }    
 
@@ -148,7 +151,7 @@ class TelegramManager {
             if ($result->isOk()) {
                 echo $result->getDescription();
             }             
-        } catch (Longman\TelegramBot\Exception\TelegramException $e){
+        } catch (TelegramException $e){
             $logger->error($e->getMessage());
         }    
 
@@ -163,7 +166,7 @@ class TelegramManager {
         $logger = new Logger();
         $logger->addWriter($writer);
         Logger::registerErrorHandler($logger);           
-        \Longman\TelegramBot\TelegramLog::initDebugLog($this::LOG_FILE);
+        TelegramLog::initDebugLog($this::LOG_FILE);
 
         try {
             $telegram = new Telegram($this->telegramOptions['options']['access_token'], $this->telegramOptions['options']['username']);
@@ -178,7 +181,7 @@ class TelegramManager {
             }    
 
             $result = Request::sendMessage(['chat_id' => $params['chat_id'], 'text' => $params['text']]);         
-        } catch (Longman\TelegramBot\Exception\TelegramException $e){
+        } catch (TelegramException $e){
             $logger->error($e->getMessage());
         }    
 
