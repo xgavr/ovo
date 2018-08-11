@@ -74,8 +74,8 @@ class PostManager {
         
         $message = new Message();
         $message->addTo($options['to']);
-        $message->addFrom($options['from']);
-        //$message->addFrom($connectionConfig['username']);
+        //$message->addFrom($options['from']);
+        $message->addFrom($connectionConfig['username']);
         $message->addReplyTo($options['from']);
         $message->setSubject($options['subject']);
         
@@ -144,7 +144,7 @@ class PostManager {
             $transport->send($message);
             return TRUE;
         } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e){  
-            $msg = $options['subject'].PHP_EOL.$e->getMessage();
+            $msg = 'Ошибка почтовой отправки'.PHP_EOL.$options['subject'].PHP_EOL.$e->getMessage();
             $this->telegramManager->sendMessage(['text' => $msg]);
             return FALSE;
         }    
