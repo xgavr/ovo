@@ -38,15 +38,22 @@ class PostManager {
      */
     private $entityManager;
     
+    /**
+     * Telegram manager.
+     * @var Admin\Service\TelegramManager
+     */
+    private $telegramManager;
+    
     /*
      * Mail transport options
      * @var Zend\Mail\Transport\SmtpOptions
      */
     private $smtpTarnsportOptions;
     
-    public function __construct($entityManager, $smtpTransportOptions)
+    public function __construct($entityManager, $smtpTransportOptions, $telegramManager)
     {
         $this->entityManager = $entityManager;
+        $this->telegramManager = $telegramManager;
         $this->smtpTarnsportOptions = $smtpTransportOptions;
         
         if (!is_dir($this::LOG_FOLDER)){
@@ -136,11 +143,8 @@ class PostManager {
         try{
             $transport->send($message);
             return TRUE;
-        } catch (\Zend\Mail\Transport\Exception $e){            
-            return FALSE;
-        } catch (\Zend\Mail\Exception $e){            
-            return FALSE;
-        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e){            
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e){  
+            $this->telegramManager->sendMessage(['text' => $e->getMessage()]);
             return FALSE;
         }    
 

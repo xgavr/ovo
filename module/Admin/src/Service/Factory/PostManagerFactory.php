@@ -11,6 +11,7 @@ namespace Admin\Service\Factory;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Admin\Service\PostManager;
+use Admin\Service\TelegramManager;
 use Zend\Mail\Transport\SmtpOptions;
 
 /**
@@ -25,11 +26,12 @@ class PostManagerFactory  implements FactoryInterface
                     $requestedName, array $options = null)
     {
         $entityManager = $container->get('doctrine.entitymanager.orm_default');
+        $telegramManager = $container->get(TelegramManager::class);
 
         $config = $container->get('config');
         $smtpTransportOptions = new SmtpOptions($config['mail']['transport']['options']);
         
         // Инстанцируем сервис и внедряем зависимости.
-        return new PostManager($entityManager, $smtpTransportOptions);
+        return new PostManager($entityManager, $smtpTransportOptions, $telegramManager);
     }
 }

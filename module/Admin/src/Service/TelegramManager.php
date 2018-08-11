@@ -179,6 +179,10 @@ class TelegramManager {
                     'cookie' => true,
                 ]));
             }    
+            
+            if (!isset($params['chat_id'])){
+                $params['chat_id'] = $this->telegramOptions['options']['admin_uid'];
+            }
 
             $result = Request::sendMessage(['chat_id' => $params['chat_id'], 'text' => $params['text']]);         
         } catch (TelegramException $e){
