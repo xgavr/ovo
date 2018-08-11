@@ -144,7 +144,7 @@ class PostManager {
             $transport->send($message);
             return TRUE;
         } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e){  
-            $msg = $e->getTraceAsString();
+            $msg = $options['subject'].PHP_EOL.$e->getMessage();
             $this->telegramManager->sendMessage(['text' => $msg]);
             return FALSE;
         }    
