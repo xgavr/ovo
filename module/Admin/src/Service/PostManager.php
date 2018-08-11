@@ -140,7 +140,7 @@ class PostManager {
             return FALSE;
         } catch (\Zend\Mail\Exception $e){            
             return FALSE;
-        } catch (\Zend\Mail\Protocol\Exception $e){            
+        } catch (\Zend\Mail\Protocol\Exception\RuntimeException $e){            
             return FALSE;
         }    
 
