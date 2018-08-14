@@ -309,32 +309,10 @@ class ClientController extends AbstractActionController
             $this->contactManager->addNewContact($client, $data);
         }
         
-        $form = new ContactForm($this->entityManager);
-        // Проверяем, является ли пост POST-запросом.
-        if($this->getRequest()->isPost()) {
-            
-            // Получаем POST-данные.
-            $data = $this->params()->fromPost();
-            
-            // Заполняем форму данными.
-            $form->setData($data);
-            if($form->isValid()) {
-                                
-                // Получаем валадированные данные формы.
-                $data = $form->getData();
-              
-                // Используем менеджер постов для добавления нового комментарий к посту.
-                $this->clientManager->addContactToClient($client, $data);
-                
-                // Снова перенаправляем пользователя на страницу "view".
-                return $this->redirect()->toRoute('client', ['action'=>'view', 'id'=>$clientId]);
-            }
-        }
-        
         // Render the view template.
         return new ViewModel([
             'client' => $client,
-            'form' => $form,
+            'legalContact' => $client->getLegalContact(),
         ]);
     }      
     

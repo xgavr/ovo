@@ -97,8 +97,8 @@ $this->pageBreadcrumbs()->setItems([
                             Счет на оплату
                         </a>        
                 <?php else: ?>
-                    <a href="<?= $this->url('legals', 
-                            ['action'=>'legal', 'id'=>$order->getClient()->getLegalContact()->getId()]); ?>">
+                    <a href="<?= $this->url('client', 
+                            ['action'=>'view', 'id'=>$order->getClient()->getId()], ['fragment' => 'section4']); ?>">
                         Чтобы получить счет, заполните <br/>реквизиты юридического лица
                     </a>        
                 <?php endif;?>
