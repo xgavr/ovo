@@ -45,7 +45,7 @@ $this->headScript()
             <div class="panel-heading">
                 <h3 class="panel-title pull-left">Контакты</h3>
                 <div class="pull-right">
-                    <button value="/supplier/manager-form/<?= $client->getId() ?>" class="btn btn-default btn-xs"
+                    <button value="/client/employee-form/<?= $client->getId() ?>" class="btn btn-default btn-xs"
                             data-toggle="modal" data-target="#modal-dialog" title="Добавить">
                         <span class="glyphicon glyphicon-plus" ></span>
                     </button>                                                                        
@@ -55,22 +55,22 @@ $this->headScript()
             <div class="panel-body">
                 <?php if ($client->getOtherContacts()): ?>                    
                     <div class="panel-group">
-                        <?php foreach ($client->getOtherContacts() as $manager):?>
+                        <?php foreach ($client->getOtherContacts() as $employee):?>
                             <div class="panel panel-info">
                                 <div class="panel-body">
                                     <div class="pull-left">
-                                        <strong><?= $manager->getName() ?></strong>
+                                        <strong><?= $employee->getName() ?></strong>
                                         <div>
-                                            <?= $manager->getDescription() ?>
-                                            <!--<span><?= $manager->getStatusAsString() ?></span>-->
+                                            <?= $employee->getDescription() ?>
+                                            <!--<span><?= $employee->getStatusAsString() ?></span>-->
                                         </div>                                    
                                     </div>
                                     <div class="pull-right">                                
-                                        <button value="/client/manager-form/<?= $client->getId() ?>?manager=<?= $manager->getId() ?>" class="btn btn-default btn-xs"
+                                        <button value="/client/empoyee-form/<?= $client->getId() ?>?employee=<?= $employee->getId() ?>" class="btn btn-default btn-xs"
                                                 data-toggle="modal" data-target="#modal-dialog" title="Изменить">
                                             <span class="glyphicon glyphicon-edit" ></span>
                                         </button>                                                    
-                                        <button value="/client/delete-manager-form/<?= $manager->getId() ?>" class="btn btn-default btn-xs this-delete"
+                                        <button value="/client/delete-employee-form/<?= $employee->getId() ?>" class="btn btn-default btn-xs this-delete"
                                                 title="Удалить">
                                             <span class="glyphicon glyphicon-remove" ></span>
                                         </button>                                                           
@@ -84,7 +84,7 @@ $this->headScript()
                                                     <div class="panel-title">Контактные телефоны</div>
                                                 </div>
                                                 <div class="pull-right">
-                                                    <button value="/contact/phone-form/<?= $manager->getId() ?>" class="btn btn-default btn-xs"
+                                                    <button value="/contact/phone-form/<?= $employee->getId() ?>" class="btn btn-default btn-xs"
                                                             data-toggle="modal" data-target="#modal-dialog" title="Добавить телефон">
                                                         <span class="glyphicon glyphicon-plus" ></span>
                                                         <span class="glyphicon glyphicon-phone" ></span>
@@ -94,14 +94,14 @@ $this->headScript()
                                             </div>
                                             <div class="panel-body">
                                                 <div class="panel panel-group">
-                                                    <?php foreach ($manager->getPhones() as $phone): ?>
+                                                    <?php foreach ($employee->getPhones() as $phone): ?>
                                                         <div class="panel panel-default">
                                                             <div class="panel-body">
                                                                 <div class="pull-left">
                                                                     <?= $phone->getName()?> <span><?= $phone->getComment()?></span>
                                                                 </div>
                                                                 <div class="pull-right">
-                                                                    <button value="/contact/phone-form/<?= $manager->getId() ?>?phone=<?= ($phone ? $phone->getId():'') ?>" class="btn btn-default btn-xs phone-edit"
+                                                                    <button value="/contact/phone-form/<?= $employee->getId() ?>?phone=<?= ($phone ? $phone->getId():'') ?>" class="btn btn-default btn-xs phone-edit"
                                                                             data-toggle="modal" data-target="#modal-dialog" title="Изменить">
                                                                         <span class="glyphicon glyphicon-edit" ></span>
                                                                     </button>                                                            
@@ -123,7 +123,7 @@ $this->headScript()
                                                         <div class="panel-title">Электронная почта</div>
                                                     </div>
                                                     <div class="pull-right">
-                                                        <button value="/contact/email-form/<?= $manager->getId() ?>" class="btn btn-default btn-xs"
+                                                        <button value="/contact/email-form/<?= $employee->getId() ?>" class="btn btn-default btn-xs"
                                                                 data-toggle="modal" data-target="#modal-dialog" title="Добавить email">
                                                             <span class="glyphicon glyphicon-plus" ></span>
                                                         </button>                                        
@@ -132,14 +132,14 @@ $this->headScript()
                                                 </div>
                                                 <div class="panel-body">
                                                     <div class="panel panel-group">
-                                                        <?php foreach ($manager->getEmails() as $email): ?>
+                                                        <?php foreach ($employee->getEmails() as $email): ?>
                                                             <div class="panel panel-default">
                                                                 <div class="panel-body">
                                                                     <div class="pull-left">
                                                                         <?= $email->getName()?>
                                                                     </div>
                                                                     <div class="pull-right">
-                                                                        <button value="/contact/email-form/<?= $manager->getId() ?>?email=<?= ($email ? $email->getId():'') ?>" class="btn btn-default btn-xs phone-edit"
+                                                                        <button value="/contact/email-form/<?= $employee->getId() ?>?email=<?= ($email ? $email->getId():'') ?>" class="btn btn-default btn-xs phone-edit"
                                                                                 data-toggle="modal" data-target="#modal-dialog" title="Изменить">
                                                                             <span class="glyphicon glyphicon-edit" ></span>
                                                                         </button>                                                            

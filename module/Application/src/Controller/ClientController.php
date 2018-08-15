@@ -370,6 +370,120 @@ class ClientController extends AbstractActionController
         ]);                        
     }
     
+    public function employeeFormAction()
+    {
+        $clientId = (int)$this->params()->fromRoute('id', -1);
+        
+        if ($clientId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $client = $this->entityManager->getRepository(Client::class)
+                ->findOneById($clientId);
+        
+        if ($client == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+
+        $employeeId = (int)$this->params()->fromQuery('employee', -1);
+        
+        // Validate input parameter
+        if ($employeeId>0) {
+            $emploee = $this->entityManager->getRepository(Contact::class)
+                    ->findOneById($employeeId);
+        } else {
+            $employee = null;
+        }
+        
+        $form = new ContactForm();
+
+        if ($this->getRequest()->isPost()) {
+            
+            $data = $this->params()->fromPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+
+                if ($employee){
+                    $this->contactManager->updateContact($employee, $data);                    
+                } else{
+                    $this->contactManager->addNewContact($client, $data);
+                }    
+                
+                return new JsonModel(
+                   ['ok']
+                );           
+            }
+        } else {
+            if ($employee){
+                $data = [
+                    'name' => $employee->getName(),  
+                    'description' => $employee->getDescription(),  
+                    'status' => $employee->getStatus(),  
+                ];
+                $form->setData($data);
+            }    
+        }        
+        
+        $this->layout()->setTemplate('layout/terminal');
+        // Render the view template.
+        return new ViewModel([
+            'form' => $form,
+            'employee' => $employee,
+            'client' => $client,
+        ]);                
+    }
+    
+    public function deleteEmployeeAction()
+    {
+        $contactId = (int) $this->params()->fromRoute('id', -1);
+        
+        // Validate input parameter
+        if ($contactId<0) {
+            $this->getResponse()->setStatusCode(404);
+            return;
+        }
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $client = $contact->getClient();
+
+        $this->contactManager->removeContact($contact);
+        
+        // Перенаправляем пользователя на страницу "legal".
+        return $this->redirect()->toRoute('client', ['action' => 'view', 'id' => $client->getId()]);
+    }
+    
+    public function deleteEmployeeFormAction()
+    {
+        $contactId = $this->params()->fromRoute('id', -1);
+        
+        $contact = $this->entityManager->getRepository(Contact::class)
+                ->findOneById($contactId);
+        
+        if ($contact == null) {
+            $this->getResponse()->setStatusCode(404);
+            return;                        
+        }        
+        
+        $this->contactManager->removeContact($contact);
+        
+        return new JsonModel(
+           ['ok']
+        );           
+        
+        exit;
+    }    
+    
+    
     public function managerTransferAction()
     {
         $clientId = (int) $this->params()->fromQuery('clientId', -1);
