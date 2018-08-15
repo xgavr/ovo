@@ -391,7 +391,7 @@ class ClientController extends AbstractActionController
         
         // Validate input parameter
         if ($employeeId>0) {
-            $emploee = $this->entityManager->getRepository(Contact::class)
+            $employee = $this->entityManager->getRepository(Contact::class)
                     ->findOneById($employeeId);
         } else {
             $employee = null;

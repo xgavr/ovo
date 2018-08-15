@@ -307,19 +307,25 @@ class ContactManager
         }        
         
         $addresses = $contact->getAddresses();
-        foreach ($addresses as $address) {
-            $this->entityManager->remove($address);
-        }        
+        if ($addresses){
+            foreach ($addresses as $address) {
+                $this->entityManager->remove($address);
+            }
+        }    
         
         $messengers = $contact->getMessengers();
-        foreach ($messengers as $messenger) {
-            $this->entityManager->remove($messenger);
-        }        
+        if ($messengers){
+            foreach ($messengers as $messenger) {
+                $this->entityManager->remove($messenger);
+            }
+        }    
         
         $legals = $contact->getLegals();
-        foreach ($legals as $legal) {
-            $this->entityManager->removeLegalAssociation($legal);
-        }        
+        if ($legals){
+            foreach ($legals as $legal) {
+                $this->entityManager->removeLegalAssociation($legal);
+            }        
+        }    
         
         $this->entityManager->remove($contact);
         
