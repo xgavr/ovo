@@ -43,7 +43,7 @@ $this->headScript()
         
         <div class="panel panel-default" id="section3">
             <div class="panel-heading">
-                <h3 class="panel-title pull-left">Контакты</h3>
+                <div class="panel-title pull-left">Контакты</div>
                 <div class="pull-right">
                     <button value="/client/employee-form/<?= $client->getId() ?>" class="btn btn-default btn-xs"
                             data-toggle="modal" data-target="#modal-dialog" title="Добавить">
@@ -53,9 +53,9 @@ $this->headScript()
                 <div class="clearfix"></div>
             </div>
             <div class="panel-body">
-                <?php if ($client->getOtherContacts()): ?>                    
-                    <div class="panel-group">
-                        <?php foreach ($client->getOtherContacts() as $employee):?>
+                <div class="panel panel-group">
+                    <?php foreach ($client->getOtherContacts() as $employee):?>
+                        <div class="panel-group">
                             <div class="panel panel-info">
                                 <div class="panel-body">
                                     <div class="pull-left">
@@ -76,13 +76,13 @@ $this->headScript()
                                         </button>                                                           
                                     </div>                                                                        
                                 </div>
-                                <div class="panel panel-default">
-                                    <?php echo $this->partial('/application/contact/communication-partial', ['contact' => $employee]); ?>
-                                </div>    
                             </div>
-                        <?php endforeach; ?>            
-                    </div>
-                <?php endif; ?>
+                            <div class="panel panel-info">
+                                <?php echo $this->partial('/application/contact/communication-partial', ['contact' => $employee]); ?>
+                            </div>    
+                        </div>
+                    <?php endforeach; ?>            
+                </div>    
             </div>
         </div>
         <div class="panel panel-default" id="section4">
